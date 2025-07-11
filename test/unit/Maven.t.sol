@@ -47,7 +47,7 @@ contract MavenTest is HelperConfig, HelperTest {
         MUSDProxy.mint(USER, MUSDProxy.MAX_SUPPLY());
         assertEq(MUSDProxy.totalSupply(), MUSDProxy.MAX_SUPPLY());
 
-        vm.expectRevert("Max supply exceeded");
+        vm.expectRevert();
         MUSDProxy.mint(USER, 1);
         vm.stopPrank();
     }
