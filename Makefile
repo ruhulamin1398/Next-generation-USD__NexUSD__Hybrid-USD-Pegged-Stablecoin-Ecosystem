@@ -30,7 +30,7 @@ lint :; forge fmt --check && forge verify --check
 
 
 
-deploy-MUSD-PROXY-amoy:; forge clean && forge build &&  forge script script/DeployMaven.s.sol:DeployMaven --rpc-url https://rpc-amoy.polygon.technology --private-key $(PRIVATE_KEY_59) --ffi --broadcast -vvvv
+deploy-MUSD-PROXY-amoy:; forge clean && forge build &&  forge script script/DeployMavenWithProxy.s.sol:DeployMavenWithProxy --rpc-url https://rpc-amoy.polygon.technology --private-key $(PRIVATE_KEY_59) --ffi --broadcast -vvvv
 
 verify-MUSD-amoy:;forge verify-contract $(MUSD_CONTRACT) src/TestMaven.sol:TestMaven --chain-id 80002 --verifier-api-key $(POLYGON_API_KEY) --verifier-url https://api-amoy.polygonscan.com/api 
 verify-PROXY-amoy:; forge verify-contract $(PROXY_CONTRACT) lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol:ERC1967Proxy --chain-id 80002 --verifier-api-key $(POLYGON_API_KEY) --verifier-url https://api-amoy.polygonscan.com/api --constructor-args 0000000000000000000000001679dffe0f02ece842e503ec40922edc556f906500000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000044485cc9550000000000000000000000003ff88b69d1762aa444c85c30c4b0b795f9c48b590000000000000000000000003ff88b69d1762aa444c85c30c4b0b795f9c48b5900000000000000000000000000000000000000000000000000000000
