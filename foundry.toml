@@ -5,7 +5,7 @@ libs = ["lib"]
 ast = true
 build_info = true
 extra_output = ["storageLayout"]
-
+ffi=true
 
 
 [rpc_endpoints]

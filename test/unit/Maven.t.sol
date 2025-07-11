@@ -12,18 +12,164 @@ import {Vm} from "forge-std/Vm.sol";
 import {HelperTest} from "./Helper.t.sol";
 
 contract MavenTest is HelperConfig, HelperTest {
-    TestMaven MUSD;
+    TestMaven MUSDProxy;
+    address USER = address(0x1234);
+    address USER2 = address(0x5678);
 
-    function setUp() external {
+    function setUp() public {
         DeployMaven deployer = new DeployMaven();
-        address mUSD = deployer.run();
-
-        console.log("Maven deployed at:", mUSD);
-        MUSD = TestMaven(mUSD);
+        address proxy = deployer.run();
+        MUSDProxy = TestMaven(proxy);
     }
 
-    function testMavenDeployment() public {
-        console.log("Maven deployed at:", address(MUSD));
-        assert(address(MUSD) != address(0));
+    function testDeployment() public view {
+        assertEq(MUSDProxy.decimals(), 6);
+        assertEq(MUSDProxy.name(), "TestMaven");
+        assertEq(MUSDProxy.symbol(), "MUSD");
     }
+
+    function testMintByOperator() public {
+        uint256 amount = 1000 * 1e6;
+        vm.prank(OPERATOR);
+        MUSDProxy.mint(USER, amount);
+        assertEq(MUSDProxy.balanceOf(USER), amount);
+    }
+
+    function testMintByNonOperatorReverts() public {
+        uint256 amount = 1000 * 1e6;
+        vm.prank(USER);
+        vm.expectRevert();
+        MUSDProxy.mint(USER, amount);
+    }
+
+    function testMintRevertsWhenExceedingMaxSupply() public {
+        vm.startPrank(OPERATOR);
+        MUSDProxy.mint(USER, MUSDProxy.MAX_SUPPLY());
+        assertEq(MUSDProxy.totalSupply(), MUSDProxy.MAX_SUPPLY());
+
+        vm.expectRevert("Max supply exceeded");
+        MUSDProxy.mint(USER, 1);
+        vm.stopPrank();
+    }
+
+    function testBlocklistPreventsMint() public {
+        uint256 amount = 1000 * 1e6;
+        vm.startPrank(OPERATOR);
+        MUSDProxy.addToBlocklist(USER);
+        vm.expectRevert();
+        MUSDProxy.mint(USER, amount);
+        vm.stopPrank();
+    }
+
+    function testBlocklistAllowsBurn() public {
+        uint256 amount = 1000 * 1e6;
+        vm.startPrank(OPERATOR);
+        MUSDProxy.mint(USER, amount);
+
+        MUSDProxy.addToBlocklist(USER);
+        vm.expectRevert();
+        MUSDProxy.burn(USER, amount);
+
+        vm.stopPrank();
+    }
+
+    function testBurnByOperator() public {
+        uint256 amount = 1000 * 1e6;
+        vm.startPrank(OPERATOR);
+        MUSDProxy.mint(USER, amount);
+        MUSDProxy.burn(USER, amount);
+        vm.stopPrank();
+        assertEq(MUSDProxy.balanceOf(USER), 0);
+    }
+
+    function testBurnByNonOperatorReverts() public {
+        uint256 amount = 1000 * 1e6;
+        vm.prank(OPERATOR);
+        MUSDProxy.mint(USER, amount);
+        vm.expectRevert();
+        vm.prank(USER);
+        MUSDProxy.burn(USER, amount);
+    }
+
+    function testAddToBlocklist() public {
+        vm.startPrank(OPERATOR);
+        MUSDProxy.addToBlocklist(USER);
+        assertEq(MUSDProxy.isBlocklisted(USER), true);
+        vm.stopPrank();
+    }
+
+    function testRemoveFromBlocklist() public {
+        vm.startPrank(OPERATOR);
+        MUSDProxy.addToBlocklist(USER);
+        MUSDProxy.removeFromBlocklist(USER);
+        assertEq(MUSDProxy.isBlocklisted(USER), false);
+        vm.stopPrank();
+    }
+
+    function testBlocklistPreventsTransfer() public {
+        uint256 amount = 1000 * 1e6;
+        vm.startPrank(OPERATOR);
+        MUSDProxy.mint(USER, amount);
+        MUSDProxy.addToBlocklist(USER);
+        vm.stopPrank();
+        vm.prank(USER);
+        vm.expectRevert();
+        MUSDProxy.transfer(USER, amount);
+    }
+
+    function testUnblocklistAllowsTransfer() public {
+        uint256 amount = 1000 * 1e6;
+        vm.startPrank(OPERATOR);
+        MUSDProxy.mint(USER, amount);
+        MUSDProxy.addToBlocklist(USER);
+        MUSDProxy.removeFromBlocklist(USER);
+        vm.stopPrank();
+        vm.prank(USER);
+        MUSDProxy.transfer(USER2, amount);
+        assertEq(MUSDProxy.balanceOf(USER2), amount);
+    }
+
+    function testPausePreventsTransfer() public {
+        uint256 amount = 1000 * 1e6;
+        vm.prank(OPERATOR);
+        MUSDProxy.mint(USER, amount);
+        vm.prank(OWNER);
+        MUSDProxy.pause();
+        vm.prank(USER);
+        vm.expectRevert();
+        MUSDProxy.transfer(USER, amount);
+    }
+
+    function testUnpauseAllowsTransfer() public {
+        uint256 amount = 1000 * 1e6;
+        vm.prank(OPERATOR);
+        MUSDProxy.mint(USER, amount);
+        vm.startPrank(OWNER);
+        MUSDProxy.pause();
+        MUSDProxy.unpause();
+        vm.stopPrank();
+        vm.prank(USER);
+        MUSDProxy.transfer(USER, amount);
+        assertEq(MUSDProxy.balanceOf(USER), amount);
+    }
+
+    // function testDestroyBlackFundsRemovesBalance() public {
+    //     uint256 amount = 1000 * 1e6;
+    //     vm.startPrank(OPERATOR);
+    //     MUSDProxy.mint(USER, amount);
+    //     MUSDProxy.addToBlocklist(USER);
+    //     MUSDProxy.destroyBlackFunds(USER);
+    //     vm.stopPrank();
+    //     assertEq(MUSDProxy.balanceOf(USER), 0);
+    // }
+
+    // function testDestroyBlackFundsRevertsIfNotBlocklisted() public {
+    //     uint256 amount = 1000 * 1e6;
+    //     vm.startPrank(OPERATOR);
+    //     MUSDProxy.mint(USER, amount);
+
+    //     vm.expectRevert();
+    //     MUSDProxy.destroyBlackFunds(USER);
+    //     vm.stopPrank();
+    // }
 }

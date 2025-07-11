@@ -30,37 +30,71 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {MavenController} from "./MavenController.sol";
 
 contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
-    event BridgeRequest(
-        address indexed sender, address indexed recipient, uint256 amount, uint256 targetChainId, string action
-    );
-
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
     }
 
-    function initialize(address defaultAdmin, address operator) public initializer {
+    // ✅ Initalizer
+
+    /**
+     * @notice Initializes the TestMaven contract with admin and operator roles.
+     * @dev Sets up the token name and symbol, assigns roles, and enables UUPS upgradeability.
+     * @param defaultAdmin The address to be granted the DEFAULT_ADMIN_ROLE (owner ).
+     * @param operator The address to be granted the OPERATOR_ROLE (mint, blocklist, destroy).
+     */
+    function initialize(
+        address defaultAdmin,
+        address operator
+    ) public initializer {
         __MavenController_init("TestMaven", "MUSD", defaultAdmin, operator);
         __UUPSUpgradeable_init();
     }
 
-    function decimals() public pure override returns (uint8) {
-        return 6;
-    }
+    // ✅ external Functions
 
-    // Only OPERATOR_ROLE can mint new tokens
+    /**
+     * @notice Mints new MUSD tokens to a specified address.
+     * @dev Only callable by OPERATOR_ROLE. Enforces the MAX_SUPPLY limit.
+     * @param to The address to receive the minted tokens.
+     * @param amount The number of tokens to mint (6 decimals).
+     */
     function mint(address to, uint256 amount) external onlyRole(OPERATOR_ROLE) {
+        require(totalSupply() + amount <= MAX_SUPPLY, "Max supply exceeded");
         _mint(to, amount);
     }
 
-    function burn(address from, uint256 amount) external onlyRole(OPERATOR_ROLE) {
+    /**
+     * @notice Burns MUSD tokens from a specified address.
+     * @dev Only callable by OPERATOR_ROLE. Used for supply reduction.
+     * @param from The address whose tokens will be burned.
+     * @param amount The number of tokens to burn (6 decimals).
+     */
+    function burn(
+        address from,
+        uint256 amount
+    ) external onlyRole(OPERATOR_ROLE) {
         _burn(from, amount);
     }
 
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
-        MavenController._beforeTokenTransfer(from, to, amount);
-        super._beforeTokenTransfer(from, to, amount);
-    }
+    // ✅ internal Functions
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyRole(ADMIN_ROLE) {}
+    /**
+     * @notice Authorizes contract upgrades via UUPS proxy pattern.
+     * @dev Only callable by ADMIN_ROLE.
+     * @param newImplementation The address of the new contract implementation.
+     */
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyRole(ADMIN_ROLE) {}
+
+    // ✅ view & pure functions
+
+    /**
+     * @notice Returns the number of decimals used for MUSD (fixed at 6).
+     * @return uint8 The number of decimals (6).
+     */
+    function decimals() public pure override returns (uint8) {
+        return 6;
+    }
 }

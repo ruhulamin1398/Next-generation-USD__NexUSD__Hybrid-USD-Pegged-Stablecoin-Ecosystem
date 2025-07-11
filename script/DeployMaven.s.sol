@@ -5,15 +5,26 @@ import {console} from "forge-std/Script.sol";
 import {TestMaven} from "../src/TestMaven.sol";
 import {CodeConstants} from "./HelperConfig.s.sol";
 
+import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
+
 contract DeployMaven is CodeConstants {
     function run() external returns (address) {
-        console.log(OWNER, OPERATOR, ADMIN);
+        console.log(" OWNER ", OWNER);
+        console.log(" OPERATOR ", OPERATOR);
+        console.log(" ADMIN ", ADMIN);
+
+        address proxy = deployMaven();
+        return proxy;
+    }
+
+    function deployMaven() public returns (address) {
         vm.startBroadcast();
-        TestMaven MUSD = new TestMaven();
-        MUSD.initialize(OWNER, OPERATOR);
+        address proxy = Upgrades.deployUUPSProxy(
+            "TestMaven.sol",
+            abi.encodeCall(TestMaven.initialize, (OWNER, OPERATOR))
+        );
 
         vm.stopBroadcast();
-
-        return (address(MUSD));
+        return address(proxy);
     }
 }
