@@ -1,22 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
-import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import {MavenController} from "./MavenController.sol";
 
-contract TestMaven is
-    Initializable,
-    ERC20Upgradeable,
-    AccessControlUpgradeable,
-    UUPSUpgradeable
-{
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN");
-    bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
-
-    uint256 public constant MAX_SUPPLY = 100_000_000 * 10 ** 6; // 100M MUSD
-
+contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
     event BridgeRequest(
         address indexed sender,
         address indexed recipient,
@@ -34,13 +23,8 @@ contract TestMaven is
         address defaultAdmin,
         address operator
     ) public initializer {
-        __ERC20_init("TestMaven", "MUSD");
-        __AccessControl_init();
         __UUPSUpgradeable_init();
-
-        _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
-        _grantRole(OPERATOR_ROLE, operator);
-        _grantRole(ADMIN_ROLE, msg.sender);
+        __MavenController_init("TestMaven", "MUSD", defaultAdmin, operator);
     }
 
     function decimals() public pure override returns (uint8) {
