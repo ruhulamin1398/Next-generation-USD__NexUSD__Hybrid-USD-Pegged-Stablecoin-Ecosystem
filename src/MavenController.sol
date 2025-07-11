@@ -43,9 +43,24 @@ abstract contract MavenController is
     /**
      * @dev The operation failed because the user is blocked.
      */
+    /**
+     * @dev The operation failed because the sender is blocklisted.
+     */
     error BlocklistedSender(address sender);
+
+    /**
+     * @dev The operation failed because the recipient is blocklisted.
+     */
     error BlocklistedRecipient(address recipient);
-    error NotBlocklisted(address account);
+    /**
+     * @dev The operation failed because the user has insufficient unfrozen balance.
+     */
+    error ERC20InsufficientUnfrozenBalance(address user);
+
+    /**
+     * @dev The operation failed because the user has insufficient frozen balance.
+     */
+    error ERC20InsufficientFrozenBalance(address user);
 
     // ✅ Events
     /**
@@ -64,6 +79,20 @@ abstract contract MavenController is
      * @param amount The amount of funds that were destroyed.
      */
     event DestroyedBlackFunds(address indexed account, uint256 amount);
+
+    /**
+     * @dev Emitted when tokens are frozen for a user.
+     * @param user The address of the user whose tokens were frozen.
+     * @param amount The amount of tokens that were frozen.
+     */
+    event TokensFrozen(address indexed user, uint256 amount);
+
+    /**
+     * @dev Emitted when tokens are unfrozen for a user.
+     * @param user The address of the user whose tokens were unfrozen.
+     * @param amount The amount of tokens that were unfrozen.
+     */
+    event TokensUnfrozen(address indexed user, uint256 amount);
 
     // ✅ Initalizer
     /**
@@ -113,6 +142,43 @@ abstract contract MavenController is
         emit UserUnBlocked(account);
     }
 
+    /**
+     * @dev Adjusts the amount of tokens frozen for a user.
+     * @param user The address of the user whose tokens to freeze.
+     * @param amount The amount of tokens frozen.
+     *
+     * Requirements:
+     *
+     * - The user must have sufficient unfrozen balance.
+     */
+    function freeze(
+        address user,
+        uint256 amount
+    ) external onlyRole(OPERATOR_ROLE) {
+        if (availableBalance(user) < amount)
+            revert ERC20InsufficientUnfrozenBalance(user);
+        frozen[user] += amount;
+        emit TokensFrozen(user, amount);
+    }
+
+    /**
+     * @dev Adjusts the amount of tokens unfrozen for a user.
+     * @param user The address of the user whose tokens to unfreeze.
+     * @param amount The amount of tokens unfrozen.
+     *
+     * Requirements:
+     *
+     * - The user must have sufficient frozen balance.
+     */
+    function unfreeze(
+        address user,
+        uint256 amount
+    ) external onlyRole(OPERATOR_ROLE) {
+        if (frozen[user] < amount) revert ERC20InsufficientFrozenBalance(user);
+        frozen[user] -= amount;
+        emit TokensUnfrozen(user, amount);
+    }
+
     // ✅ public Functions
 
     /**
@@ -136,14 +202,17 @@ abstract contract MavenController is
     function _beforeTokenTransfer(
         address from,
         address to,
-        uint256 /* amount */
-    ) internal virtual {
+        uint256 amount
+    ) internal {
         if (from != address(0) && blockedAccounts[from]) {
             revert BlocklistedSender(from);
         }
         if (to != address(0) && blockedAccounts[to]) {
             revert BlocklistedRecipient(to);
         }
+
+        if (from != address(0) && availableBalance(from) < amount)
+            revert ERC20InsufficientUnfrozenBalance(from);
     }
 
     function _update(
@@ -152,6 +221,7 @@ abstract contract MavenController is
         uint256 value
     ) internal override(ERC20Upgradeable, ERC20PausableUpgradeable) {
         _beforeTokenTransfer(from, to, value);
+
         super._update(from, to, value);
     }
 
@@ -164,5 +234,23 @@ abstract contract MavenController is
      */
     function isBlocklisted(address account) public view returns (bool) {
         return blockedAccounts[account];
+    }
+
+    /**
+     * @dev Returns the amount of tokens frozen for a user.
+     */
+    function frozenBalance(address user) public view returns (uint256) {
+        return frozen[user];
+    }
+
+    /**
+     * @dev Returns the available (unfrozen) balance of an account.
+     * @param account The address to query the available balance of.
+     * @return available The amount of tokens available for transfer.
+     */
+    function availableBalance(
+        address account
+    ) public view returns (uint256 available) {
+        available = balanceOf(account) - frozenBalance(account);
     }
 }

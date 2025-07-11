@@ -25,6 +25,13 @@ abstract contract BaseStorage {
      */
     mapping(address => bool) internal blockedAccounts;
 
+    /**
+     * @dev Mapping to track the frozen token amount for each user.
+     *      The key is the user's address, and the value is the amount of tokens frozen.
+     *      Frozen tokens cannot be transferred or used until unfrozen.
+     */
+    mapping(address user => uint256 amount) internal frozen;
+
     // Storage gap: https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable#storage-gaps
     uint256[24] __gap_BaseStorage;
 }
