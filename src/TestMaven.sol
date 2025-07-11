@@ -30,6 +30,22 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/U
 import {MavenController} from "./MavenController.sol";
 
 contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
+    // ✅ Errors
+    /// @dev Error thrown when minting would exceed the maximum supply.
+    error MaxSupplyExceeded();
+
+    // ✅ Events
+
+    /// @notice Emitted when new tokens are minted.
+    /// @param to The address receiving the minted tokens.
+    /// @param amount The number of tokens minted.
+    event Mint(address indexed to, uint256 amount);
+
+    /// @notice Emitted when tokens are burned.
+    /// @param from The address whose tokens were burned.
+    /// @param amount The number of tokens burned.
+    event Burn(address indexed from, uint256 amount);
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -60,8 +76,11 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
      * @param amount The number of tokens to mint (6 decimals).
      */
     function mint(address to, uint256 amount) external onlyRole(OPERATOR_ROLE) {
-        require(totalSupply() + amount <= MAX_SUPPLY, "Max supply exceeded");
+        if (totalSupply() + amount > MAX_SUPPLY) {
+            revert MaxSupplyExceeded();
+        }
         _mint(to, amount);
+        emit Mint(to, amount);
     }
 
     /**
@@ -75,6 +94,7 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
         uint256 amount
     ) external onlyRole(OPERATOR_ROLE) {
         _burn(from, amount);
+        emit Burn(from, amount);
     }
 
     // ✅ internal Functions
