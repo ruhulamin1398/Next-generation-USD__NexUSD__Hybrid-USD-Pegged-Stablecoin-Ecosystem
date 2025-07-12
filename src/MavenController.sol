@@ -26,9 +26,11 @@
 pragma solidity 0.8.30;
 
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {ERC20PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
+import {ERC20PausableUpgradeable} from
+    "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
 import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
-import {ERC20PermitUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
+import {ERC20PermitUpgradeable} from
+    "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
 import {BaseStorage} from "./BaseStorage.sol";
 
 abstract contract MavenController is
@@ -103,12 +105,10 @@ abstract contract MavenController is
      * @param defaultAdmin The address to be granted DEFAULT_ADMIN_ROLE (owner ).
      * @param operator The address to be granted OPERATOR_ROLE (mint, blocklist, destroy).
      */
-    function __MavenController_init(
-        string memory name,
-        string memory symbol,
-        address defaultAdmin,
-        address operator
-    ) internal onlyInitializing {
+    function __MavenController_init(string memory name, string memory symbol, address defaultAdmin, address operator)
+        internal
+        onlyInitializing
+    {
         __ERC20_init(name, symbol);
         __AccessControl_init();
         __ERC20Pausable_init();
@@ -135,9 +135,7 @@ abstract contract MavenController is
      * @dev Only callable by OPERATOR_ROLE.
      * @param account The address to be removed from the blocklist.
      */
-    function removeFromBlocklist(
-        address account
-    ) external onlyRole(OPERATOR_ROLE) {
+    function removeFromBlocklist(address account) external onlyRole(OPERATOR_ROLE) {
         blockedAccounts[account] = false;
         emit UserUnBlocked(account);
     }
@@ -151,12 +149,10 @@ abstract contract MavenController is
      *
      * - The user must have sufficient unfrozen balance.
      */
-    function freeze(
-        address user,
-        uint256 amount
-    ) external onlyRole(OPERATOR_ROLE) {
-        if (availableBalance(user) < amount)
+    function freeze(address user, uint256 amount) external onlyRole(OPERATOR_ROLE) {
+        if (availableBalance(user) < amount) {
             revert ERC20InsufficientUnfrozenBalance(user);
+        }
         frozen[user] += amount;
         emit TokensFrozen(user, amount);
     }
@@ -170,10 +166,7 @@ abstract contract MavenController is
      *
      * - The user must have sufficient frozen balance.
      */
-    function unfreeze(
-        address user,
-        uint256 amount
-    ) external onlyRole(OPERATOR_ROLE) {
+    function unfreeze(address user, uint256 amount) external onlyRole(OPERATOR_ROLE) {
         if (frozen[user] < amount) revert ERC20InsufficientFrozenBalance(user);
         frozen[user] -= amount;
         emit TokensUnfrozen(user, amount);
@@ -199,11 +192,7 @@ abstract contract MavenController is
 
     // ✅ internal Functions
 
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal {
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal {
         if (from != address(0) && blockedAccounts[from]) {
             revert BlocklistedSender(from);
         }
@@ -211,15 +200,15 @@ abstract contract MavenController is
             revert BlocklistedRecipient(to);
         }
 
-        if (from != address(0) && availableBalance(from) < amount)
+        if (from != address(0) && availableBalance(from) < amount) {
             revert ERC20InsufficientUnfrozenBalance(from);
+        }
     }
 
-    function _update(
-        address from,
-        address to,
-        uint256 value
-    ) internal override(ERC20Upgradeable, ERC20PausableUpgradeable) {
+    function _update(address from, address to, uint256 value)
+        internal
+        override(ERC20Upgradeable, ERC20PausableUpgradeable)
+    {
         _beforeTokenTransfer(from, to, value);
 
         super._update(from, to, value);
@@ -248,9 +237,7 @@ abstract contract MavenController is
      * @param account The address to query the available balance of.
      * @return available The amount of tokens available for transfer.
      */
-    function availableBalance(
-        address account
-    ) public view returns (uint256 available) {
+    function availableBalance(address account) public view returns (uint256 available) {
         available = balanceOf(account) - frozenBalance(account);
     }
 }

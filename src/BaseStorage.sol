@@ -6,10 +6,19 @@ pragma solidity 0.8.30;
  * @notice The BaseStorage contract is a storage abstraction contract for the TestMavenContract.
  * @dev This contract is meant to be inherited by other contracts to provide a consistent storage interface.
  */
-
 abstract contract BaseStorage {
+    // ✅ Type declarations
+
+    /// @dev Enum to define bridge actions for cross-chain hooks.
+    enum BridgeAction {
+        Mint,
+        Burn
+    }
+
+    // ✅ State variables
+
     /// @notice Role for contract administrators, responsible for deployment and upgrades.
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN");
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
     /// @notice Role for operators who can mint, burn, block, and unblock accounts.
 

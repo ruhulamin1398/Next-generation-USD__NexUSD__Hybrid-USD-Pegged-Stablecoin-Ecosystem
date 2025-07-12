@@ -37,14 +37,38 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
     // ✅ Events
 
     /// @notice Emitted when new tokens are minted.
+    /// @param operator The address performing the mint operation.
     /// @param to The address receiving the minted tokens.
     /// @param amount The number of tokens minted.
-    event Mint(address indexed to, uint256 amount);
+    event Mint(address indexed operator, address indexed to, uint256 amount);
 
     /// @notice Emitted when tokens are burned.
+    /// @param operator The address performing the burn operation.
     /// @param from The address whose tokens were burned.
     /// @param amount The number of tokens burned.
-    event Burn(address indexed from, uint256 amount);
+    event Burn(address indexed operator, address indexed from, uint256 amount);
+
+    /// @notice Emitted when anyone requests a bridge operation.
+    /// @param sender   The account locking/burning on this chain
+    /// @param recipient The account intended to receive on the target chain
+    /// @param amount   Number of tokens to bridge
+    /// @param targetChain The name or ID of the target chain
+    /// @param action   Mint or Burn intent
+    event BridgeRequest(
+        address indexed sender,
+        address indexed recipient,
+        uint256 amount,
+        string targetChain,
+        BridgeAction action
+    );
+
+    /// @notice Emitted when the operator actually executes a bridge mint or burn.
+    event BridgeExecuted(
+        address indexed user,
+        uint256 amount,
+        string sourceChain,
+        BridgeAction action
+    );
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -80,7 +104,7 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
             revert MaxSupplyExceeded();
         }
         _mint(to, amount);
-        emit Mint(to, amount);
+        emit Mint(msg.sender, to, amount);
     }
 
     /**
@@ -94,7 +118,59 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
         uint256 amount
     ) external onlyRole(OPERATOR_ROLE) {
         _burn(from, amount);
-        emit Burn(from, amount);
+        emit Burn(msg.sender, from, amount);
+    }
+
+    /**
+     * @notice User-facing “send” function to request a bridge operation.
+     * @param recipient The intended recipient on `targetChain`
+     * @param amount The number of tokens to bridge.
+     * @param targetChain The name or ID of the target chain.
+     */
+    function send(
+        address recipient,
+        uint256 amount,
+        string calldata targetChain
+    ) external whenNotPaused {
+        emit BridgeRequest(
+            msg.sender,
+            recipient,
+            amount,
+            targetChain,
+            BridgeAction.Burn
+        );
+    }
+
+    /**
+     * @notice Operator executes mint on destination chain after off‑chain validation.
+     * @dev Only callable by OPERATOR_ROLE.
+     * @param to The address to receive the minted tokens.
+     * @param amount The number of tokens to mint.
+     * @param sourceChain The name or ID of the source chain.
+     */
+    function bridgeMint(
+        address to,
+        uint256 amount,
+        string calldata sourceChain
+    ) external onlyRole(OPERATOR_ROLE) {
+        _mint(to, amount);
+        emit BridgeExecuted(to, amount, sourceChain, BridgeAction.Mint);
+    }
+
+    /**
+     * @notice Operator executes burn on destination chain after off‑chain validation.
+     * @dev Only callable by OPERATOR_ROLE.
+     * @param from The address whose tokens will be burned.
+     * @param amount The number of tokens to burn.
+     * @param sourceChain The name or ID of the source chain.
+     */
+    function bridgeBurn(
+        address from,
+        uint256 amount,
+        string calldata sourceChain
+    ) external onlyRole(OPERATOR_ROLE) {
+        _burn(from, amount);
+        emit BridgeExecuted(from, amount, sourceChain, BridgeAction.Burn);
     }
 
     // ✅ internal Functions

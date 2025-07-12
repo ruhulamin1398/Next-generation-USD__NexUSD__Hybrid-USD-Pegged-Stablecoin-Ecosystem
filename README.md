@@ -20,6 +20,54 @@ An abstract contract inheriting from `BaseStorage` and OpenZeppelin's upgradeabl
 
 Main implementation of the Maven token. It inherits from `Initializable`, `UUPSUpgradeable`, and `MavenController`, providing upgradeability and core token features. Sets decimal precision to 6 and includes an upgrade authorization mechanism that restricts contract upgrades to `ADMIN_ROLE` holders. Emits `BridgeRequest` events for token transfers.
 
+## Core Features
+
+### 1. Role-Based Access Control
+
+TestMaven uses OpenZeppelin's `AccessControlUpgradeable` for secure, flexible permissions:
+
+- **Owner (Default Admin Role):** Can pause/unpause, manage roles, and configure system settings.
+- **Admin Role:** Can deploy and upgrade contracts using the UUPS pattern.
+- **Operator Role:** Can mint, burn, freeze/unfreeze, blocklist, and execute bridge operations.
+
+### 2. Blocklist (Blacklist)
+
+Operators can restrict malicious or non-compliant accounts:
+
+- `addToBlocklist(address account)`: Block an account from transfers, minting, and bridge operations.
+- `removeFromBlocklist(address account)`: Remove an account from the blocklist.
+- `isBlocklisted(address account)`: Check if an account is blocklisted.
+- `destroyBlackFunds(address account)`: Remove all tokens from a blocklisted account (operator only).
+
+### 3. Pausable
+
+The owner can pause or unpause all sensitive operations:
+
+- `pause()`: Pauses all transfers, mint, burn, freeze, and bridge operations.
+- `unpause()`: Unpauses the contract.
+- All critical functions are protected by `whenNotPaused`.
+
+### 4. Minting & Burning
+
+- `mint(address to, uint256 amount)`: Operator can mint new tokens up to `MAX_SUPPLY`.
+- `burn(address from, uint256 amount)`: Operator can burn tokens from any account.
+- Both functions emit `Mint` and `Burn` events, and are disabled when paused.
+
+### 5. Cross-Chain Bridge
+
+- Users can request cross-chain transfers with `send`, emitting a `BridgeRequest` event.
+- Operators execute cross-chain mints and burns with `bridgeMint` and `bridgeBurn`, emitting `BridgeExecuted` events.
+
+### 6. Custodian (Freeze/Unfreeze)
+
+- Operators can freeze or unfreeze user tokens, restricting or restoring transferability.
+- `frozenBalance` and `availableBalance` report the frozen and transferable balances for any user.
+
+### 7. Upgradeability
+
+- TestMaven uses the UUPS proxy pattern for upgradeability.
+- Only accounts with `ADMIN_ROLE` can authorize upgrades.
+
 ## Roles
 
 The TestMaven project uses a role-based access control (RBAC) system to manage permissions securely. Roles are defined using OpenZeppelin's `AccessControlUpgradeable` library and custom definitions in `BaseStorage`.

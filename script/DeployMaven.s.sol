@@ -19,10 +19,8 @@ contract DeployMaven is CodeConstants {
 
     function deployMaven() public returns (address) {
         vm.startBroadcast();
-        address proxy = Upgrades.deployUUPSProxy(
-            "TestMaven.sol",
-            abi.encodeCall(TestMaven.initialize, (OWNER, OPERATOR))
-        );
+        address proxy =
+            Upgrades.deployUUPSProxy("TestMaven.sol", abi.encodeCall(TestMaven.initialize, (OWNER, OPERATOR)));
 
         vm.stopBroadcast();
         return address(proxy);
