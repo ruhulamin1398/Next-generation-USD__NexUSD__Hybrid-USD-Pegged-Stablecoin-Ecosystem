@@ -1,6 +1,10 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
+import {IRouterClient} from "@chainlink/contracts-ccip/contracts/interfaces/IRouterClient.sol";
+
+import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
+
 /**
  * @title BaseStorage
  * @notice The BaseStorage contract is a storage abstraction contract for the TestMavenContract.
@@ -27,6 +31,11 @@ abstract contract BaseStorage {
 
     uint256 public constant MAX_SUPPLY = 100_000_000 * 10 ** 6; // 100M MUSD
 
+    IRouterClient internal router;
+
+    LinkTokenInterface internal linkToken;
+    // Mapping to keep track of allowlisted destination chains.
+    mapping(uint64 => bool) public allowlistedChains;
     /**
      * @dev Mapping to track blocklisted (blacklisted) accounts.
      *      Blocklisted accounts are restricted from transfers as well as minting, burning, and others.
@@ -43,4 +52,12 @@ abstract contract BaseStorage {
 
     // Storage gap: https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable#storage-gaps
     uint256[24] __gap_BaseStorage;
+
+    function __BaseStorage_init(
+        address routerAddress,
+        address linkTokenAddress
+    ) internal {
+        router = IRouterClient(routerAddress);
+        linkToken = LinkTokenInterface(linkTokenAddress);
+    }
 }

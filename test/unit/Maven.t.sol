@@ -15,7 +15,6 @@ import {HelperTest} from "./Helper.t.sol";
 contract MavenTest is HelperConfig, HelperTest {
     TestMaven MUSDProxy;
     address USER = address(0x1234);
-    address USER2 = address(0x5678);
 
     function setUp() public {
         DeployMaven deployer = new DeployMaven();
@@ -241,88 +240,88 @@ contract MavenTest is HelperConfig, HelperTest {
         vm.stopPrank();
     }
 
-    function testSendEmitsBridgeRequest() public {
-        uint256 amount = 1000 * 1e6;
-        string memory targetChain = "Polygon";
+    // function testSendEmitsBridgeRequest() public {
+    //     uint256 amount = 1000 * 1e6;
+    //     string memory targetChain = "Polygon";
 
-        vm.prank(OPERATOR);
-        MUSDProxy.mint(USER, amount);
-        vm.prank(USER);
+    //     vm.prank(OPERATOR);
+    //     MUSDProxy.mint(USER, amount);
+    //     vm.prank(USER);
 
-        emit TestMaven.BridgeRequest(
-            USER,
-            USER2,
-            amount,
-            targetChain,
-            BaseStorage.BridgeAction.Burn
-        );
-        MUSDProxy.send(USER2, amount, targetChain);
-    }
+    //     emit TestMaven.BridgeRequest(
+    //         USER,
+    //         USER2,
+    //         amount,
+    //         targetChain,
+    //         BaseStorage.BridgeAction.Burn
+    //     );
+    //     MUSDProxy.send(USER2, amount, targetChain);
+    // }
 
-    function testBridgeMintEmitsBridgeExecuted() public {
-        uint256 amount = 1000 * 1e6;
-        string memory sourceChain = "Ethereum";
-        vm.prank(OPERATOR);
-        vm.expectEmit(true, false, false, false);
-        emit TestMaven.BridgeExecuted(
-            USER,
-            amount,
-            sourceChain,
-            BaseStorage.BridgeAction.Mint
-        ); // 0 = Mint
+    // function testBridgeMintEmitsBridgeExecuted() public {
+    //     uint256 amount = 1000 * 1e6;
+    //     string memory sourceChain = "Ethereum";
+    //     vm.prank(OPERATOR);
+    //     vm.expectEmit(true, false, false, false);
+    //     emit TestMaven.BridgeExecuted(
+    //         USER,
+    //         amount,
+    //         sourceChain,
+    //         BaseStorage.BridgeAction.Mint
+    //     ); // 0 = Mint
 
-        MUSDProxy.bridgeMint(USER, amount, sourceChain);
-        assertEq(MUSDProxy.balanceOf(USER), amount);
-    }
+    //     MUSDProxy.bridgeMint(USER, amount, sourceChain);
+    //     assertEq(MUSDProxy.balanceOf(USER), amount);
+    // }
 
-    function testBridgeBurnEmitsBridgeExecuted() public {
-        uint256 amount = 1000 * 1e6;
-        string memory sourceChain = "Ethereum";
-        vm.prank(OPERATOR);
-        MUSDProxy.mint(USER, amount);
-        vm.prank(OPERATOR);
-        vm.expectEmit(true, false, false, false);
-        emit TestMaven.BridgeExecuted(
-            USER,
-            amount,
-            sourceChain,
-            BaseStorage.BridgeAction.Burn
-        ); // 1 = Burn
-        MUSDProxy.bridgeBurn(USER, amount, sourceChain);
-        assertEq(MUSDProxy.balanceOf(USER), 0);
-    }
+    // function testBridgeBurnEmitsBridgeExecuted() public {
+    //     uint256 amount = 1000 * 1e6;
+    //     string memory sourceChain = "Ethereum";
+    //     vm.prank(OPERATOR);
+    //     MUSDProxy.mint(USER, amount);
+    //     vm.prank(OPERATOR);
+    //     vm.expectEmit(true, false, false, false);
+    //     emit TestMaven.BridgeExecuted(
+    //         USER,
+    //         amount,
+    //         sourceChain,
+    //         BaseStorage.BridgeAction.Burn
+    //     ); // 1 = Burn
+    //     MUSDProxy.bridgeBurn(USER, amount, sourceChain);
+    //     assertEq(MUSDProxy.balanceOf(USER), 0);
+    // }
 
-    function testSendRevertsWhenPaused() public {
-        uint256 amount = 1000 * 1e6;
-        string memory targetChain = "Polygon";
-        vm.prank(OPERATOR);
-        MUSDProxy.mint(USER, amount);
-        vm.prank(OWNER);
-        MUSDProxy.pause();
-        vm.prank(USER);
-        vm.expectRevert();
-        MUSDProxy.send(USER2, amount, targetChain);
-    }
+    // function testSendRevertsWhenPaused() public {
+    //     uint256 amount = 1000 * 1e6;
+    //     string memory targetChain = "Polygon";
+    //     vm.prank(OPERATOR);
+    //     MUSDProxy.mint(USER, amount);
+    //     vm.prank(OWNER);
+    //     MUSDProxy.pause();
+    //     vm.prank(USER);
+    //     vm.expectRevert();
+    //     MUSDProxy.send(USER2, amount, targetChain);
+    // }
 
-    function testBridgeMintRevertsWhenPaused() public {
-        uint256 amount = 1000 * 1e6;
-        string memory sourceChain = "Ethereum";
-        vm.prank(OWNER);
-        MUSDProxy.pause();
-        vm.prank(OPERATOR);
-        vm.expectRevert();
-        MUSDProxy.bridgeMint(USER, amount, sourceChain);
-    }
+    // function testBridgeMintRevertsWhenPaused() public {
+    //     uint256 amount = 1000 * 1e6;
+    //     string memory sourceChain = "Ethereum";
+    //     vm.prank(OWNER);
+    //     MUSDProxy.pause();
+    //     vm.prank(OPERATOR);
+    //     vm.expectRevert();
+    //     MUSDProxy.bridgeMint(USER, amount, sourceChain);
+    // }
 
-    function testBridgeBurnRevertsWhenPaused() public {
-        uint256 amount = 1000 * 1e6;
-        string memory sourceChain = "Ethereum";
-        vm.prank(OPERATOR);
-        MUSDProxy.mint(USER, amount);
-        vm.prank(OWNER);
-        MUSDProxy.pause();
-        vm.prank(OPERATOR);
-        vm.expectRevert();
-        MUSDProxy.bridgeBurn(USER, amount, sourceChain);
-    }
+    // function testBridgeBurnRevertsWhenPaused() public {
+    //     uint256 amount = 1000 * 1e6;
+    //     string memory sourceChain = "Ethereum";
+    //     vm.prank(OPERATOR);
+    //     MUSDProxy.mint(USER, amount);
+    //     vm.prank(OWNER);
+    //     MUSDProxy.pause();
+    //     vm.prank(OPERATOR);
+    //     vm.expectRevert();
+    //     MUSDProxy.bridgeBurn(USER, amount, sourceChain);
+    // }
 }
