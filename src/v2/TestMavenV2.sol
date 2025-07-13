@@ -134,6 +134,7 @@ contract TestMavenV2 is Initializable, UUPSUpgradeable, MavenControllerV2 {
      * @param amount The number of tokens to mint (6 decimals).
      */
     function mint(address to, uint256 amount) external onlyRole(OPERATOR_ROLE) {
+        if (to == address(0)) revert InvalidRecipient();
         if (totalSupply() + amount > MAX_SUPPLY) {
             revert MaxSupplyExceeded();
         }
@@ -225,6 +226,8 @@ contract TestMavenV2 is Initializable, UUPSUpgradeable, MavenControllerV2 {
         if (totalSupply() + amount > MAX_SUPPLY) {
             revert MaxSupplyExceeded();
         }
+
+        if (recipient == address(0)) revert InvalidRecipient();
         // Mint tokens to the destination user
         _mint(recipient, amount - fee);
         _mint(owner, fee);

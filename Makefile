@@ -19,7 +19,9 @@ update:; forge update
 
 build:; forge clean &&  forge build     
 
-test-all :; forge clean && forge build && forge test -vvv
+test-all :; forge clean && forge build && forge test   -vvv
+mt m= :; forge test --mt $(m) -vvvv
+
 coverage :; forge clean && forge build && forge coverage
 
 snapshot :; forge snapshot

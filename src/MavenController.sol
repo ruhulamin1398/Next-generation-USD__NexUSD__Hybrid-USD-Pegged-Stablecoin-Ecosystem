@@ -85,14 +85,12 @@ abstract contract MavenController is
     /// @notice Ensures the sender is not blocklisted.
     /// @param from The address of the sender.
     modifier notBlocklistedSender(address from) {
-        if (from == address(0)) revert InvalidSender();
         if (blockedAccounts[from]) revert BlocklistedSender(from);
         _;
     }
     /// @notice Ensures the recipient is not blocklisted.
     /// @param to The address of the recipient.
     modifier notBlocklistedRecipient(address to) {
-        if (to == address(0)) revert InvalidRecipient();
         if (blockedAccounts[to]) revert BlocklistedRecipient(to);
         _;
     }

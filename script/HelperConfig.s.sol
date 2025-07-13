@@ -3,6 +3,9 @@ pragma solidity ^0.8.30;
 
 import {Script} from "forge-std/Script.sol";
 
+import {TestMaven} from "../src/TestMaven.sol";
+import {TestMavenV2} from "../src/v2/TestMavenV2.sol";
+
 abstract contract CodeConstants is Script {
     struct CCIPChain {
         uint64 chainSelector;
@@ -19,10 +22,15 @@ abstract contract CodeConstants is Script {
     address immutable USER1;
     address immutable USER2;
 
+    TestMaven MUSDv1;
+    TestMavenV2 MUSDv2;
+    address proxy;
+
     mapping(string => CCIPChain) public CCIPchains; // all chains for ccip
 
     constructor() {
         OWNER = vm.envAddress("OWNER");
+        ADMIN = msg.sender;
         OPERATOR = vm.envAddress("OPERATOR");
         USER1 = vm.envAddress("USER1");
         USER2 = vm.envAddress("USER2");

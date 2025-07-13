@@ -11,15 +11,12 @@ import {TestMaven} from "../src/TestMaven.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract Interaction is HelperConfig {
-    address public proxy;
-    TestMaven public MUSD;
-
     function run() external {
         proxy = DevOpsTools.get_most_recent_deployment(
             "ERC1967Proxy",
             block.chainid
         );
-        MUSD = TestMaven(proxy);
+        MUSDv1 = TestMaven(proxy);
 
         vm.startBroadcast();
 
@@ -30,7 +27,7 @@ contract Interaction is HelperConfig {
     }
 
     function mint() public {
-        MUSD.mint(USER1, 1000 * 10 ** 6);
+        MUSDv1.mint(USER1, 1000 * 10 ** 6);
     }
 
     // function transfer() public {
