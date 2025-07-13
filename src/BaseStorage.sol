@@ -12,7 +12,7 @@ abstract contract BaseStorage {
     // =========================
 
     /// @notice The owner of the contract.
-    address owner;
+    address public owner;
 
     /// @notice Role identifier for contract administrators (deployment, upgrades).
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");

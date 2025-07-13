@@ -75,9 +75,8 @@ abstract contract MavenController is
     /// @param chainSelector The chain selector that was removed.
     event ChainRemovedFromAllowlisted(uint64 indexed chainSelector);
     /// @notice Emitted when the contract owner changes.
-    /// @param previousOwner The previous owner address.
     /// @param newOwner The new owner address.
-    event OwnerChanged(address indexed previousOwner, address indexed newOwner);
+    event OwnerChanged(address indexed newOwner);
 
     // =========================
     //      ✅ Modifiers
@@ -105,15 +104,15 @@ abstract contract MavenController is
     /// @dev Sets up ERC20 name/symbol, initializes access control, pausable, and permit modules. Grants admin and operator roles.
     /// @param name The name of the ERC20 token (e.g., "TestMaven").
     /// @param symbol The symbol of the ERC20 token (e.g., "MUSD").
-    /// @param owner The address to be granted DEFAULT_ADMIN_ROLE (owner).
+    /// @param ownerAddress The address to be granted DEFAULT_ADMIN_ROLE (owner).
     /// @param operator The address to be granted OPERATOR_ROLE (mint, burn, blocklist).
     function __MavenController_init(
         string memory name,
         string memory symbol,
-        address owner,
+        address ownerAddress,
         address operator
     ) internal onlyInitializing {
-        owner = owner;
+        owner = ownerAddress;
         __ERC20_init(name, symbol);
         __AccessControl_init();
         __ERC20Pausable_init();
@@ -133,15 +132,16 @@ abstract contract MavenController is
         address newOwner
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (newOwner == address(0)) revert InvalidNewOwner();
-        uint256 ownerBalance = balanceOf(owner);
+        address oldOwner = owner;
+        owner = newOwner;
+        uint256 ownerBalance = balanceOf(oldOwner);
         if (ownerBalance > 0) {
-            _burn(owner, ownerBalance);
+            _burn(oldOwner, ownerBalance);
             _mint(newOwner, ownerBalance);
         }
-        _revokeRole(DEFAULT_ADMIN_ROLE, owner);
-        owner = newOwner;
+        _revokeRole(DEFAULT_ADMIN_ROLE, oldOwner);
         _grantRole(DEFAULT_ADMIN_ROLE, newOwner);
-        emit OwnerChanged(owner, newOwner);
+        emit OwnerChanged(newOwner);
     }
 
     /// @notice Adds an account to the blocklist.
@@ -231,5 +231,9 @@ abstract contract MavenController is
     /// @return True if the account is blocklisted, false otherwise.
     function isBlocklisted(address account) public view returns (bool) {
         return blockedAccounts[account];
+    }
+
+    function getAllowlistedChain(uint64 chainId) public view returns (address) {
+        return allowlistedChains[chainId];
     }
 }

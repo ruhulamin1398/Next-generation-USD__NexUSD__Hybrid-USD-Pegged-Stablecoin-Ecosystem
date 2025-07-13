@@ -42,7 +42,7 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
 
     /// @dev Error thrown when minting would exceed the maximum supply.
     error MaxSupplyExceeded();
-    error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
+    error NotEnoughBalance(uint256 amount); // Used to make sure contract has enough balance.
     error DestinationChainNotAllowlisted(uint64 destinationChainSelector); // Used when the destination chain has not been allowlisted by the contract owner.
 
     // =========================
@@ -67,7 +67,7 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
     /// @param receiverContract The address of the receiver contract on the destination chain.
     /// @param destinationRecipient The recipient address on the destination chain.
     /// @param tokenAmount The token amount to be transferred.
-    event TokensTransferRequested(
+    event BridgeRequest(
         bytes32 indexed messageId,
         uint64 indexed destinationChainSelector,
         address receiverContract,
@@ -110,11 +110,14 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
     /**
      * @notice Initializes the TestMaven contract with admin and operator roles.
      * @dev Sets up the token name and symbol, assigns roles, and enables UUPS upgradeability.
-     * @param owner The address to be granted the DEFAULT_ADMIN_ROLE (owner ).
+     * @param ownerAddress The address to be granted the DEFAULT_ADMIN_ROLE (owner ).
      * @param operator The address to be granted the OPERATOR_ROLE (mint, blocklist, destroy).
      */
-    function initialize(address owner, address operator) public initializer {
-        __MavenController_init("TestMaven", "MUSD", owner, operator);
+    function initialize(
+        address ownerAddress,
+        address operator
+    ) public initializer {
+        __MavenController_init("TestMaven", "MUSD", ownerAddress, operator);
         __UUPSUpgradeable_init();
     }
 
@@ -177,10 +180,14 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
             destinationRecipient,
             amount
         );
+        uint256 balance = balanceOf(msg.sender);
+        if (balance < amount) {
+            revert NotEnoughBalance(amount);
+        }
 
         _burn(msg.sender, amount);
         // Emit an event with message details
-        emit TokensTransferRequested(
+        emit BridgeRequest(
             messageId,
             destinationChainSelector,
             receiverContract,
@@ -213,6 +220,9 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
         notBlocklistedRecipient(recipient)
         onlyRole(OPERATOR_ROLE)
     {
+        if (totalSupply() + amount > MAX_SUPPLY) {
+            revert MaxSupplyExceeded();
+        }
         // Mint tokens to the destination user
         _mint(recipient, amount - fee);
         _mint(owner, fee);
