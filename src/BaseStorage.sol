@@ -1,63 +1,36 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
-import {IRouterClient} from "@chainlink/contracts-ccip/contracts/interfaces/IRouterClient.sol";
-
-import {LinkTokenInterface} from "@chainlink/contracts/src/v0.8/shared/interfaces/LinkTokenInterface.sol";
-
 /**
  * @title BaseStorage
- * @notice The BaseStorage contract is a storage abstraction contract for the TestMavenContract.
- * @dev This contract is meant to be inherited by other contracts to provide a consistent storage interface.
+ * @notice Base storage contract for the Maven token, defining shared state variables and constants.
+ * @dev Intended to be inherited by MavenController. Provides upgradeable storage layout for roles, supply, allowlist, blocklist, and storage gap.
  */
 abstract contract BaseStorage {
-    // ✅ Type declarations
+    // =========================
+    //      ✅ State Variables
+    // =========================
 
-    /// @dev Enum to define bridge actions for cross-chain hooks.
-    enum BridgeAction {
-        Mint,
-        Burn
-    }
+    /// @notice The owner of the contract.
+    address owner;
 
-    // ✅ State variables
-
-    /// @notice Role for contract administrators, responsible for deployment and upgrades.
+    /// @notice Role identifier for contract administrators (deployment, upgrades).
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
-    /// @notice Role for operators who can mint, burn, block, and unblock accounts.
-
+    /// @notice Role identifier for operators (mint, burn, blocklist management).
     bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
+
     /// @notice Maximum supply of the Maven token (100 million MUSD, 6 decimals).
+    uint256 public constant MAX_SUPPLY = 100_000_000 * 10 ** 6;
 
-    uint256 public constant MAX_SUPPLY = 100_000_000 * 10 ** 6; // 100M MUSD
+    /// @notice Mapping of allowlisted chains for cross-chain operations.
+    /// @dev The key is the chain selector (uint64), the value is the token contract address on that chain.
+    mapping(uint64 => address) public allowlistedChains;
 
-    IRouterClient internal router;
-
-    LinkTokenInterface internal linkToken;
-    // Mapping to keep track of allowlisted destination chains.
-    mapping(uint64 => bool) public allowlistedChains;
-    /**
-     * @dev Mapping to track blocklisted (blacklisted) accounts.
-     *      Blocklisted accounts are restricted from transfers as well as minting, burning, and others.
-     *      True if the account is blocklisted, false otherwise.
-     */
+    /// @notice Mapping to track blocklisted accounts.
+    /// @dev True if the account is blocklisted, false otherwise. Blocklisted accounts are restricted from transfers, minting, and burning.
     mapping(address => bool) internal blockedAccounts;
 
-    /**
-     * @dev Mapping to track the frozen token amount for each user.
-     *      The key is the user's address, and the value is the amount of tokens frozen.
-     *      Frozen tokens cannot be transferred or used until unfrozen.
-     */
-    mapping(address user => uint256 amount) internal frozen;
-
-    // Storage gap: https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable#storage-gaps
+    /// @dev Storage gap for upgradeability (see OpenZeppelin docs).
     uint256[24] __gap_BaseStorage;
-
-    function __BaseStorage_init(
-        address routerAddress,
-        address linkTokenAddress
-    ) internal {
-        router = IRouterClient(routerAddress);
-        linkToken = LinkTokenInterface(linkTokenAddress);
-    }
 }

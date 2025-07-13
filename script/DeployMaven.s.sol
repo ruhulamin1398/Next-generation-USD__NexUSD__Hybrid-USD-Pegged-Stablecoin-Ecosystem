@@ -14,14 +14,10 @@ contract DeployMaven is CodeConstants {
     }
 
     function deployMaven() public returns (address) {
-        CCIPChain memory chain = CCIPchains["amoy"]; // Use the Amoy chain for deployment
         vm.startBroadcast();
         address proxy = Upgrades.deployUUPSProxy(
             "TestMaven.sol",
-            abi.encodeCall(
-                TestMaven.initialize,
-                (OWNER, OPERATOR, chain.router, chain.linkToken)
-            )
+            abi.encodeCall(TestMaven.initialize, (OWNER, OPERATOR))
         );
 
         vm.stopBroadcast();

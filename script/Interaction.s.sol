@@ -25,7 +25,7 @@ contract Interaction is HelperConfig {
 
         // mint();
         // fundLink();
-        send();
+        // send();
         vm.stopBroadcast();
     }
 
@@ -44,12 +44,12 @@ contract Interaction is HelperConfig {
         );
     }
 
-    function send() public {
-        MUSD.send(
-            CCIPchains["BNB"].chainSelector,
-            USER2,
-            MUSD_BNB_CONTRACT,
-            15 * 10 ** 6
-        );
-    }
+    // function send() public {
+    //     MUSD.send(
+    //         CCIPchains["BNB"].chainSelector,
+    //         USER2,
+    //         MUSD_BNB_CONTRACT,
+    //         15 * 10 ** 6
+    //     );
+    // }
 }

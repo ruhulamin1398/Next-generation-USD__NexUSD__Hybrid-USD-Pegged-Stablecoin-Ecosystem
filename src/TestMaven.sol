@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MIT
 
-// This is considered an Exogenous,  Anchored (pegged), Fait Backend low volitility coin
-
 // Layout of Contract:
 // version
 // imports
@@ -25,22 +23,31 @@
 
 pragma solidity 0.8.30;
 
-import {Client} from "@chainlink/contracts-ccip/contracts/libraries/Client.sol";
-
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import {MavenController} from "./MavenController.sol";
 
+/**
+ * @title TestMaven
+ * @dev This contract is an implementation of the MavenController for the TestMaven token.
+ * @notice It extends MavenController and implements the UUPS upgradeable pattern.
+ * @dev It includes functions for minting, burning, sending tokens across chains, and handling cross-chain transfers.
+ */
 contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
-    // ✅ Errors
+    // =========================
+    //      ✅ Errors
+    // =========================
+
     /// @dev Error thrown when minting would exceed the maximum supply.
     error MaxSupplyExceeded();
     error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
     error DestinationChainNotAllowlisted(uint64 destinationChainSelector); // Used when the destination chain has not been allowlisted by the contract owner.
 
-    // ✅ Events
+    // =========================
+    //      ✅ Events
+    // =========================
 
     /// @notice Emitted when new tokens are minted.
     /// @param operator The address performing the mint operation.
@@ -54,28 +61,39 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
     /// @param amount The number of tokens burned.
     event Burn(address indexed operator, address indexed from, uint256 amount);
 
-    // Event emitted when the tokens are transferred to an account on another chain.
-    event TokensTransferred(
-        bytes32 indexed messageId, // The unique ID of the message.
-        uint64 indexed destinationChainSelector, // The chain selector of the destination chain.
-        address receiver, // The address of the receiver on the destination chain.
-        address token, // The token address that was transferred.
-        uint256 tokenAmount, // The token amount that was transferred.
-        address feeToken, // the token address used to pay CCIP fees.
-        uint256 fees // The fees paid for sending the message.
+    /// @notice Emitted when a cross-chain token transfer is requested.
+    /// @param messageId The unique ID of the message.
+    /// @param destinationChainSelector The chain selector of the destination chain.
+    /// @param receiverContract The address of the receiver contract on the destination chain.
+    /// @param destinationRecipient The recipient address on the destination chain.
+    /// @param tokenAmount The token amount to be transferred.
+    event TokensTransferRequested(
+        bytes32 indexed messageId,
+        uint64 indexed destinationChainSelector,
+        address receiverContract,
+        address destinationRecipient,
+        uint256 tokenAmount
     );
 
+    /// @notice Emitted when tokens are received from another chain.
+    /// @param messageId The unique ID of the cross-chain message.
+    /// @param to The address receiving tokens on this chain.
+    /// @param sourceChainSelector The chain selector of the source chain.
+    /// @param amount The amount of tokens received.
     event TokensReceivedCrossChain(
-        address indexed to, // The address receiving tokens on this chain.
-        uint64 indexed sourceChainSelector, // The chain selector of the source chain.
-        uint256 amount, // The amount of tokens received.
-        bytes32 messageId // The unique ID of the cross-chain message.
+        bytes32 indexed messageId,
+        address indexed to,
+        uint64 indexed sourceChainSelector,
+        uint256 amount
     );
-    // ✅ modifiers
+    // =========================
+    //      ✅ Modifiers
+    // =========================
+
     /// @dev Modifier that checks if the chain with the given destinationChainSelector is allowlisted.
     /// @param _destinationChainSelector The selector of the destination chain.
     modifier onlyAllowlistedChain(uint64 _destinationChainSelector) {
-        if (!allowlistedChains[_destinationChainSelector])
+        if (allowlistedChains[_destinationChainSelector] == address(0))
             revert DestinationChainNotAllowlisted(_destinationChainSelector);
         _;
     }
@@ -85,27 +103,24 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
         _disableInitializers();
     }
 
-    // ✅ Initalizer
+    // =========================
+    //      ✅ Initializer
+    // =========================
 
     /**
      * @notice Initializes the TestMaven contract with admin and operator roles.
      * @dev Sets up the token name and symbol, assigns roles, and enables UUPS upgradeability.
-     * @param defaultAdmin The address to be granted the DEFAULT_ADMIN_ROLE (owner ).
+     * @param owner The address to be granted the DEFAULT_ADMIN_ROLE (owner ).
      * @param operator The address to be granted the OPERATOR_ROLE (mint, blocklist, destroy).
      */
-    function initialize(
-        address defaultAdmin,
-        address operator,
-        address routerAddress,
-        address linkTokenAddress
-    ) public initializer {
-        __MavenController_init("TestMaven", "MUSD", defaultAdmin, operator);
-
-        __BaseStorage_init(routerAddress, linkTokenAddress);
+    function initialize(address owner, address operator) public initializer {
+        __MavenController_init("TestMaven", "MUSD", owner, operator);
         __UUPSUpgradeable_init();
     }
 
-    // ✅ external Functions
+    // =========================
+    //   ✅ External Functions
+    // =========================
 
     /**
      * @notice Mints new MUSD tokens to a specified address.
@@ -135,85 +150,84 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
         emit Burn(msg.sender, from, amount);
     }
 
-    /// @notice Transfer tokens to receiver on the destination chain.
-    /// @notice pay in LINK.
-    /// @notice the token must be in the list of supported tokens.
-    /// @notice This function can only be called by the owner.
-    /// @dev Assumes your contract has sufficient LINK tokens to pay for the fees.
-    /// @param _destinationChainSelector The identifier (aka selector) for the destination blockchain.
-    /// @param _receiverContract The address of the recipient on the destination blockchain.
-    /// @param _destinationRecipient The address of the token recipient on the destination blockchain.
-    /// @param _amount token amount.
-    /// @return messageId The ID of the message that was sent.
+    /**
+     * @notice Sends MUSD tokens to a recipient on another chain.
+     * @dev Only callable by allowlisted chains. Burns tokens from the sender's balance.
+     * @param destinationChainSelector The selector of the destination chain.
+     * @param destinationRecipient The recipient address on the destination chain.
+     * @param amount The number of tokens to send (6 decimals).
+     * @return messageId The unique ID of the cross-chain message.
+     */
     function send(
-        uint64 _destinationChainSelector,
-        address _receiverContract,
-        address _destinationRecipient,
-        uint256 _amount
+        uint64 destinationChainSelector,
+        address destinationRecipient,
+        uint256 amount
     )
         external
-        onlyAllowlistedChain(_destinationChainSelector)
+        onlyAllowlistedChain(destinationChainSelector)
+        whenNotPaused
+        notBlocklistedSender(msg.sender)
         returns (bytes32 messageId)
     {
-        bytes memory data = abi.encode(_receiverContract, _amount);
+        if (destinationRecipient == address(0)) revert InvalidRecipient();
+        address receiverContract = allowlistedChains[destinationChainSelector];
+        messageId = _generateMessageId(
+            destinationChainSelector,
+            receiverContract,
+            destinationRecipient,
+            amount
+        );
 
-        // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
-        //  address(linkToken) means fees are paid in LINK
-        Client.EVM2AnyMessage memory evm2AnyMessage = Client.EVM2AnyMessage({
-            receiver: abi.encode(_receiverContract),
-            data: data,
-            tokenAmounts: new Client.EVMTokenAmount[](0),
-            extraArgs: "",
-            feeToken: address(0) // Native token for fee
-        });
-
-        // Get the fee required to send the message
-        uint256 fees = router.getFee(_destinationChainSelector, evm2AnyMessage);
-
-        if (fees > linkToken.balanceOf(address(this)))
-            revert NotEnoughBalance(linkToken.balanceOf(address(this)), fees);
-
-        // approve the Router to transfer LINK tokens on contract's behalf. It will spend the fees in LINK
-        linkToken.approve(address(router), fees);
-
-        _burn(msg.sender, _amount);
-        // Send the message through the router and store the returned message ID
-        messageId = router.ccipSend(_destinationChainSelector, evm2AnyMessage);
-
+        _burn(msg.sender, amount);
         // Emit an event with message details
-        emit TokensTransferred(
+        emit TokensTransferRequested(
             messageId,
-            _destinationChainSelector,
-            _receiverContract,
-            _destinationRecipient,
-            _amount,
-            address(linkToken),
-            fees
+            destinationChainSelector,
+            receiverContract,
+            destinationRecipient,
+            amount
         );
 
         // Return the message ID
         return messageId;
     }
 
-    function ccipReceive(Client.Any2EVMMessage calldata message) external {
-        // Decode the payload: (user address, amount)
-        (address destinationUserAddress, uint256 amount) = abi.decode(
-            message.data,
-            (address, uint256)
-        );
-
+    /**
+     * @notice Handles the reception of tokens from another chain.
+     * @dev Only callable by OPERATOR_ROLE. Mints tokens to the recipient on this chain.
+     * @param messageId The unique ID of the cross-chain message.
+     * @param sourceChainSelector The selector of the source chain.
+     * @param recipient The address receiving the tokens on this chain.
+     * @param amount The number of tokens requested(6 decimals).
+     * @param fee ,the number of token will send to owner account
+     */
+    function crossChainMint(
+        bytes32 messageId,
+        uint64 sourceChainSelector,
+        address recipient,
+        uint256 amount,
+        uint256 fee
+    )
+        external
+        whenNotPaused
+        notBlocklistedRecipient(recipient)
+        onlyRole(OPERATOR_ROLE)
+    {
         // Mint tokens to the destination user
-        _mint(destinationUserAddress, amount);
+        _mint(recipient, amount - fee);
+        _mint(owner, fee);
 
         emit TokensReceivedCrossChain(
-            destinationUserAddress,
-            message.sourceChainSelector,
-            amount,
-            message.messageId
+            messageId,
+            recipient,
+            sourceChainSelector,
+            amount
         );
     }
 
-    // ✅ internal Functions
+    // =========================
+    //   ✅ Internal Functions
+    // =========================
 
     /**
      * @notice Authorizes contract upgrades via UUPS proxy pattern.
@@ -224,7 +238,43 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
         address newImplementation
     ) internal override onlyRole(ADMIN_ROLE) {}
 
-    // ✅ view & pure functions
+    // =========================
+    //   ✅ Private Functions
+    // =========================
+
+    /**
+     * @dev Generates a unique message ID for cross-chain transfers.
+     * @param destinationChainSelector The selector of the destination chain.
+     * @param receiverContract The address of the receiver contract on the destination chain.
+     * @param destinationRecipient The recipient address on the destination chain.
+     * @param amount The amount of tokens to transfer.
+     * @return messageId The unique message ID.
+     */
+    function _generateMessageId(
+        uint64 destinationChainSelector,
+        address receiverContract,
+        address destinationRecipient,
+        uint256 amount
+    ) private view returns (bytes32 messageId) {
+        // You can use block.timestamp or a nonce for uniqueness
+        return
+            keccak256(
+                abi.encodePacked(
+                    destinationChainSelector,
+                    receiverContract,
+                    destinationRecipient,
+                    amount,
+                    block.timestamp,
+                    blockhash(block.number - 1),
+                    address(this),
+                    msg.sender
+                )
+            );
+    }
+
+    // =========================
+    //   ✅ View & Pure Functions
+    // =========================
 
     /**
      * @notice Returns the number of decimals used for MUSD (fixed at 6).
