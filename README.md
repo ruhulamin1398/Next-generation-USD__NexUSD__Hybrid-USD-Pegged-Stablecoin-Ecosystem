@@ -1,153 +1,88 @@
-# TestMaven Project Documentation
 
-## Overview
+# TestMaven – Upgradeable USD Stablecoin
 
-This repository contains the smart contracts for the TestMaven project, a decentralized application for a fiat-backed US dollar pegged coin. It uses OpenZeppelin's upgradeable contracts for flexibility, security, and adaptability. Features include a robust role-based access control system and token management (blacklisting, minting, and burning).
+## What is TestMaven?
+TestMaven is a USD-pegged ERC-20 stablecoin with:
+- Upgradeability (UUPS proxy)
+- Admin-only mint/burn
+- Max supply cap (100 million tokens)
+- Cross-chain bridge support
+- Blocklist (blacklist) and pausable features
+- EIP-2612 permit() support
+- Gas optimizations
 
-## Contracts
+## Key Features
 
-Below is an overview of the core Solidity contracts in the `src` directory:
+### 1. Upgradeable (UUPS Proxy)
+- The contract can be upgraded by an admin using the UUPS proxy pattern.
+- Only `ADMIN_ROLE` can upgrade the contract.
 
-### `BaseStorage.sol`
+### 2. Role-Based Access Control
+- **Owner (Default Admin):** Can pause/unpause, manage roles, and cross chain collect fees.
+- **Admin:** Can upgrade the contract, manage cross-chain list, and perform other development-related tasks.
+- **Operator:** Can mint, burn, manage the blocklist, handle cross-chain bridging, and perform user service-related tasks.
 
-Provides base storage for the TestMaven ecosystem. It defines constants such as `ADMIN_ROLE`, `OPERATOR_ROLE`, and `MAX_SUPPLY`, and an internal `blockedAccounts` mapping. Its purpose is to provide a consistent storage interface for inheriting contracts.
+### 3. Minting & Burning
+- Only operators can mint or burn tokens.
+- Minting is capped at 100,000,000 tokens (6 decimals).
+- Both actions are disabled when paused.
 
-### `MavenController.sol`
+### 4. Blocklist (Blacklist)
+- Operators can block or unblock accounts.
+- Blocked accounts cannot transfer, mint, or burn tokens.
 
-An abstract contract inheriting from `BaseStorage` and OpenZeppelin's upgradeable `ERC20Upgradeable`, `ERC20PausableUpgradeable`, `AccessControlUpgradeable`, and `ERC20PermitUpgradeable` contracts. It manages core token logic, including blocklist management (adding/removing accounts, destroying blacklisted funds), pausing/unpausing transfers, and enforcing role-based access. It also handles error conditions for transactions involving blocklisted parties.
+### 5. Pausable
+- The owner can pause or unpause all sensitive operations.
+- When paused, transfers, mint, burn, and bridge are disabled.
 
-### `TestMaven.sol`
+### 6. Cross-Chain Bridge
+- Users can request cross-chain transfers with `send`, which emits a `BridgeRequest` event. Each transfer creates a unique `messageId` to track the process across chains.
+- Users can only send cross-chain transfer requests to allowed destination chains.
+- After a user sends a request, an operator on the destination chain will mint the corresponding tokens to the recipient using `crossChainMint`.
+- When minting tokens for a cross-chain transfer using `crossChainMint`, a portion of the tokens is minted as a fee to the owner account, and the remaining tokens are minted to the recipient.
+- Operators can only call  `crossChainMint` at destination chain.
+- All bridge actions are protected by blocklist and pause checks.
 
-Main implementation of the Maven token. It inherits from `Initializable`, `UUPSUpgradeable`, and `MavenController`, providing upgradeability and core token features. Sets decimal precision to 6 and includes an upgrade authorization mechanism that restricts contract upgrades to `ADMIN_ROLE` holders. Emits `BridgeRequest` events for token transfers.
+### 7. EIP-2612 Permit (Bonus)
+- The contract supports `permit()` for gasless approvals.
 
-## Core Features
+### 8. Gas Optimizations
+- Uses efficient storage and access patterns.
 
-### 1. Role-Based Access Control
+## How to Use
 
-TestMaven uses OpenZeppelin's `AccessControlUpgradeable` for secure, flexible permissions:
-
-- **Owner (Default Admin Role):** Can pause/unpause, manage roles, and configure system settings.
-- **Admin Role:** Can deploy and upgrade contracts using the UUPS pattern.
-- **Operator Role:** Can mint, burn, freeze/unfreeze, blocklist, and execute bridge operations.
-
-### 2. Blocklist (Blacklist)
-
-Operators can restrict malicious or non-compliant accounts:
-
-- `addToBlocklist(address account)`: Block an account from transfers, minting, and bridge operations.
-- `removeFromBlocklist(address account)`: Remove an account from the blocklist.
-- `isBlocklisted(address account)`: Check if an account is blocklisted.
-- `destroyBlackFunds(address account)`: Remove all tokens from a blocklisted account (operator only).
-
-### 3. Pausable
-
-The owner can pause or unpause all sensitive operations:
-
-- `pause()`: Pauses all transfers, mint, burn, freeze, and bridge operations.
-- `unpause()`: Unpauses the contract.
-- All critical functions are protected by `whenNotPaused`.
-
-### 4. Minting & Burning
-
-- `mint(address to, uint256 amount)`: Operator can mint new tokens up to `MAX_SUPPLY`.
-- `burn(address from, uint256 amount)`: Operator can burn tokens from any account.
-- Both functions emit `Mint` and `Burn` events, and are disabled when paused.
-
-### 5. Cross-Chain Bridge
-
-- Users can request cross-chain transfers with `send`, emitting a `BridgeRequest` event.
-- Operators execute cross-chain mints and burns with `bridgeMint` and `bridgeBurn`, emitting `BridgeExecuted` events.
-
-### 6. Custodian (Freeze/Unfreeze)
-
-- Operators can freeze or unfreeze user tokens, restricting or restoring transferability.
-- `frozenBalance` and `availableBalance` report the frozen and transferable balances for any user.
-
-### 7. Upgradeability
-
-- TestMaven uses the UUPS proxy pattern for upgradeability.
-- Only accounts with `ADMIN_ROLE` can authorize upgrades.
-
-## Roles
-
-The TestMaven project uses a role-based access control (RBAC) system to manage permissions securely. Roles are defined using OpenZeppelin's `AccessControlUpgradeable` library and custom definitions in `BaseStorage`.
-
-### 1. Owner (Default Admin Role)
-
-The Owner role holds the highest administrative privileges, focused on governance and system configuration.
-
-- **Key Permissions:**
-  - **Change Fees:** Modify transaction or service fees.
-  - **Manage Operator Role:** Grant or revoke the `OPERATOR_ROLE`.
-  - **Manage Admin Role:** Grant or revoke the `ADMIN_ROLE`.
-  - **Pause/Unpause Functionality:** Control pausing/unpausing of the ERC20 token to halt or resume transfers.
-
-### 2. Admin Role
-
-The Admin role is crucial for maintaining and evolving TestMaven smart contracts, focusing on deployment and upgrades.
-
-- **Key Permissions:**
-  - **Deploy & Upgrade Contracts:** Initiate and execute upgrades to the `TestMaven` contract (and related system contracts) using the UUPS upgradeability pattern, allowing the system to evolve.
-
-### 3. Operator Role
-
-The Operator role manages daily token operations, including user restrictions and supply control.
-
-- **Key Permissions:**
-  - **Manage Blacklist:** Add or remove addresses from the blocklist (preventing transfers) and `destroyBlackFunds` (burn tokens) held by those accounts.
-  - **Mint & Burn Tokens:** Issue new tokens up to `MAX_SUPPLY` and permanently remove tokens from circulation.
-
-## Getting Started
-
-To get started with TestMaven smart contracts:
-
-### Prerequisites
-
-Ensure [Foundry](https://getfoundry.sh/) is installed. Foundry is a fast, portable, and modular toolkit for Ethereum development. Install it with:
-
+### 1. Install Dependencies
 ```bash
-curl -L https://foundry.paradigm.xyz | bash
+forge install
 ```
 
-### Installation
-
-1.  **Clone Repository:** Clone the TestMaven project:
-
-    ```bash
-    git clone <url>
-    cd TestMaven
-    ```
-
-2.  **Install Dependencies:** In the project directory, install dependencies:
-
-    ```bash
-    forge install
-    ```
-
-### Compiling Contracts
-
-Compile contracts:
-
+### 2. Compile Contracts
 ```bash
 forge build
 ```
 
-### Running Tests
-
-Run tests to ensure contract functionalities work and verify security:
-
+### 3. Run Tests
 ```bash
 forge test
 ```
 
-## Contributing
+## Contract Overview
 
-Contributions to the TestMaven project are welcome.
+- `BaseStorage.sol`: Storage layout and constants.
+- `MavenController.sol`: Core logic, roles, blocklist, pause, and bridge.
+- `TestMaven.sol`: Main token contract, upgradeable, emits bridge events.
+- `TestMavenV2.sol`: Upgraded version with same features and upgrade safety.
+
+## Upgrade Notes
+- Upgrades are only allowed by `ADMIN_ROLE`.
+- When upgrading, always call all required parent initializers in the new contract.
+- Use the `@custom:oz-upgrades-from` annotation for upgrade validation.
+
+## Security & Audit
+- All sensitive functions are protected by roles and pause checks.
+- Blocklist prevents malicious accounts from using the token.
+- Max supply is strictly enforced.
+- Cross-chain bridge emits events with unique `messageId` for off-chain monitoring.
 
 ## License
-
-This project is licensed under the MIT License. Refer to the `LICENSE` file for full details.
-
-## Contact
-
-For questions or inquiries, contact the owner.
+MIT
