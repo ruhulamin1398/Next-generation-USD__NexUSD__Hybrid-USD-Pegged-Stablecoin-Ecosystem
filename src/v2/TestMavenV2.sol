@@ -27,15 +27,16 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import {MavenController} from "./MavenController.sol";
+import {MavenControllerV2} from "./MavenControllerV2.sol";
 
 /**
- * @title TestMaven
+ * @custom:oz-upgrades-from TestMaven
+ * @title TestMavenV2
  * @dev This contract is an implementation of the MavenController for the TestMaven token.
  * @notice It extends MavenController and implements the UUPS upgradeable pattern.
  * @dev It includes functions for minting, burning, sending tokens across chains, and handling cross-chain transfers.
  */
-contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
+contract TestMavenV2 is Initializable, UUPSUpgradeable, MavenControllerV2 {
     // =========================
     //      ✅ Errors
     // =========================
@@ -300,6 +301,6 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
      * @return string The version string.
      */
     function version() public pure returns (string memory) {
-        return "1.0";
+        return "2.0";
     }
 }
