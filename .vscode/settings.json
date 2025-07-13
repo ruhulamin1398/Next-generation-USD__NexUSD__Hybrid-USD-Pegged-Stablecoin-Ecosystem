@@ -1,3 +1,5 @@
 {
-  "makefile.configureOnOpen": true
+  "makefile.configureOnOpen": true,
+  "slither.solcPath": "",
+  "slither.hiddenDetectors": []
 }

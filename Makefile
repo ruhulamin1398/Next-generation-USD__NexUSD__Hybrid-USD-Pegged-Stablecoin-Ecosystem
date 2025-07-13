@@ -20,7 +20,7 @@ update:; forge update
 build:; forge clean &&  forge build     
 
 test-all :; forge clean && forge build && forge test   -vvv
-mt m= :; forge test --mt $(m) -vvvv
+mt t= :; forge clean && forge test --mt $(t) -vvvv
 
 coverage :; forge clean && forge build && forge coverage
 

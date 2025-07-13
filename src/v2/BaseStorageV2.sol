@@ -31,6 +31,13 @@ abstract contract BaseStorageV2 {
     /// @dev True if the account is blocklisted, false otherwise. Blocklisted accounts are restricted from transfers, minting, and burning.
     mapping(address => bool) internal blockedAccounts;
 
+    /// @notice Minimum amount for cross-chain transfers.
+    /// @dev This is used to prevent spam and ensure meaningful transfers.
+    /// @dev This value can be set by the contract owner.
+    /// @dev It is initialized to 1, meaning no minimum by default.
+    /// @dev This can be updated by the owner to enforce a minimum transfer amount.
+    uint256 public minimumCrossChainTransferAmount;
+
     /// @dev Storage gap for upgradeability (see OpenZeppelin docs).
     uint256[24] __gap_BaseStorage;
 }

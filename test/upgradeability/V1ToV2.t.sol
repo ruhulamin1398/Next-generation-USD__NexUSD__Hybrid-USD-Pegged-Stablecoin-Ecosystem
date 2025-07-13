@@ -4,20 +4,16 @@ pragma solidity ^0.8.30;
 
 import {console, console2} from "forge-std/Script.sol";
 import {TestMaven} from "../../src/TestMaven.sol";
-import {TestMavenV2} from "../../src/v2/TestMavenV2.sol";
 
 import {DeployMaven} from "../../script/DeployMaven.s.sol";
-import {UpgradeMaven} from "../../script/UpgradeMaven.s.sol";
 
-import {HelperTest} from "./Helper.t.sol";
+import {HelperTest} from "../Helper.t.sol";
 
 import {Vm} from "forge-std/Vm.sol";
 
-contract UpgradeabilityTest is HelperTest {
+contract V1ToV2 is HelperTest {
     function setUp() public {
-        DeployMaven deployer = new DeployMaven();
-        proxy = deployer.run();
-        MUSDv1 = TestMaven(proxy);
+        deployV1();
     }
 
     function testVersionAndDecimalsAfterUpgrade() public {
@@ -81,11 +77,7 @@ contract UpgradeabilityTest is HelperTest {
         // Upgrade
         upgradeToV2();
 
-        // Add destination chain to allowlist as required by contract
-        address admin = ADMIN; // Use the admin address with ADMIN_ROLE
-        vm.startPrank(admin);
-        MUSDv2.addAllowlistedChain(1234, address(0x1234));
-        vm.stopPrank();
+        allowNewChainV2(amoy);
 
         // Mint to USER1 and test send emits BridgeRequest
         vm.startPrank(OPERATOR);
@@ -96,7 +88,7 @@ contract UpgradeabilityTest is HelperTest {
 
         vm.prank(USER1);
         // We'll just check that the event is emitted, not the exact values
-        MUSDv2.send(1234, address(0x1234), 100e6);
+        MUSDv2.send(amoy, USER2, 100e6);
 
         Vm.Log[] memory entries = vm.getRecordedLogs();
 
@@ -135,7 +127,7 @@ contract UpgradeabilityTest is HelperTest {
 
     function testPauseUnpauseAfterUpgrade() public {
         // Pause before upgrade
-        vm.startPrank(OPERATOR);
+        vm.startPrank(OWNER);
         MUSDv1.pause();
         vm.stopPrank();
         assertTrue(MUSDv1.paused());
@@ -147,13 +139,13 @@ contract UpgradeabilityTest is HelperTest {
         assertTrue(MUSDv2.paused());
 
         // Unpause and check
-        vm.startPrank(OPERATOR);
+        vm.startPrank(OWNER);
         MUSDv2.unpause();
         vm.stopPrank();
         assertFalse(MUSDv2.paused());
     }
 
-    function testCrossChainMintAfterUpgrade() public {
+    function testBridgeMintAfterUpgrade() public {
         // Upgrade first
 
         upgradeToV2();
@@ -165,7 +157,7 @@ contract UpgradeabilityTest is HelperTest {
         address recipient = USER1;
         uint256 amount = 100e6;
         uint256 fee = 1e6;
-        MUSDv2.crossChainMint(messageId, sourceChain, recipient, amount, fee);
+        MUSDv2.BridgeMint(messageId, sourceChain, recipient, amount, fee);
         vm.stopPrank();
         assertEq(MUSDv2.balanceOf(recipient), amount - fee);
     }

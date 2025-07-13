@@ -111,6 +111,7 @@ abstract contract MavenController is
         address operator
     ) internal onlyInitializing {
         owner = ownerAddress;
+        minimumCrossChainTransferAmount = 1; // Default to 1, can be updated by owner
         __ERC20_init(name, symbol);
         __AccessControl_init();
         __ERC20Pausable_init();
@@ -140,6 +141,15 @@ abstract contract MavenController is
         _revokeRole(DEFAULT_ADMIN_ROLE, oldOwner);
         _grantRole(DEFAULT_ADMIN_ROLE, newOwner);
         emit OwnerChanged(newOwner);
+    }
+
+    /// @notice Sets the minimum amount for cross-chain transfers.
+    /// @dev Only callable by DEFAULT_ADMIN_ROLE (owner).
+    /// @param amount The minimum amount to set for cross-chain transfers.
+    function setMinimumCrossChainTransferAmount(
+        uint256 amount
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        minimumCrossChainTransferAmount = amount;
     }
 
     /// @notice Adds an account to the blocklist.

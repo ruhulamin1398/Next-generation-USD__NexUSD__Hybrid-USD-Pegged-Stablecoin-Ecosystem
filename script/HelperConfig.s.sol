@@ -7,48 +7,31 @@ import {TestMaven} from "../src/TestMaven.sol";
 import {TestMavenV2} from "../src/v2/TestMavenV2.sol";
 
 abstract contract CodeConstants is Script {
-    struct CCIPChain {
-        uint64 chainSelector;
-        string name;
-        address router;
-        address linkToken;
-        address nativeToken;
-    }
-
     address immutable MUSD_BNB_CONTRACT;
-    address immutable OWNER;
-    address immutable OPERATOR;
+    address immutable OWNER = 0x3ff88B69d1762AA444c85c30C4B0B795f9c48B59;
+    address immutable OPERATOR = 0x93d918a0f5c16a1a2dBbE60f8dfD014B6CdD4013;
     address immutable ADMIN;
-    address immutable USER1;
-    address immutable USER2;
+
+    address USER = 0xddD4759f7a7762c17910706E3F4c773c198687B3;
+    address immutable USER1 = 0x71D7F36C664Bb2fE8eA895d16AF14928eB812ebB;
+    address immutable USER2 = 0xF948d3261917e59F13394423b6e5f1C4D9F85452;
 
     TestMaven MUSDv1;
     TestMavenV2 MUSDv2;
     address proxy;
 
-    mapping(string => CCIPChain) public CCIPchains; // all chains for ccip
+    mapping(uint64 => address) public CCIPchains; // all chains for ccip
+
+    uint64 amoy = 8002;
+    uint64 bnb = 11;
+    uint64 mainnet = 1;
 
     constructor() {
-        OWNER = vm.envAddress("OWNER");
         ADMIN = msg.sender;
-        OPERATOR = vm.envAddress("OPERATOR");
-        USER1 = vm.envAddress("USER1");
-        USER2 = vm.envAddress("USER2");
         MUSD_BNB_CONTRACT = vm.envAddress("MUSD_BNB_CONTRACT");
-        CCIPchains["amoy"] = CCIPChain({
-            chainSelector: 16281711391670634445,
-            name: "Amoy",
-            router: 0x9C32fCB86BF0f4a1A8921a9Fe46de3198bb884B2,
-            linkToken: 0x0Fd9e8d3aF1aaee056EB9e802c3A762a667b1904,
-            nativeToken: 0x360ad4f9a9A8EFe9A8DCB5f461c4Cc1047E1Dcf9
-        });
-        CCIPchains["BNB"] = CCIPChain({
-            chainSelector: 13264668187771770619,
-            name: "BNB",
-            router: 0xE1053aE1857476f36A3C62580FF9b016E8EE8F6f,
-            linkToken: 0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06,
-            nativeToken: 0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd
-        });
+        CCIPchains[amoy] = 0x360ad4f9a9A8EFe9A8DCB5f461c4Cc1047E1Dcf9;
+        CCIPchains[bnb] = 0x360ad4f9a9A8EFe9A8DCB5f461c4Cc1047E1Dcf9; // BNB Testnet
+        CCIPchains[mainnet] = 0x360ad4f9a9A8EFe9A8DCB5f461c4Cc1047E1Dcf9; // Mainnet
     }
 }
 

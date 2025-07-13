@@ -74,8 +74,9 @@ abstract contract MavenControllerV2 is
     /// @param chainSelector The chain selector that was removed.
     event ChainRemovedFromAllowlisted(uint64 indexed chainSelector);
     /// @notice Emitted when the contract owner changes.
+    /// @param oldOwner The old owner address.
     /// @param newOwner The new owner address.
-    event OwnerChanged(address indexed newOwner);
+    event OwnerChanged(address indexed oldOwner, address indexed newOwner);
 
     // =========================
     //      ✅ Modifiers
@@ -110,6 +111,7 @@ abstract contract MavenControllerV2 is
         address operator
     ) internal onlyInitializing {
         owner = ownerAddress;
+        minimumCrossChainTransferAmount = 1; // Default to 1, can be updated by owner
         __ERC20_init(name, symbol);
         __AccessControl_init();
         __ERC20Pausable_init();
@@ -138,7 +140,16 @@ abstract contract MavenControllerV2 is
         }
         _revokeRole(DEFAULT_ADMIN_ROLE, oldOwner);
         _grantRole(DEFAULT_ADMIN_ROLE, newOwner);
-        emit OwnerChanged(newOwner);
+        emit OwnerChanged(oldOwner, newOwner);
+    }
+
+    /// @notice Sets the minimum amount for cross-chain transfers.
+    /// @dev Only callable by DEFAULT_ADMIN_ROLE (owner).
+    /// @param amount The minimum amount to set for cross-chain transfers.
+    function setMinimumCrossChainTransferAmount(
+        uint256 amount
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        minimumCrossChainTransferAmount = amount;
     }
 
     /// @notice Adds an account to the blocklist.

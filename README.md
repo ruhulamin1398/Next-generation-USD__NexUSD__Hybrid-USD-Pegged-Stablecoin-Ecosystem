@@ -37,10 +37,11 @@ TestMaven is a USD-pegged ERC-20 stablecoin with:
 
 ### 6. Cross-Chain Bridge
 - Users can request cross-chain transfers with `send`, which emits a `BridgeRequest` event. Each transfer creates a unique `messageId` to track the process across chains.
-- Users can only send cross-chain transfer requests to allowed destination chains.
-- After a user sends a request, an operator on the destination chain will mint the corresponding tokens to the recipient using `crossChainMint`.
-- When minting tokens for a cross-chain transfer using `crossChainMint`, a portion of the tokens is minted as a fee to the owner account, and the remaining tokens are minted to the recipient.
-- Operators can only call  `crossChainMint` at destination chain.
+- Users can only send cross-chain transfer requests to destination chains that are explicitly allowed and set by an `ADMIN_ROLE`.
+- There is a minimum cross-chain transfer amount (`minimumCrossChainTransferAmount`) enforced for all bridge requests to prevent spam and dust transfers. This value is configurable by an admin.
+- After a user sends a request, an operator on the destination chain will mint the corresponding tokens to the recipient using `BridgeMint`.
+- When minting tokens for a cross-chain transfer using `BridgeMint`, a portion of the tokens is minted as a fee to the owner account, and the remaining tokens are minted to the recipient.
+- Operators can only call  `BridgeMint` at destination chain.
 - All bridge actions are protected by blocklist and pause checks.
 
 ### 7. EIP-2612 Permit (Bonus)

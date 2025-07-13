@@ -80,7 +80,7 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
     /// @param to The address receiving tokens on this chain.
     /// @param sourceChainSelector The chain selector of the source chain.
     /// @param amount The amount of tokens received.
-    event TokensReceivedCrossChain(
+    event BridegeTokenReceived(
         bytes32 indexed messageId,
         address indexed to,
         uint64 indexed sourceChainSelector,
@@ -95,6 +95,14 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
     modifier onlyAllowlistedChain(uint64 _destinationChainSelector) {
         if (allowlistedChains[_destinationChainSelector] == address(0)) {
             revert DestinationChainNotAllowlisted(_destinationChainSelector);
+        }
+        _;
+    }
+    /// @dev Modifier that checks if the amount is above the minimum cross-chain transfer amount.
+    /// @param amount The amount to check.
+    modifier onlyMinimumCrossChainAmount(uint256 amount) {
+        if (amount < minimumCrossChainTransferAmount) {
+            revert NotEnoughBalance(amount);
         }
         _;
     }
@@ -172,16 +180,12 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
         onlyAllowlistedChain(destinationChainSelector)
         whenNotPaused
         notBlocklistedSender(msg.sender)
+        onlyMinimumCrossChainAmount(amount)
         returns (bytes32 messageId)
     {
         if (destinationRecipient == address(0)) revert InvalidRecipient();
         address receiverContract = allowlistedChains[destinationChainSelector];
-        messageId = _generateMessageId(
-            destinationChainSelector,
-            receiverContract,
-            destinationRecipient,
-            amount
-        );
+
         uint256 balance = balanceOf(msg.sender);
         if (balance < amount) {
             revert NotEnoughBalance(amount);
@@ -189,6 +193,12 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
 
         _burn(msg.sender, amount);
         // Emit an event with message details
+        messageId = _generateMessageId(
+            destinationChainSelector,
+            receiverContract,
+            destinationRecipient,
+            amount
+        );
         emit BridgeRequest(
             messageId,
             destinationChainSelector,
@@ -210,7 +220,7 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
      * @param amount The number of tokens requested(6 decimals).
      * @param fee ,the number of token will send to owner account
      */
-    function crossChainMint(
+    function BridgeMint(
         bytes32 messageId,
         uint64 sourceChainSelector,
         address recipient,
@@ -231,7 +241,7 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
         _mint(recipient, amount - fee);
         _mint(owner, fee);
 
-        emit TokensReceivedCrossChain(
+        emit BridegeTokenReceived(
             messageId,
             recipient,
             sourceChainSelector,
