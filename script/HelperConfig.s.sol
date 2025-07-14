@@ -7,7 +7,6 @@ import {TestMaven} from "../src/TestMaven.sol";
 import {TestMavenV2} from "../src/v2/TestMavenV2.sol";
 
 abstract contract CodeConstants is Script {
-    address immutable MUSD_BNB_CONTRACT;
     address immutable OWNER = 0x3ff88B69d1762AA444c85c30C4B0B795f9c48B59;
     address immutable OPERATOR = 0x93d918a0f5c16a1a2dBbE60f8dfD014B6CdD4013;
     address immutable BRIDGE_OPERATOR =
@@ -30,7 +29,6 @@ abstract contract CodeConstants is Script {
 
     constructor() {
         ADMIN = msg.sender;
-        MUSD_BNB_CONTRACT = vm.envAddress("MUSD_BNB_CONTRACT");
         CCIPchains[amoy] = 0x360ad4f9a9A8EFe9A8DCB5f461c4Cc1047E1Dcf9;
         CCIPchains[bnb] = 0x360ad4f9a9A8EFe9A8DCB5f461c4Cc1047E1Dcf9; // BNB Testnet
         CCIPchains[mainnet] = 0x360ad4f9a9A8EFe9A8DCB5f461c4Cc1047E1Dcf9; // Mainnet
