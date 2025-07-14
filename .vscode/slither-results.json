@@ -65072,7 +65072,7 @@
 		"elements": [
 			{
 				"type": "function",
-				"name": "BridgeMint",
+				"name": "bridgeMint",
 				"source_mapping": {
 					"start": 7986,
 					"length": 711,
@@ -65402,7 +65402,7 @@
 							"ending_column": 2
 						}
 					},
-					"signature": "BridgeMint(bytes32,uint64,address,uint256,uint256)"
+					"signature": "bridgeMint(bytes32,uint64,address,uint256,uint256)"
 				},
 				"additional_fields": {
 					"target": "function",
@@ -65410,8 +65410,8 @@
 				}
 			}
 		],
-		"description": "Function TestMaven.BridgeMint(bytes32,uint64,address,uint256,uint256) (src/TestMaven.sol#213-240) is not in mixedCase\n",
-		"markdown": "Function [TestMaven.BridgeMint(bytes32,uint64,address,uint256,uint256)](src/TestMaven.sol#L213-L240) is not in mixedCase\n",
+		"description": "Function TestMaven.bridgeMint(bytes32,uint64,address,uint256,uint256) (src/TestMaven.sol#213-240) is not in mixedCase\n",
+		"markdown": "Function [TestMaven.bridgeMint(bytes32,uint64,address,uint256,uint256)](src/TestMaven.sol#L213-L240) is not in mixedCase\n",
 		"first_markdown_element": "src/TestMaven.sol#L213-L240",
 		"id": "77e69b2a99d5908f7ffe7797520fe4d4e4d5872cb62aba1f9e276a3c51721ed4",
 		"check": "naming-convention",
@@ -66753,7 +66753,7 @@
 		"elements": [
 			{
 				"type": "function",
-				"name": "BridgeMint",
+				"name": "bridgeMint",
 				"source_mapping": {
 					"start": 8034,
 					"length": 711,
@@ -67083,7 +67083,7 @@
 							"ending_column": 2
 						}
 					},
-					"signature": "BridgeMint(bytes32,uint64,address,uint256,uint256)"
+					"signature": "bridgeMint(bytes32,uint64,address,uint256,uint256)"
 				},
 				"additional_fields": {
 					"target": "function",
@@ -67091,8 +67091,8 @@
 				}
 			}
 		],
-		"description": "Function TestMavenV2.BridgeMint(bytes32,uint64,address,uint256,uint256) (src/v2/TestMavenV2.sol#214-241) is not in mixedCase\n",
-		"markdown": "Function [TestMavenV2.BridgeMint(bytes32,uint64,address,uint256,uint256)](src/v2/TestMavenV2.sol#L214-L241) is not in mixedCase\n",
+		"description": "Function TestMavenV2.bridgeMint(bytes32,uint64,address,uint256,uint256) (src/v2/TestMavenV2.sol#214-241) is not in mixedCase\n",
+		"markdown": "Function [TestMavenV2.bridgeMint(bytes32,uint64,address,uint256,uint256)](src/v2/TestMavenV2.sol#L214-L241) is not in mixedCase\n",
 		"first_markdown_element": "src/v2/TestMavenV2.sol#L214-L241",
 		"id": "9e08e7f0871e44bf32e85f02cfc11d7bee9a10f2a157339fd9e27ca0620b8bc8",
 		"check": "naming-convention",

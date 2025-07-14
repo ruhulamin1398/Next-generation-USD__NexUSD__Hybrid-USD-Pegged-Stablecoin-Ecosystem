@@ -1,4 +1,3 @@
-
 # TestMaven – Upgradeable USD Stablecoin
 
 ## What is TestMaven?
@@ -20,7 +19,8 @@ TestMaven is a USD-pegged ERC-20 stablecoin with:
 ### 2. Role-Based Access Control
 - **Owner (Default Admin):** Can pause/unpause, manage roles, and cross chain collect fees.
 - **Admin:** Can upgrade the contract, manage cross-chain list, and perform other development-related tasks.
-- **Operator:** Can mint, burn, manage the blocklist, handle cross-chain bridging, and perform user service-related tasks.
+- **Operator:** Can mint, burn, manage the blocklist, and perform user service-related tasks.
+- **Bridge Operator:** Can perform bridge transfer-related tasks, including calling `bridgeMint` on the destination chain.
 
 ### 3. Minting & Burning
 - Only operators can mint or burn tokens.
@@ -39,9 +39,9 @@ TestMaven is a USD-pegged ERC-20 stablecoin with:
 - Users can request cross-chain transfers with `send`, which emits a `BridgeRequest` event. Each transfer creates a unique `messageId` to track the process across chains.
 - Users can only send cross-chain transfer requests to destination chains that are explicitly allowed and set by an `ADMIN_ROLE`.
 - There is a minimum cross-chain transfer amount (`minimumCrossChainTransferAmount`) enforced for all bridge requests to prevent spam and dust transfers. This value is configurable by an admin.
-- After a user sends a request, an operator on the destination chain will mint the corresponding tokens to the recipient using `BridgeMint`.
-- When minting tokens for a cross-chain transfer using `BridgeMint`, a portion of the tokens is minted as a fee to the owner account, and the remaining tokens are minted to the recipient.
-- Operators can only call  `BridgeMint` at destination chain.
+- After a user sends a request, a bridge operator on the destination chain will mint the corresponding tokens to the recipient using `bridgeMint`.
+- When minting tokens for a cross-chain transfer using `bridgeMint`, a portion of the tokens is minted as a fee to the owner account, and the remaining tokens are minted to the recipient.
+- Only accounts with the `BRIDGE_OPERATOR_ROLE` can call `bridgeMint` on the destination chain.
 - All bridge actions are protected by blocklist and pause checks.
 
 ### 7. EIP-2612 Permit (Bonus)
@@ -55,6 +55,8 @@ TestMaven is a USD-pegged ERC-20 stablecoin with:
 ### 1. Install Dependencies
 ```bash
 forge install
+
+npm install
 ```
 
 ### 2. Compile Contracts
@@ -64,7 +66,7 @@ forge build
 
 ### 3. Run Tests
 ```bash
-forge test
+make test-all
 ```
 
 ## Contract Overview

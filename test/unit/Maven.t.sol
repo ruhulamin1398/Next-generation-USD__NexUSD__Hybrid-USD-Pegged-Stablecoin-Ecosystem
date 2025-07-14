@@ -199,16 +199,16 @@ contract MavenTest is HelperConfig, HelperTest {
         );
     }
 
-    function testBridgeMintEmitsBridegeTokenReceived() public {
+    function testbridgeMintEmitsBridegeTokenReceived() public {
         uint256 amount = 1000 * 1e6;
         uint256 fee = 100 * 1e6;
         uint64 sourceChainSelector = 0x1234;
         bytes32 messageId = keccak256("id");
         address recipient = USER;
         address owner = OWNER;
-        vm.prank(OPERATOR);
+        vm.prank(BRIDGE_OPERATOR);
         vm.recordLogs();
-        MUSDv1.BridgeMint(
+        MUSDv1.bridgeMint(
             messageId,
             sourceChainSelector,
             recipient,
@@ -246,7 +246,7 @@ contract MavenTest is HelperConfig, HelperTest {
         MUSDv1.send(amoy, USER2, amount);
     }
 
-    function testBridgeMintRevertsWhenPaused() public {
+    function testbridgeMintRevertsWhenPaused() public {
         uint256 amount = 1000 * 1e6;
         uint256 fee = 100 * 1e6;
         uint64 sourceChainSelector = amoy;
@@ -254,9 +254,9 @@ contract MavenTest is HelperConfig, HelperTest {
         address recipient = USER;
         vm.prank(OWNER);
         MUSDv1.pause();
-        vm.prank(OPERATOR);
+        vm.prank(BRIDGE_OPERATOR);
         vm.expectRevert();
-        MUSDv1.BridgeMint(
+        MUSDv1.bridgeMint(
             messageId,
             sourceChainSelector,
             recipient,
@@ -265,7 +265,17 @@ contract MavenTest is HelperConfig, HelperTest {
         );
     }
 
-    function testBridgeMintRevertsIfRecipientIsBlocklisted() public {
+    function testbridgeMintRevertsIfSenderIsBlocklisted() public {
+        uint256 amount = 1000 * 1e6;
+
+        vm.prank(OPERATOR);
+        MUSDv1.addToBlocklist(USER);
+        vm.prank(USER);
+        vm.expectRevert();
+        MUSDv1.send(amoy, USER2, amount);
+    }
+
+    function testbridgeMintRevertsIfRecipientIsBlocklisted() public {
         uint256 amount = 1000 * 1e6;
         uint256 fee = 100 * 1e6;
         uint64 scSelector = amoy;
@@ -273,23 +283,23 @@ contract MavenTest is HelperConfig, HelperTest {
         address recipient = USER;
         vm.prank(OPERATOR);
         MUSDv1.addToBlocklist(recipient);
-        vm.prank(OPERATOR);
+        vm.prank(BRIDGE_OPERATOR);
         vm.expectRevert();
-        MUSDv1.BridgeMint(messageId, scSelector, recipient, amount, fee);
+        MUSDv1.bridgeMint(messageId, scSelector, recipient, amount, fee);
     }
 
-    function testBridgeMintRevertsIfRecipientIsZero() public {
+    function testbridgeMintRevertsIfRecipientIsZero() public {
         uint256 amount = 1000 * 1e6;
         uint256 fee = 100 * 1e6;
         uint64 scSelector = amoy;
         bytes32 messageId = keccak256("zero");
         address recipient = address(0);
-        vm.prank(OPERATOR);
+        vm.prank(BRIDGE_OPERATOR);
         vm.expectRevert();
-        MUSDv1.BridgeMint(messageId, scSelector, recipient, amount, fee);
+        MUSDv1.bridgeMint(messageId, scSelector, recipient, amount, fee);
     }
 
-    function testBridgeMintRevertsIfMaxSupplyExceeded() public {
+    function testbridgeMintRevertsIfMaxSupplyExceeded() public {
         uint256 maxSupply = MUSDv1.MAX_SUPPLY();
         uint256 fee = 100 * 1e6;
         uint64 scSelector = amoy;
@@ -300,12 +310,12 @@ contract MavenTest is HelperConfig, HelperTest {
         MUSDv1.mint(recipient, maxSupply);
         // Try to bridge mint any positive amount
         uint256 amount = 1 * 1e6;
-        vm.prank(OPERATOR);
+        vm.prank(BRIDGE_OPERATOR);
         vm.expectRevert();
-        MUSDv1.BridgeMint(messageId, scSelector, recipient, amount, fee);
+        MUSDv1.bridgeMint(messageId, scSelector, recipient, amount, fee);
     }
 
-    function testBridgeMintRevertsIfNotOperator() public {
+    function testbridgeMintRevertsIfNotOperator() public {
         uint256 amount = 1000 * 1e6;
         uint256 fee = 100 * 1e6;
         uint64 scSelector = amoy;
@@ -313,7 +323,7 @@ contract MavenTest is HelperConfig, HelperTest {
         address recipient = USER;
         vm.prank(USER);
         vm.expectRevert();
-        MUSDv1.BridgeMint(messageId, scSelector, recipient, amount, fee);
+        MUSDv1.bridgeMint(messageId, scSelector, recipient, amount, fee);
     }
 
     function testOnlyMinimumCrossChainAmount_AllowsMinimum() public {

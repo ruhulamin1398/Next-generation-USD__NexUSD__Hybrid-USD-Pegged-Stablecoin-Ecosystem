@@ -20,6 +20,10 @@ abstract contract BaseStorageV2 {
     /// @notice Role identifier for operators (mint, burn, blocklist management).
     bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
 
+    /// @notice Role identifier for cross-chain operators (cross-chain transfers).
+    bytes32 public constant BRIDGE_OPERATOR_ROLE =
+        keccak256("BRIDGE_OPERATOR_ROLE");
+
     /// @notice Maximum supply of the Maven token (100 million MUSD, 6 decimals).
     uint256 public constant MAX_SUPPLY = 100_000_000 * 10 ** 6;
 

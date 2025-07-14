@@ -213,14 +213,14 @@ contract TestMavenV2 is Initializable, UUPSUpgradeable, MavenControllerV2 {
 
     /**
      * @notice Handles the reception of tokens from another chain.
-     * @dev Only callable by OPERATOR_ROLE. Mints tokens to the recipient on this chain.
+     * @dev Only callable by BRIDGE_OPERATOR_ROLE. Mints tokens to the recipient on this chain.
      * @param messageId The unique ID of the cross-chain message.
      * @param sourceChainSelector The selector of the source chain.
      * @param recipient The address receiving the tokens on this chain.
      * @param amount The number of tokens requested(6 decimals).
      * @param fee ,the number of token will send to owner account
      */
-    function BridgeMint(
+    function bridgeMint(
         bytes32 messageId,
         uint64 sourceChainSelector,
         address recipient,
@@ -230,7 +230,7 @@ contract TestMavenV2 is Initializable, UUPSUpgradeable, MavenControllerV2 {
         external
         whenNotPaused
         notBlocklistedRecipient(recipient)
-        onlyRole(OPERATOR_ROLE)
+        onlyRole(BRIDGE_OPERATOR_ROLE)
     {
         if (totalSupply() + amount > MAX_SUPPLY) {
             revert MaxSupplyExceeded();

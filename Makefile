@@ -23,6 +23,7 @@ test-all :; forge clean && forge build && forge test   -vvv
 mt t= :; forge clean && forge test --mt $(t) -vvvv
 
 coverage :; forge clean && forge build && forge coverage
+coverage-report :; forge clean && forge build && forge coverage --report lcov
 
 snapshot :; forge snapshot
 
@@ -41,7 +42,7 @@ deploy-bnb:; forge clean && forge build &&  forge script script/DeployMaven.s.so
 verify-MUSD-amoy:;forge verify-contract $(MUSD_CONTRACT) src/TestMaven.sol:TestMaven --chain-id 80002 --verifier-api-key $(POLYGON_API_KEY) --verifier-url https://api-amoy.polygonscan.com/api 
 verify-PROXY-amoy:; forge verify-contract $(PROXY_CONTRACT) lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol:ERC1967Proxy --chain-id 80002 --verifier-api-key $(POLYGON_API_KEY) --verifier-url https://api-amoy.polygonscan.com/api --constructor-args 000000000000000000000000992338cd6a11fe2bda153968d114825ec49f25b900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084f8c8765e0000000000000000000000001679dffe0f02ece842e503ec40922edc556f90650000000000000000000000003ff88b69d1762aa444c85c30c4b0b795f9c48b590000000000000000000000009c32fcb86bf0f4a1a8921a9fe46de3198bb884b20000000000000000000000000fd9e8d3af1aaee056eb9e802c3a762a667b190400000000000000000000000000000000000000000000000000000000
 
-update-MUSD-amoy:; forge clean && forge build && forge script script/UpgradeMaven.s.sol:UpgradeMaven --rpc-url https://rpc-amoy.polygon.technology --private-key $(PRIVATE_KEY_59)  --broadcast -vvvv
+update-amoy:; forge clean && forge build && forge script script/UpgradeMaven.s.sol:UpgradeMaven --rpc-url https://rpc-amoy.polygon.technology --private-key $(PRIVATE_KEY_59)  --broadcast -vvvv
 verify-MUSD-v2-amoy:;forge verify-contract $(MUSD_CONTRACT_V2) src/TestMavenv2.sol:TestMavenv2 --chain-id 80002 --verifier-api-key $(POLYGON_API_KEY) --verifier-url https://api-amoy.polygonscan.com/api 
 
 

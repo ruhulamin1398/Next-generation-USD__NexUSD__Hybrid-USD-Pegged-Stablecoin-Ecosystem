@@ -57,10 +57,10 @@ contract BridgeTokenFlowTest is Test, HelperConfig, HelperTest {
         vm.stopPrank();
         assertEq(MUSDv1.balanceOf(USER1), 0);
 
-        // OPERATOR executes BridgeMint on destination chain
-        vm.prank(OPERATOR);
+        // OPERATOR executes bridgeMint on destination chain
+        vm.prank(BRIDGE_OPERATOR);
         vm.recordLogs();
-        MUSDv1.BridgeMint(
+        MUSDv1.bridgeMint(
             messageId,
             targetChainSelector,
             destinationRecipient,

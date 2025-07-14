@@ -17,6 +17,9 @@ contract HelperTest is Test, HelperConfig {
         DeployMaven deployer = new DeployMaven();
         proxy = deployer.run();
         MUSDv1 = TestMaven(proxy);
+        vm.startPrank(OWNER);
+        MUSDv1.grantRole(MUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR);
+        vm.stopPrank();
     }
 
     function upgradeToV2() public {

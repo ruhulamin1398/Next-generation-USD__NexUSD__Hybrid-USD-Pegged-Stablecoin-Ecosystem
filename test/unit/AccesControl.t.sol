@@ -81,4 +81,21 @@ contract AccessControlTest is HelperConfig, HelperTest {
         // Storage owner variable should be updated
         assertEq(MUSDv1.owner(), newOwner);
     }
+
+    function testAddAndRevokeCrossChainOperatorRole() public {
+        // OWNER grants BRIDGE_OPERATOR_ROLE
+        vm.startPrank(OWNER);
+        MUSDv1.grantRole(MUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR);
+        vm.stopPrank();
+        assertTrue(
+            MUSDv1.hasRole(MUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR)
+        );
+        // OWNER revokes BRIDGE_OPERATOR_ROLE
+        vm.startPrank(OWNER);
+        MUSDv1.revokeRole(MUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR);
+        vm.stopPrank();
+        assertFalse(
+            MUSDv1.hasRole(MUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR)
+        );
+    }
 }

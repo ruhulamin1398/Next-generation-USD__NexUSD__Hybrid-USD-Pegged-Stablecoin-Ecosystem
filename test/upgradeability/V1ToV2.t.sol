@@ -145,7 +145,7 @@ contract V1ToV2 is HelperTest {
         assertFalse(MUSDv2.paused());
     }
 
-    function testBridgeMintAfterUpgrade() public {
+    function testbridgeMintAfterUpgrade() public {
         // Upgrade first
 
         upgradeToV2();
@@ -157,7 +157,9 @@ contract V1ToV2 is HelperTest {
         address recipient = USER1;
         uint256 amount = 100e6;
         uint256 fee = 1e6;
-        MUSDv2.BridgeMint(messageId, sourceChain, recipient, amount, fee);
+        vm.stopPrank();
+        vm.startPrank(BRIDGE_OPERATOR);
+        MUSDv2.bridgeMint(messageId, sourceChain, recipient, amount, fee);
         vm.stopPrank();
         assertEq(MUSDv2.balanceOf(recipient), amount - fee);
     }
