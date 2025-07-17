@@ -40,6 +40,7 @@ import {
 
 import * as React from 'react'
 
+import BridgeSection from '#components/bridge-network-list/bridge-section'
 import { ButtonLink } from '#components/button-link/button-link'
 import { Faq } from '#components/faq'
 import { Features } from '#components/features'
@@ -64,6 +65,7 @@ const Home: NextPage = () => {
     <Box>
       <HeroSection />
 
+      <BridgeSection />
       <HighlightsSection />
 
       <FeaturesSection />
