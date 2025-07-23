@@ -1,6 +1,6 @@
 
 
-## **Project Overview:** Hybrid USD-Pegged Stablecoin Ecosystem**
+## Project Overview: Hybrid-Backed USD-Pegged Stablecoin Ecosystem
 
 We are building a next-generation USD-pegged stablecoin platform backed by both fiat reserves and crypto assets. Designed for scalability, transparency, and interoperability, this stablecoin will operate seamlessly across multiple blockchain networks, serving as a reliable digital dollar alternative for individuals, developers, and enterprises.
 
