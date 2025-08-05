@@ -25,11 +25,29 @@ We are building a next-generation USD-pegged stablecoin platform backed by both 
 
 ### 🔄 **Fiat ↔ Crypto Swap System**
 - Enables users to switch between fiat-backed and crypto-backed stablecoin variants depending on liquidity, availability, and use case.
+ 
+
+There will be people called **liquidity providers** who hold both types of tokens:
+1. **Fiat-backed stablecoins** (backed by real money in banks)
+2. **Crypto-backed stablecoins** (backed by crypto like Ethereum)
+
+When someone wants to change their **crypto-backed stablecoins** into **fiat-backed stablecoins**, the liquidity provider helps them.
+
+####  How Fiat ↔ Crypto Swap Works:
+- The liquidity provider takes the user’s **crypto-backed tokens**.
+- In return, they give the user **fiat-backed tokens** of equal value based on the market price of the crypto collateral.
+- Because the system always keeps extra crypto as backup (overcollateralized), users may receive **more fiat-backed tokens** than the number of crypto-backed tokens they gave.
+
+#### Example:
+- **Alice** has **100 MUSD** (crypto-backed), backed by **$140 worth of Ethereum**.
+- **Bob** (liquidity provider) takes Alice’s **100 MUSD (crypto-backed)**.
+- Bob gives Alice **140 MUSD (fiat-backed)** in return.
+- The swap can also work in reverse (fiat to crypto) when needed.
 
 ---
 
 ### 🧠 **Custom Auditor Oracle Network**
-- A decentralized network of auditor oracles providing **real-time on-chain proof of reserves** and **risk exposure metrics**.
+- A decentralised network of auditor oracles providing **real-time on-chain proof of reserves** and **risk exposure metrics**.
 - Increases transparency and user trust.
 
 ---
