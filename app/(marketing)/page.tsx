@@ -96,8 +96,8 @@ const HeroSection: React.FC = () => {
             }
             description={
               <FallInPlace delay={0.4} fontWeight="medium">
-                MavenUSD is the first USD-pegged stablecoin to deploy daily
-                attestations for its underlying reserves by independent
+                Next-generation USD is the first USD-pegged stablecoin to deploy
+                daily attestations for its underlying reserves by independent
                 third-party institutions.
               </FallInPlace>
             }
@@ -169,7 +169,7 @@ const HeroSection: React.FC = () => {
             title: 'Trustworthy',
             icon: FiSmile,
             description:
-              'TUSD utilizes advanced auditing and attestation mechanisms to enhance the transparency. Its daily audit reports are available on the website, allowing users to monitor the reserves at any time.',
+              'NexUSD utilizes advanced auditing and attestation mechanisms to enhance the transparency. Its daily audit reports are available on the website, allowing users to monitor the reserves at any time.',
             iconPosition: 'left',
             delay: 0.6,
           },
@@ -178,7 +178,7 @@ const HeroSection: React.FC = () => {
             title: 'Popularity',
             icon: FiGrid,
             description:
-              'TUSD offers convenience and utility in various financial contexts, such as trading and transfers. Currently, TUSD is available on over 80 cryptocurrency exchanges and DeFi protocols, providing users with flexibility and accessibility.',
+              'NexUSD offers convenience and utility in various financial contexts, such as trading and transfers. Currently, NexUSD is available on over 80 cryptocurrency exchanges and DeFi protocols, providing users with flexibility and accessibility.',
             iconPosition: 'left',
             delay: 1,
           },
@@ -186,7 +186,7 @@ const HeroSection: React.FC = () => {
             title: 'Liquidity',
             icon: FiThumbsUp,
             description:
-              'During Q3 2023, TUSD recorded a daily trading volume surpassing $1 billion, underlying its impressive liquidity. Additionally, TUSD does not charge any fees for its minting and redemption.',
+              'During Q3 2023, NexUSD recorded a daily trading volume surpassing $1 billion, underlying its impressive liquidity. Additionally, NexUSD does not charge any fees for its minting and redemption.',
             iconPosition: 'left',
             delay: 1.1,
           },

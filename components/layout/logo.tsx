@@ -12,15 +12,15 @@ export interface LogoProps {
 
 export const Logo = ({ href = '/', onClick }: LogoProps) => {
   let logo
-  if (siteConfig.logo) {
-    logo = <Box as={siteConfig.logo} height="32px" mt="-4px" />
-  } else {
-    logo = (
-      <Heading as="h1" size="md">
-        {siteConfig.seo?.title}
-      </Heading>
-    )
-  }
+  // if (siteConfig.logo) {
+  //   logo = <Box as={siteConfig.logo} height="32px" mt="-4px" />
+  // } else {
+  logo = (
+    <Heading as="h1" size="md">
+      {siteConfig.seo?.title}
+    </Heading>
+  )
+  // }
 
   return (
     <Flex h="8" flexShrink="0" alignItems="flex-start">

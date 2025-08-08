@@ -13,7 +13,7 @@ const BridgeListCard = () => {
     <Card width="320px">
       <StructuredList>
         <StructuredListHeader>Bridged Networks</StructuredListHeader>
-        {}
+     
 
         <Item />
         <Item />

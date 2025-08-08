@@ -9,16 +9,16 @@ import { Logo } from './logo'
 const siteConfig = {
   logo: Logo,
   seo: {
-    title: 'Saas UI',
-    description: 'The React component library for startups',
+    title: 'NexUSD',
+    description: 'Next-generation USD - NexUSD',
   } as NextSeoProps,
   termsUrl: '#',
   privacyUrl: '#',
   header: {
     links: [
       {
-        id: 'why-mavenusd',
-        label: 'Why MavenUSD',
+        id: 'why-NexUSD',
+        label: 'Why NexUSD',
       },
       {
         id: 'pricing',
