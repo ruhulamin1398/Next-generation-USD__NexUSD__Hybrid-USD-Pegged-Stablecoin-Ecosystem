@@ -201,8 +201,8 @@ export default function HowItWorksSection() {
 
             <div className="mt-8 sm:mt-10 bg-gray-100 dark:bg-gray-900 rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-gray-200 dark:border-gray-700">
               <div className="flex flex-col md:flex-row items-start space-x-0 md:space-x-4">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-900 dark:bg-gray-700 rounded-md sm:rounded-lg flex items-center justify-center flex-shrink-0 mt-1 mb-3 md:mb-4 mx-auto md:mx-0">
-                  <span className="text-white text-sm sm:text-lg">💡</span>
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-900 dark:bg-gray-700 rounded-md sm:rounded-lg flex items-center justify-center flex-shrink-0 mt-1 mb-3 md:mb-4 mx-auto md:mx-2">
+                  <span className="text-white text-sm sm:text-lg mx-1">💡</span>
                 </div>
                 <div>
                   <h4 className="font-bold text-gray-900 dark:text-white text-base sm:text-lg mb-2 sm:mb-3 text-center md:text-left">
