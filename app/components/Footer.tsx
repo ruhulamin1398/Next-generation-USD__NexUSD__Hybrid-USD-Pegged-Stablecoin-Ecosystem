@@ -280,7 +280,7 @@ export default function Footer() {
 
         {/* Enhanced Bottom */}
         <div className="mt-8 sm:mt-10 md:mt-12 pt-6 sm:pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <div className="text-gray-400 text-center md:text-left">
+          <div className="text-gray-400 text-center md:text-left order-2 md:order-1">
             <span className="text-xs sm:text-sm">
               © 2025 NexUSD. All rights reserved.
             </span>
@@ -289,7 +289,7 @@ export default function Footer() {
               Built with ❤️ for the future of finance
             </span>
           </div>
-          <div className="flex flex-wrap gap-4 sm:gap-6 justify-center">
+          <div className="flex flex-wrap gap-3 sm:gap-4 md:gap-6 justify-center order-1 md:order-2">
             <Link
               href="#"
               className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors duration-200"

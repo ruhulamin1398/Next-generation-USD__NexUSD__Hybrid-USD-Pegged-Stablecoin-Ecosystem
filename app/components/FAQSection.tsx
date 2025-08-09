@@ -136,7 +136,7 @@ export default function FAQSection() {
             </h3>
             <p className="text-gray-300 mb-4 sm:mb-6 max-w-2xl mx-auto text-xs sm:text-sm md:text-base px-4">
               Our support team is available 24/7 to help you with any questions
-              about NexUSD. Get in touch and we'll respond within hours.
+              about NexUSD. Get in touch and wee will respond within hours.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <button className="px-6 sm:px-8 py-2 sm:py-3 bg-white text-gray-900 font-semibold rounded-md sm:rounded-lg text-sm sm:text-base hover:bg-gray-100 transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900">

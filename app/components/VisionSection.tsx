@@ -23,7 +23,7 @@ export default function VisionSection() {
               interoperable digital currency infrastructure that empowers users
               globally.
               <span className="block mt-3 sm:mt-4 text-white font-medium text-base sm:text-lg md:text-xl lg:text-2xl">
-                Together, we're building the future of money.
+                Together, we&apos;re building the future of money.
               </span>
             </p>
 
