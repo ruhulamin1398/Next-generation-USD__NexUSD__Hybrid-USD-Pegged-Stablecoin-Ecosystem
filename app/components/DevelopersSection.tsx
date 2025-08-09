@@ -7,7 +7,7 @@ export default function DevelopersSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="text-center mb-16">
           <div className="mb-6">
-            <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-gray-800 text-gray-200 border border-gray-700">
+            <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
               Developer-First Platform
             </span>
           </div>
@@ -178,117 +178,6 @@ export default function DevelopersSection() {
             <button className="mt-8 w-full bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white px-8 py-4 rounded-2xl font-semibold hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
               Get Started
             </button>
-          </div>
-        </div>
-
-        {/* Additional Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          <div className="group bg-white/80 dark:bg-gray-700/80 backdrop-blur-md rounded-2xl p-6 border border-gray-200/50 dark:border-gray-600/50 shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-            <div className="w-14 h-14 bg-gray-900 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300">
-              <span className="text-white text-2xl">📈</span>
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
-              Yield-Bearing Options
-            </h3>
-            <p className="text-gray-800 dark:text-gray-800 mb-6 leading-relaxed">
-              Opt into yield-generating versions backed by short-term T-bills or
-              on-chain DeFi strategies.
-            </p>
-            <div className="space-y-2 text-sm text-gray-800 dark:text-gray-800">
-              <div className="flex items-center">
-                <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
-                T-bill backed yields
-              </div>
-              <div className="flex items-center">
-                <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
-                DeFi strategy options
-              </div>
-              <div className="flex items-center">
-                <span className="w-2 h-2 bg-gray-500 rounded-full mr-2"></span>
-                Institutional grade
-              </div>
-            </div>
-          </div>
-
-          <div className="group bg-white/80 dark:bg-gray-700/80 backdrop-blur-md rounded-2xl p-6 border border-gray-200/50 dark:border-gray-600/50 shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-            <div className="w-14 h-14 bg-gray-900 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300">
-              <span className="text-white text-2xl">🏦</span>
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
-              Fiat On/Off-Ramp
-            </h3>
-            <p className="text-gray-800 dark:text-gray-800 mb-6 leading-relaxed">
-              Seamless conversion between USD bank deposits and stablecoin via
-              banking APIs.
-            </p>
-            <div className="space-y-2 text-sm text-gray-800 dark:text-gray-800">
-              <div className="flex items-center">
-                <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
-                Bank account linking
-              </div>
-              <div className="flex items-center">
-                <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
-                Instant conversions
-              </div>
-              <div className="flex items-center">
-                <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
-                Licensed providers
-              </div>
-            </div>
-          </div>
-
-          <div className="group bg-white/80 dark:bg-gray-700/80 backdrop-blur-md rounded-2xl p-6 border border-gray-200/50 dark:border-gray-600/50 shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-            <div className="w-14 h-14 bg-gray-900 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300">
-              <span className="text-white text-2xl">👛</span>
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
-              Unified Wallet Interface
-            </h3>
-            <p className="text-gray-800 dark:text-gray-800 mb-6 leading-relaxed">
-              Non-custodial wallet for managing all stablecoin operations in one
-              place.
-            </p>
-            <div className="space-y-2 text-sm text-gray-800 dark:text-gray-800">
-              <div className="flex items-center">
-                <span className="w-2 h-2 bg-gray-500 rounded-full mr-2"></span>
-                Multi-chain support
-              </div>
-              <div className="flex items-center">
-                <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
-                Swap functionality
-              </div>
-              <div className="flex items-center">
-                <span className="w-2 h-2 bg-indigo-400 rounded-full mr-2"></span>
-                Compliance management
-              </div>
-            </div>
-          </div>
-
-          <div className="group bg-white/80 dark:bg-gray-700/80 backdrop-blur-md rounded-2xl p-6 border border-gray-200/50 dark:border-gray-600/50 shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
-            <div className="w-14 h-14 bg-gray-900 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300">
-              <span className="text-white text-2xl">🚫</span>
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-4">
-              Gasless Transactions
-            </h3>
-            <p className="text-gray-800 dark:text-gray-800 mb-6 leading-relaxed">
-              Meta-transaction support allows interaction without holding native
-              gas tokens.
-            </p>
-            <div className="space-y-2 text-sm text-gray-800 dark:text-gray-800">
-              <div className="flex items-center">
-                <span className="w-2 h-2 bg-indigo-400 rounded-full mr-2"></span>
-                No gas token needed
-              </div>
-              <div className="flex items-center">
-                <span className="w-2 h-2 bg-cyan-400 rounded-full mr-2"></span>
-                Enhanced UX
-              </div>
-              <div className="flex items-center">
-                <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
-                New user friendly
-              </div>
-            </div>
           </div>
         </div>
 

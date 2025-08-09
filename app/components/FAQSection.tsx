@@ -125,8 +125,10 @@ export default function FAQSection() {
             </div>
           ))}
         </div>
+      </div>
 
-        {/* CTA Section */}
+      {/* CTA Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mt-16 text-center">
           <div className="bg-gray-900 dark:bg-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700">
             <h3 className="text-2xl font-bold text-white mb-4">

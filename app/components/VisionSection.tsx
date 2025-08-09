@@ -61,13 +61,6 @@ export default function VisionSection() {
                 </div>
               </div>
             </div>
-
-            {/* Call to Action */}
-            <div className="mt-12 text-center">
-              <button className="bg-white hover:bg-gray-100 text-gray-900 font-semibold px-8 py-4 rounded-xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 shadow-lg">
-                Join Our Mission
-              </button>
-            </div>
           </div>
         </div>
       </div>

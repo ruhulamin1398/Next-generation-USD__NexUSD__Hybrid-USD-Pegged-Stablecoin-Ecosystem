@@ -53,19 +53,14 @@ export default function FeaturesSection() {
   return (
     <section
       id="features"
-      className="py-24 bg-gray-50 dark:bg-gray-900 transition-colors duration-300"
+      className="pb-24 bg-gray-50 dark:bg-gray-900 transition-colors duration-300"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-20">
-          <div className="mb-6">
-            <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
-              Comprehensive Infrastructure
-            </span>
-          </div>
+        <div className="text-center  ">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
             Core Features
           </h2>
-          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed mb-3 md:mb-6">
             Comprehensive stablecoin infrastructure designed for the
             <span className="text-gray-900 dark:text-white font-semibold">
               {" "}
@@ -97,27 +92,6 @@ export default function FeaturesSection() {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Additional CTA Section */}
-        <div className="mt-20 text-center">
-          <div className="bg-white dark:bg-gray-800 backdrop-blur-md rounded-3xl p-12 border border-gray-200 dark:border-gray-700 shadow-xl">
-            <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-              Ready to Experience the Future?
-            </h3>
-            <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-              Join thousands of users already leveraging our innovative
-              stablecoin ecosystem
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
-                Start Building
-              </button>
-              <button className="border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-900 dark:hover:border-gray-400 px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition-all duration-200">
-                View Integration Guide
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </section>
