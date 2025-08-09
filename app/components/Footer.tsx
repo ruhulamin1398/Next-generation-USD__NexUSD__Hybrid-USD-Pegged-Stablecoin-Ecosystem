@@ -2,54 +2,55 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer
-      id="about"
-      className="bg-gray-900 dark:bg-black text-white py-20 transition-colors duration-300"
-    >
+    <footer className="bg-gray-900 dark:bg-black text-white py-12 sm:py-16 md:py-20 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 md:gap-12">
           {/* Enhanced Brand */}
-          <div className="md:col-span-1">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-12 h-12 bg-gray-700 rounded-2xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-xl">N</span>
+          <div className="md:col-span-1 sm:col-span-2 md:col-span-1">
+            <div className="flex items-center space-x-3 mb-4 sm:mb-6">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-700 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-lg sm:text-xl">
+                  N
+                </span>
               </div>
-              <span className="text-2xl font-bold text-white">NexUSD</span>
+              <span className="text-xl sm:text-2xl font-bold text-white">
+                NexUSD
+              </span>
             </div>
-            <p className="text-gray-400 leading-relaxed mb-6">
+            <p className="text-gray-400 leading-relaxed mb-4 sm:mb-6 text-sm sm:text-base">
               Next-generation USD-pegged stablecoin ecosystem. Bridging
               traditional finance and decentralized ecosystems with unmatched
               innovation.
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-2 sm:space-y-4 mb-6 sm:mb-8">
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse"></div>
-                <span className="text-sm text-gray-400">
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-500 rounded-full animate-pulse"></div>
+                <span className="text-xs sm:text-sm text-gray-400">
                   Live on Multiple Chains
                 </span>
               </div>
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-gray-600 rounded-full animate-pulse"></div>
-                <span className="text-sm text-gray-400">
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-600 rounded-full animate-pulse"></div>
+                <span className="text-xs sm:text-sm text-gray-400">
                   $1.2B+ Total Value Locked
                 </span>
               </div>
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
-                <span className="text-sm text-gray-400">
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-400 rounded-full animate-pulse"></div>
+                <span className="text-xs sm:text-sm text-gray-400">
                   24/7 Monitored Reserves
                 </span>
               </div>
             </div>
 
-            <div className="flex space-x-4 mt-8">
+            <div className="flex space-x-3 sm:space-x-4">
               <a
                 href="#"
-                className="group p-3 bg-gray-800 hover:bg-gray-700 rounded-xl transition-all duration-300 transform hover:scale-110"
+                className="group p-2 sm:p-3 bg-gray-800 hover:bg-gray-700 rounded-lg sm:rounded-xl transition-all duration-300 transform hover:scale-110"
               >
                 <svg
-                  className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-white transition-colors"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -58,10 +59,10 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                className="group p-3 bg-gray-800 hover:bg-gray-700 rounded-xl transition-all duration-300 transform hover:scale-110"
+                className="group p-2 sm:p-3 bg-gray-800 hover:bg-gray-700 rounded-lg sm:rounded-xl transition-all duration-300 transform hover:scale-110"
               >
                 <svg
-                  className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-white transition-colors"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -70,10 +71,10 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                className="group p-3 bg-gray-800 hover:bg-gray-700 rounded-xl transition-all duration-300 transform hover:scale-110"
+                className="group p-2 sm:p-3 bg-gray-800 hover:bg-gray-700 rounded-lg sm:rounded-xl transition-all duration-300 transform hover:scale-110"
               >
                 <svg
-                  className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-white transition-colors"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -82,10 +83,10 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                className="group p-3 bg-gray-800 hover:bg-gray-700 rounded-xl transition-all duration-300 transform hover:scale-110"
+                className="group p-2 sm:p-3 bg-gray-800 hover:bg-gray-700 rounded-lg sm:rounded-xl transition-all duration-300 transform hover:scale-110"
               >
                 <svg
-                  className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-white transition-colors"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -97,12 +98,14 @@ export default function Footer() {
 
           {/* Product */}
           <div>
-            <h3 className="font-bold text-lg mb-6 text-white">Product</h3>
-            <ul className="space-y-3">
+            <h3 className="font-bold text-base sm:text-lg mb-4 sm:mb-6 text-white">
+              Product
+            </h3>
+            <ul className="space-y-2 sm:space-y-3">
               <li>
                 <a
                   href="#features"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -113,7 +116,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#how-it-works"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -124,7 +127,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#compliance"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -135,7 +138,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -146,7 +149,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -159,12 +162,14 @@ export default function Footer() {
 
           {/* Developers */}
           <div>
-            <h3 className="font-bold text-lg mb-6 text-white">Developers</h3>
-            <ul className="space-y-3">
+            <h3 className="font-bold text-base sm:text-lg mb-4 sm:mb-6 text-white">
+              Developers
+            </h3>
+            <ul className="space-y-2 sm:space-y-3">
               <li>
                 <a
                   href="#developers"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -175,7 +180,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -186,7 +191,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -197,7 +202,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -208,7 +213,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -221,23 +226,14 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="font-bold text-lg mb-6 text-white">Company</h3>
-            <ul className="space-y-3">
-              <li>
-                <a
-                  href="#about"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
-                >
-                  <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    →
-                  </span>
-                  About Us
-                </a>
-              </li>
+            <h3 className="font-bold text-base sm:text-lg mb-4 sm:mb-6 text-white">
+              Company
+            </h3>
+            <ul className="space-y-2 sm:space-y-3">
               <li>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -248,7 +244,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -259,7 +255,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -270,7 +266,7 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group"
+                  className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center group text-sm sm:text-base"
                 >
                   <span className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     →
@@ -283,36 +279,38 @@ export default function Footer() {
         </div>
 
         {/* Enhanced Bottom */}
-        <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
-          <div className="text-gray-400 mb-4 md:mb-0">
-            <span className="text-sm">© 2025 NexUSD. All rights reserved.</span>
-            <span className="mx-2 text-gray-600">•</span>
-            <span className="text-sm">
+        <div className="mt-8 sm:mt-10 md:mt-12 pt-6 sm:pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <div className="text-gray-400 text-center md:text-left">
+            <span className="text-xs sm:text-sm">
+              © 2025 NexUSD. All rights reserved.
+            </span>
+            <span className="mx-2 text-gray-600 hidden sm:inline">•</span>
+            <span className="text-xs sm:text-sm block sm:inline mt-1 sm:mt-0">
               Built with ❤️ for the future of finance
             </span>
           </div>
-          <div className="flex flex-wrap gap-6">
+          <div className="flex flex-wrap gap-4 sm:gap-6 justify-center">
             <Link
               href="#"
-              className="text-sm text-gray-400 hover:text-white transition-colors duration-200"
+              className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors duration-200"
             >
               Privacy Policy
             </Link>
             <Link
               href="#"
-              className="text-sm text-gray-400 hover:text-white transition-colors duration-200"
+              className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors duration-200"
             >
               Terms of Service
             </Link>
             <Link
               href="#"
-              className="text-sm text-gray-400 hover:text-white transition-colors duration-200"
+              className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors duration-200"
             >
               Cookie Policy
             </Link>
             <Link
               href="#"
-              className="text-sm text-gray-400 hover:text-white transition-colors duration-200"
+              className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors duration-200"
             >
               Security
             </Link>

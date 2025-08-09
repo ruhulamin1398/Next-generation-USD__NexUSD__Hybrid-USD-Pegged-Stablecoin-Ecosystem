@@ -26,48 +26,42 @@ export default function Navigation() {
           {/* Desktop Menu */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              <Link
+              <a
                 href="#features"
-                className="text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white transition-colors duration-200 font-medium"
+                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
               >
                 Features
-              </Link>
-              <Link
+              </a>
+              <a
                 href="#how-it-works"
-                className="text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white transition-colors duration-200 font-medium"
+                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
               >
                 How It Works
-              </Link>
-              <Link
+              </a>
+              <a
                 href="#compliance"
-                className="text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white transition-colors duration-200 font-medium"
+                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
               >
                 Compliance
-              </Link>
-              <Link
+              </a>
+              <a
                 href="#developers"
-                className="text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white transition-colors duration-200 font-medium"
+                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
               >
                 Developers
-              </Link>
-              <Link
+              </a>
+              <a
                 href="#vision"
-                className="text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white transition-colors duration-200 font-medium"
+                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
               >
                 Vision
-              </Link>
-              <Link
+              </a>
+              <a
                 href="#faq"
-                className="text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white transition-colors duration-200 font-medium"
+                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
               >
                 FAQ
-              </Link>
-              <Link
-                href="#about"
-                className="text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white transition-colors duration-200 font-medium"
-              >
-                About
-              </Link>
+              </a>
             </div>
           </div>
 
@@ -185,49 +179,56 @@ export default function Navigation() {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-t border-gray-200/50 dark:border-gray-700/50 rounded-b-xl">
-              <Link
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-gray-800/95 backdrop-blur-md border-t border-gray-700/50 rounded-b-xl">
+              <a
                 href="#features"
-                className="block text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 font-medium"
+                className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Features
-              </Link>
-              <Link
+              </a>
+              <a
                 href="#how-it-works"
-                className="block text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 font-medium"
+                className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
+                onClick={() => setIsMenuOpen(false)}
               >
                 How It Works
-              </Link>
-              <Link
+              </a>
+              <a
                 href="#compliance"
-                className="block text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 font-medium"
+                className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Compliance
-              </Link>
-              <Link
+              </a>
+              <a
                 href="#developers"
-                className="block text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 font-medium"
+                className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Developers
-              </Link>
-              <Link
+              </a>
+              <a
                 href="#vision"
-                className="block text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 font-medium"
+                className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
+                onClick={() => setIsMenuOpen(false)}
               >
                 Vision
-              </Link>
-              <Link
+              </a>
+              <a
                 href="#faq"
-                className="block text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 font-medium"
+                className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
+                onClick={() => setIsMenuOpen(false)}
               >
                 FAQ
-              </Link>
-              <Link
+              </a>
+              <a
                 href="#about"
-                className="block text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 font-medium"
+                className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
+                onClick={() => setIsMenuOpen(false)}
               >
                 About
-              </Link>
+              </a>
               <button className="w-full mt-4 bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white px-6 py-3 rounded-xl hover:shadow-xl font-semibold text-sm transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
                 Launch App
               </button>
