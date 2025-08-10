@@ -50,12 +50,7 @@ export default function Navigation() {
               >
                 Developers
               </a>
-              <a
-                href="#vision"
-                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
-              >
-                Vision
-              </a>
+
               <a
                 href="#faq"
                 className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
