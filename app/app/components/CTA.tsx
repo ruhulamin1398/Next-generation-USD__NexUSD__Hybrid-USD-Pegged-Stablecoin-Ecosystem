@@ -33,9 +33,9 @@ export default function CTAsection() {
             </h3>
             <p className="text-gray-300 mb-6 sm:mb-8 max-w-3xl mx-auto text-sm sm:text-base md:text-lg leading-relaxed px-4">
               NexUSD is an open source project building the future of
-              stablecoins. We're looking for passionate developers, blockchain
-              enthusiasts, and financial innovators to collaborate and shape the
-              next generation of decentralized finance.
+              stablecoins. We&apos;re looking for passionate developers,
+              blockchain enthusiasts, and financial innovators to collaborate
+              and shape the next generation of decentralized finance.
             </p>
 
             {/* Contribution Stats */}

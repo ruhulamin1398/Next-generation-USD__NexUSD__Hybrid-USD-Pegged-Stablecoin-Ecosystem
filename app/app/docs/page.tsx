@@ -33,7 +33,8 @@ export default function DocsPage() {
               Documentation
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
-              Learn about NexUSD's security measures and development resources.
+              Learn about NexUSD&aposs security measures and development
+              resources.
             </p>
 
             {/* Quick Navigation */}
