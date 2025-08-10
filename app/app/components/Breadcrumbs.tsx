@@ -1,14 +1,6 @@
 "use client";
 import Link from "next/link";
-
-interface BreadcrumbItem {
-  label: string;
-  href: string;
-}
-
-interface BreadcrumbsProps {
-  items: BreadcrumbItem[];
-}
+import { BreadcrumbItem, BreadcrumbsProps } from "../interfaces";
 
 export default function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
