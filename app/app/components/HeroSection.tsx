@@ -1,7 +1,7 @@
 export default function HeroSection() {
   return (
     <>
-      <section className="relative min-h-screen bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 backdrop-blur-sm py-20 lg:py-32 overflow-hidden">
+      <section className="relative min-h-screen bg-gray-900 backdrop-blur-sm py-20 lg:py-32 overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-gray-400/10 dark:bg-gray-600/10 rounded-full blur-3xl animate-pulse"></div>

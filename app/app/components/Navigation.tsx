@@ -8,7 +8,7 @@ export default function Navigation() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <nav className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900  backdrop-blur-sm  shadow-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-50 transition-all duration-300">
+    <nav className="bg-gray-900  backdrop-blur-sm  shadow-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -55,7 +55,7 @@ export default function Navigation() {
 
           {/* Theme Toggle & CTA */}
           <div className="hidden md:flex items-center space-x-4">
-            <button
+            {/* <button
               onClick={toggleTheme}
               className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
               aria-label="Toggle theme"
@@ -89,9 +89,9 @@ export default function Navigation() {
                   />
                 </svg>
               )}
-            </button>
+            </button> */}
 
-            <button className="bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white px-6 py-2.5 rounded-xl hover:shadow-xl font-semibold text-sm transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
+            <button className="bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white px-6 py-2.5 rounded-xl hover:shadow-xl font-semibold text-sm transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 border border-gray-600">
               Launch App
             </button>
           </div>
