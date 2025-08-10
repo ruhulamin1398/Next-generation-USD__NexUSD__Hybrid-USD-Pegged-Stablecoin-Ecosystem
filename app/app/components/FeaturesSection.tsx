@@ -2,7 +2,7 @@ export default function FeaturesSection() {
   const features = [
     {
       icon: "🔐",
-      title: "Dual Collateral Model",
+      title: "Hybrid Collateral Model",
       description:
         "Backed by a combination of regulated fiat reserves and on-chain crypto assets. Ensures both regulatory compliance and decentralization.",
     },

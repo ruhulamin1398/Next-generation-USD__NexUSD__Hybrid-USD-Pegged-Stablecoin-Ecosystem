@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
+import Footer from "./components/Footer";
+import Navigation from "./components/Navigation";
+import CTAsection from "./components/CTA";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,7 +34,13 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300`}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <Navigation />
+          {children}
+
+          <CTAsection />
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -127,7 +127,7 @@ export default function ComplianceSection() {
                   <div className="flex items-center mb-3 sm:mb-4">
                     <div className="w-2 h-2 sm:w-3 sm:h-3 bg-gray-700 rounded-full mr-2 sm:mr-3 animate-pulse"></div>
                     <h4 className="font-bold text-gray-300 dark:text-white text-sm sm:text-base md:text-lg">
-                      Dual Mode Operation
+                      Hybrid Mode Operation
                     </h4>
                   </div>
                   <p className="text-gray-50 dark:text-gray-300 leading-relaxed text-xs sm:text-sm md:text-base">

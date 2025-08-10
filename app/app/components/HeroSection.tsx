@@ -79,7 +79,7 @@ export default function HeroSection() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <div className="group bg-white dark:bg-gray-800 backdrop-blur-md rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
               <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-3">
-                Dual
+                Hybrid
               </div>
               <div className="text-gray-800 dark:text-gray-200 font-semibold text-base sm:text-lg mb-2">
                 Collateral Model

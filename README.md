@@ -9,7 +9,7 @@ We are building a next-generation USD-pegged stablecoin platform backed by both 
 
 ## **Core Features**
 
-### 🔐 **Dual Collateral Model**
+### 🔐 **Hybrid Collateral Model**
 
 - Backed by a combination of **regulated fiat reserves** and **on-chain crypto assets**.
 - Ensures both regulatory compliance and decentralization.

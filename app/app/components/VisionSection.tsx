@@ -34,7 +34,7 @@ export default function VisionSection() {
                     Stability
                   </div>
                   <div className="text-gray-300 leading-relaxed text-xs sm:text-sm md:text-base">
-                    Reliable digital currency backed by dual collateral system
+                    Reliable digital currency backed by Hybrid collateral system
                   </div>
                 </div>
               </div>

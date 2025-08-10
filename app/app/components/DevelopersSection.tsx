@@ -2,7 +2,7 @@ export default function DevelopersSection() {
   return (
     <section
       id="developers"
-      className="min-h-screen flex flex-col justify-center py-12 sm:py-16 md:py-20 bg-white backdrop-blur-sm transition-colors duration-300"
+      className="min-h-screen flex flex-col justify-center py-6 md:py-6 bg-white backdrop-blur-sm transition-colors duration-300"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="text-center mb-8 sm:mb-12 md:mb-16">
@@ -186,7 +186,10 @@ export default function DevelopersSection() {
         </div>
 
         {/* Enhanced Code Example */}
-        <div className="bg-gray-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 text-white shadow-2xl border border-gray-700">
+        <div
+          id="code"
+          className="bg-gray-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 text-white shadow-2xl border border-gray-700"
+        >
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
             <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-4 sm:mb-0">
               Quick Integration Example

@@ -18,7 +18,7 @@ export default function HowItWorksSection() {
             Understanding the innovative
             <span className="text-gray-900 dark:text-white font-semibold">
               {" "}
-              dual-collateral system{" "}
+              hybrid-collateral system{" "}
             </span>
             and seamless swap mechanism
           </p>
@@ -27,7 +27,7 @@ export default function HowItWorksSection() {
         {/* Collateral Model */}
         <div className="mb-16 sm:mb-20 md:mb-24">
           <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-8 sm:mb-10 md:mb-12 text-center px-4">
-            Dual Collateral Model
+            DHybridual Collateral Model
           </h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 md:gap-16 items-center">
             <div className="space-y-6 sm:space-y-8">

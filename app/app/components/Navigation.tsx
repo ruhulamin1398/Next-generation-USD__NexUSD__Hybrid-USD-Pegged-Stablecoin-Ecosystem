@@ -26,37 +26,30 @@ export default function Navigation() {
           {/* Desktop Menu */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
-              <a
-                href="#features"
+              <Link
+                href="/"
                 className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
               >
-                Features
-              </a>
-              <a
-                href="#how-it-works"
+                Home
+              </Link>
+              <Link
+                href="/#how-it-works"
                 className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
               >
                 How It Works
-              </a>
-              <a
-                href="#compliance"
+              </Link>
+              <Link
+                href="/docs"
                 className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
               >
-                Compliance
-              </a>
-              <a
-                href="#developers"
+                Documentation
+              </Link>
+              <Link
+                href="/faq"
                 className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
               >
-                Developers
-              </a>
-
-              <a
-                href="#faq"
-                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
-              >
-                FAQ
-              </a>
+                FAQs
+              </Link>
             </div>
           </div>
 
@@ -189,33 +182,26 @@ export default function Navigation() {
               >
                 How It Works
               </a>
-              <a
-                href="#compliance"
+              <Link
+                href="/docs"
                 className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Compliance
-              </a>
-              <a
-                href="#developers"
+                Documentation
+              </Link>
+              <Link
+                href="/faq"
                 className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Developers
-              </a>
+                FAQs
+              </Link>
               <a
                 href="#vision"
                 className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Vision
-              </a>
-              <a
-                href="#faq"
-                className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                FAQ
               </a>
               <a
                 href="#about"
