@@ -3,8 +3,8 @@ pragma solidity 0.8.30;
 
 /**
  * @title BaseStorage
- * @notice Base storage contract for the Maven token, defining shared state variables and constants.
- * @dev Intended to be inherited by MavenController. Provides upgradeable storage layout for roles, supply, allowlist, blocklist, and storage gap.
+ * @notice Base storage contract for the NexUSD token, defining shared state variables and constants.
+ * @dev Intended to be inherited by NexUSDController. Provides upgradeable storage layout for roles, supply, allowlist, blocklist, and storage gap.
  */
 abstract contract BaseStorage {
     // =========================
@@ -23,7 +23,7 @@ abstract contract BaseStorage {
     bytes32 public constant BRIDGE_OPERATOR_ROLE =
         keccak256("BRIDGE_OPERATOR_ROLE");
 
-    /// @notice Maximum supply of the Maven token (100 million MUSD, 6 decimals).
+    /// @notice Maximum supply of the NexUSD token (100 million NUSD, 6 decimals).
     uint256 public constant MAX_SUPPLY = 100_000_000 * 10 ** 6;
 
     /// @notice Mapping of allowlisted chains for cross-chain operations.

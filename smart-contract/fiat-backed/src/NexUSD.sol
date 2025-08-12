@@ -27,15 +27,15 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import {MavenController} from "./MavenController.sol";
+import {NexUSDController} from "./NexUSDController.sol";
 
 /**
- * @title TestMaven
- * @dev This contract is an implementation of the MavenController for the TestMaven token.
- * @notice It extends MavenController and implements the UUPS upgradeable pattern.
+ * @title NexUSD
+ * @dev This contract is an implementation of the NexUSDController for the NexUSD token.
+ * @notice It extends NexUSDController and implements the UUPS upgradeable pattern.
  * @dev It includes functions for minting, burning, sending tokens across chains, and handling cross-chain transfers.
  */
-contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
+contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
     // =========================
     //      ✅ Errors
     // =========================
@@ -117,7 +117,7 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
     // =========================
 
     /**
-     * @notice Initializes the TestMaven contract with admin and operator roles.
+     * @notice Initializes the NexUSD contract with admin and operator roles.
      * @dev Sets up the token name and symbol, assigns roles, and enables UUPS upgradeability.
      * @param ownerAddress The address to be granted the DEFAULT_ADMIN_ROLE (owner ).
      * @param operator The address to be granted the OPERATOR_ROLE (mint, blocklist, destroy).
@@ -126,7 +126,7 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
         address ownerAddress,
         address operator
     ) public initializer {
-        __MavenController_init("TestMaven", "MUSD", ownerAddress, operator);
+        __NexUSDController_init("NexUSD", "NUSD", ownerAddress, operator);
         __UUPSUpgradeable_init();
     }
 
@@ -135,7 +135,7 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
     // =========================
 
     /**
-     * @notice Mints new MUSD tokens to a specified address.
+     * @notice Mints new NUSD tokens to a specified address.
      * @dev Only callable by OPERATOR_ROLE. Enforces the MAX_SUPPLY limit.
      * @param to The address to receive the minted tokens.
      * @param amount The number of tokens to mint (6 decimals).
@@ -150,7 +150,7 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
     }
 
     /**
-     * @notice Burns MUSD tokens from a specified address.
+     * @notice Burns NUSD tokens from a specified address.
      * @dev Only callable by OPERATOR_ROLE. Used for supply reduction.
      * @param from The address whose tokens will be burned.
      * @param amount The number of tokens to burn (6 decimals).
@@ -164,7 +164,7 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
     }
 
     /**
-     * @notice Sends MUSD tokens to a recipient on another chain.
+     * @notice Sends NUSD tokens to a recipient on another chain.
      * @dev Only callable by allowlisted chains. Burns tokens from the sender's balance.
      * @param destinationChainSelector The selector of the destination chain.
      * @param destinationRecipient The recipient address on the destination chain.
@@ -301,7 +301,7 @@ contract TestMaven is Initializable, UUPSUpgradeable, MavenController {
     // =========================
 
     /**
-     * @notice Returns the number of decimals used for MUSD (fixed at 6).
+     * @notice Returns the number of decimals used for NUSD (fixed at 6).
      * @return uint8 The number of decimals (6).
      */
     function decimals() public pure override returns (uint8) {

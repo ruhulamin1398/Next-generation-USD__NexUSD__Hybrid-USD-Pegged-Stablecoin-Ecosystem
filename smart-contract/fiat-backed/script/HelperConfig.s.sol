@@ -3,8 +3,8 @@ pragma solidity ^0.8.30;
 
 import {Script} from "forge-std/Script.sol";
 
-import {TestMaven} from "../src/TestMaven.sol";
-import {TestMavenV2} from "../src/v2/TestMavenV2.sol";
+import {NexUSD} from "../src/NexUSD.sol";
+import {NexUSDV2} from "../src/v2/NexUSDV2.sol";
 
 abstract contract CodeConstants is Script {
     address immutable OWNER = 0x3ff88B69d1762AA444c85c30C4B0B795f9c48B59;
@@ -17,8 +17,8 @@ abstract contract CodeConstants is Script {
     address immutable USER1 = 0x71D7F36C664Bb2fE8eA895d16AF14928eB812ebB;
     address immutable USER2 = 0xF948d3261917e59F13394423b6e5f1C4D9F85452;
 
-    TestMaven MUSDv1;
-    TestMavenV2 MUSDv2;
+    NexUSD NUSDv1;
+    NexUSDV2 NUSDv2;
     address proxy;
 
     mapping(uint64 => address) public CCIPchains; // all chains for ccip

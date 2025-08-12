@@ -1,7 +1,7 @@
-# TestMaven – Upgradeable USD Stablecoin
+# NexUSD – Upgradeable USD Stablecoin
 
-## What is TestMaven?
-TestMaven is a USD-pegged ERC-20 stablecoin with:
+## What is NexUSD?
+NexUSD is a USD-pegged ERC-20 stablecoin with:
 - Upgradeability (UUPS proxy)
 - Admin-only mint/burn
 - Max supply cap (100 million tokens)
@@ -72,9 +72,9 @@ make test-all
 ## Contract Overview
 
 - `BaseStorage.sol`: Storage layout and constants.
-- `MavenController.sol`: Core logic, roles, blocklist, pause, and bridge.
-- `TestMaven.sol`: Main token contract, upgradeable, emits bridge events.
-- `TestMavenV2.sol`: Upgraded version with same features and upgrade safety.
+- `NexUSDController.sol`: Core logic, roles, blocklist, pause, and bridge.
+- `NexUSD.sol`: Main token contract, upgradeable, emits bridge events.
+- `NexUSDV2.sol`: Upgraded version with same features and upgrade safety.
 
 ## Upgrade Notes
 - Upgrades are only allowed by `ADMIN_ROLE`.

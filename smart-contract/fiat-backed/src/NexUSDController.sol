@@ -33,13 +33,13 @@ import {ERC20PermitUpgradeable} from "@openzeppelin/contracts-upgradeable/token/
 import {BaseStorage} from "./BaseStorage.sol";
 
 /**
- * @title MavenController
- * @notice Controller contract for the Maven token, managing roles, blocklists, allowlists, and core token logic.
+ * @title NexUSDController
+ * @notice Controller contract for the NexUSD token, managing roles, blocklists, allowlists, and core token logic.
  * @dev Inherits from BaseStorage, ERC20, ERC20Pausable, AccessControl, and ERC20Permit (all upgradeable).
  *      Designed for upgradeability and secure role-based access control.
  */
 
-abstract contract MavenController is
+abstract contract NexUSDController is
     BaseStorage,
     ERC20Upgradeable,
     ERC20PausableUpgradeable,
@@ -98,13 +98,13 @@ abstract contract MavenController is
     // =========================
     //      ✅ Initializer
     // =========================
-    /// @notice Initializes the MavenController contract with token details and role assignments.
+    /// @notice Initializes the NexUSDController contract with token details and role assignments.
     /// @dev Sets up ERC20 name/symbol, initializes access control, pausable, and permit modules. Grants admin and operator roles.
-    /// @param name The name of the ERC20 token (e.g., "TestMaven").
-    /// @param symbol The symbol of the ERC20 token (e.g., "MUSD").
+    /// @param name The name of the ERC20 token (e.g., "NexUSD").
+    /// @param symbol The symbol of the ERC20 token (e.g., "NUSD").
     /// @param ownerAddress The address to be granted DEFAULT_ADMIN_ROLE (owner).
     /// @param operator The address to be granted OPERATOR_ROLE (mint, burn, blocklist).
-    function __MavenController_init(
+    function __NexUSDController_init(
         string memory name,
         string memory symbol,
         address ownerAddress,

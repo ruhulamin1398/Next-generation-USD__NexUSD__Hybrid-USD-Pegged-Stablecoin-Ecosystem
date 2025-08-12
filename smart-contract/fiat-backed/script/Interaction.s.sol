@@ -7,7 +7,7 @@ import {DevOpsTools} from "lib/foundry-devops/src/DevOpsTools.sol";
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import {TestMaven} from "../src/TestMaven.sol";
+import {NexUSD} from "../src/NexUSD.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract Interaction is HelperConfig {
@@ -16,7 +16,7 @@ contract Interaction is HelperConfig {
             "ERC1967Proxy",
             block.chainid
         );
-        MUSDv1 = TestMaven(proxy);
+        NUSDv1 = NexUSD(proxy);
 
         vm.startBroadcast();
 
@@ -27,7 +27,7 @@ contract Interaction is HelperConfig {
     }
 
     function mint() public {
-        MUSDv1.mint(USER1, 1000 * 10 ** 6);
+        NUSDv1.mint(USER1, 1000 * 10 ** 6);
     }
 
     // function transfer() public {

@@ -2,22 +2,22 @@
 pragma solidity 0.8.30;
 
 import {console} from "forge-std/Script.sol";
-import {TestMaven} from "../src/TestMaven.sol";
+import {NexUSD} from "../src/NexUSD.sol";
 import {CodeConstants} from "./HelperConfig.s.sol";
 
 import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
 
-contract DeployMaven is CodeConstants {
+contract DeployNexUSD is CodeConstants {
     function run() external returns (address) {
-        address proxy = deployMaven();
+        address proxy = deployNexUSD();
         return proxy;
     }
 
-    function deployMaven() public returns (address) {
+    function deployNexUSD() public returns (address) {
         vm.startBroadcast();
         address proxy = Upgrades.deployUUPSProxy(
-            "TestMaven.sol",
-            abi.encodeCall(TestMaven.initialize, (OWNER, OPERATOR))
+            "NexUSD.sol",
+            abi.encodeCall(NexUSD.initialize, (OWNER, OPERATOR))
         );
 
         vm.stopBroadcast();
