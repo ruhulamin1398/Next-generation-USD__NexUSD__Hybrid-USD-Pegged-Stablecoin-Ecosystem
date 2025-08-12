@@ -30,47 +30,47 @@ contract V1ToV2 is HelperTest {
     function testStorageAndBalancesRetainedAfterUpgrade() public {
         // Mint tokens to USER1 before upgrade
         vm.startPrank(OPERATOR);
-        MUSDv1.mint(USER1, 1000e6);
+        NUSDv1.mint(USER1, 1000e6);
         vm.stopPrank();
-        assertEq(MUSDv1.balanceOf(USER1), 1000e6);
+        assertEq(NUSDv1.balanceOf(USER1), 1000e6);
 
         // Upgrade
         upgradeToV2();
 
         // Check balance is retained
-        assertEq(MUSDv2.balanceOf(USER1), 1000e6);
+        assertEq(NUSDv2.balanceOf(USER1), 1000e6);
     }
 
     function testRolesAndBlocklistRetainedAfterUpgrade() public {
         // Blocklist USER1 before upgrade
         vm.startPrank(OPERATOR);
-        MUSDv1.addToBlocklist(USER1);
+        NUSDv1.addToBlocklist(USER1);
         vm.stopPrank();
-        assertTrue(MUSDv1.isBlocklisted(USER1));
+        assertTrue(NUSDv1.isBlocklisted(USER1));
 
         // Upgrade
         upgradeToV2();
 
         // Blocklist status should persist
-        assertTrue(MUSDv2.isBlocklisted(USER1));
+        assertTrue(NUSDv2.isBlocklisted(USER1));
     }
 
     function testMintBurnAndEventsAfterUpgrade() public {
         // Mint before upgrade
         vm.startPrank(OPERATOR);
-        MUSDv1.mint(USER1, 500e6);
+        NUSDv1.mint(USER1, 500e6);
         vm.stopPrank();
-        assertEq(MUSDv1.balanceOf(USER1), 500e6);
+        assertEq(NUSDv1.balanceOf(USER1), 500e6);
 
         // Upgrade
         upgradeToV2();
 
         // Mint and burn after upgrade
         vm.startPrank(OPERATOR);
-        MUSDv2.mint(USER1, 100e6);
-        MUSDv2.burn(USER1, 50e6);
+        NUSDv2.mint(USER1, 100e6);
+        NUSDv2.burn(USER1, 50e6);
         vm.stopPrank();
-        assertEq(MUSDv2.balanceOf(USER1), 550e6);
+        assertEq(NUSDv2.balanceOf(USER1), 550e6);
     }
 
     function testBridgeRequestEventAfterUpgrade() public {
@@ -81,14 +81,14 @@ contract V1ToV2 is HelperTest {
 
         // Mint to USER1 and test send emits BridgeRequest
         vm.startPrank(OPERATOR);
-        MUSDv2.mint(USER1, 1000e6);
+        NUSDv2.mint(USER1, 1000e6);
         vm.stopPrank();
 
         vm.recordLogs();
 
         vm.prank(USER1);
         // We'll just check that the event is emitted, not the exact values
-        MUSDv2.send(amoy, USER2, 100e6);
+        NUSDv2.send(amoy, USER2, 100e6);
 
         Vm.Log[] memory entries = vm.getRecordedLogs();
 
@@ -110,39 +110,39 @@ contract V1ToV2 is HelperTest {
         address ownerAddr = vm.addr(privateKey);
         address spender = address(0xB0B);
         uint256 value = 123e6;
-        uint256 nonce = MUSDv1.nonces(ownerAddr);
+        uint256 nonce = NUSDv1.nonces(ownerAddr);
         // For simplicity, skip actual signature, just check nonce increments and allowance after upgrade
         vm.startPrank(ownerAddr);
-        MUSDv1.approve(spender, value);
+        NUSDv1.approve(spender, value);
         vm.stopPrank();
-        assertEq(MUSDv1.allowance(ownerAddr, spender), value);
+        assertEq(NUSDv1.allowance(ownerAddr, spender), value);
 
         // Upgrade
         upgradeToV2();
 
         // Allowance and nonce should persist
-        assertEq(MUSDv2.allowance(ownerAddr, spender), value);
-        assertEq(MUSDv2.nonces(ownerAddr), nonce);
+        assertEq(NUSDv2.allowance(ownerAddr, spender), value);
+        assertEq(NUSDv2.nonces(ownerAddr), nonce);
     }
 
     function testPauseUnpauseAfterUpgrade() public {
         // Pause before upgrade
         vm.startPrank(OWNER);
-        MUSDv1.pause();
+        NUSDv1.pause();
         vm.stopPrank();
-        assertTrue(MUSDv1.paused());
+        assertTrue(NUSDv1.paused());
 
         // Upgrade
         upgradeToV2();
 
         // Should still be paused
-        assertTrue(MUSDv2.paused());
+        assertTrue(NUSDv2.paused());
 
         // Unpause and check
         vm.startPrank(OWNER);
-        MUSDv2.unpause();
+        NUSDv2.unpause();
         vm.stopPrank();
-        assertFalse(MUSDv2.paused());
+        assertFalse(NUSDv2.paused());
     }
 
     function testbridgeMintAfterUpgrade() public {
@@ -159,23 +159,23 @@ contract V1ToV2 is HelperTest {
         uint256 fee = 1e6;
         vm.stopPrank();
         vm.startPrank(BRIDGE_OPERATOR);
-        MUSDv2.bridgeMint(messageId, sourceChain, recipient, amount, fee);
+        NUSDv2.bridgeMint(messageId, sourceChain, recipient, amount, fee);
         vm.stopPrank();
-        assertEq(MUSDv2.balanceOf(recipient), amount - fee);
+        assertEq(NUSDv2.balanceOf(recipient), amount - fee);
     }
 
     function testFuzzUpgradeDoesNotCorruptStorage(uint256 fuzzAmount) public {
         fuzzAmount = bound(fuzzAmount, 1, 10_000_000e6);
         // Mint fuzzed amount before upgrade
         vm.startPrank(OPERATOR);
-        MUSDv1.mint(USER1, uint256(fuzzAmount));
+        NUSDv1.mint(USER1, uint256(fuzzAmount));
         vm.stopPrank();
-        assertEq(MUSDv1.balanceOf(USER1), uint256(fuzzAmount));
+        assertEq(NUSDv1.balanceOf(USER1), uint256(fuzzAmount));
 
         // Upgrade
         upgradeToV2();
 
         // Balance should be unchanged
-        assertEq(MUSDv2.balanceOf(USER1), uint256(fuzzAmount));
+        assertEq(NUSDv2.balanceOf(USER1), uint256(fuzzAmount));
     }
 }

@@ -1,4 +1,4 @@
-# Audit of TestMaven Smart Contracts
+# Audit of NexUSD Smart Contracts
 
 ## Audit Scope
 
@@ -6,11 +6,11 @@ The following contracts were included in the scope of this audit:
 
 - `BaseStorage.sol`
 - `MavenController.sol`
-- `TestMaven.sol`
+- `NexUSD.sol`
 
 ## Summary
 
-The TestMaven system implements an upgradeable ERC20 token (MUSD) with advanced access control, pausable functionality, blocklist mechanisms, and a cross-chain bridge pattern. The architecture separates storage, core logic, and upgradeable implementation for maintainability and upgrade safety. The contracts leverage OpenZeppelin's upgradeable libraries and follow best practices for modularity and security.
+The NexUSD system implements an upgradeable ERC20 token (NUSD) with advanced access control, pausable functionality, blocklist mechanisms, and a cross-chain bridge pattern. The architecture separates storage, core logic, and upgradeable implementation for maintainability and upgrade safety. The contracts leverage OpenZeppelin's upgradeable libraries and follow best practices for modularity and security.
 
 ## Key Findings
 

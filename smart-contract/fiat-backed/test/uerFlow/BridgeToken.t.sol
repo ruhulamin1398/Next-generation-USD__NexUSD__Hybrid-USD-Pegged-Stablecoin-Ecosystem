@@ -3,9 +3,8 @@
 pragma solidity ^0.8.30;
 
 import {Test, console} from "forge-std/Test.sol";
-import {TestMaven} from "../../src/TestMaven.sol";
+import {NexUSD} from "../../src/NexUSD.sol";
 import {BaseStorage} from "../../src/BaseStorage.sol";
-import {MavenController} from "../../src/MavenController.sol";
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import {IAccessControl} from "@openzeppelin/contracts/access/IAccessControl.sol";
 import {ERC1967Proxy} from "lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
@@ -28,17 +27,17 @@ contract BridgeTokenFlowTest is Test, HelperConfig, HelperTest {
 
         // Allow the chain for cross-chain transfer
         vm.prank(ADMIN);
-        MUSDv1.addAllowlistedChain(targetChainSelector, address(MUSDv1));
+        NUSDv1.addAllowlistedChain(targetChainSelector, address(NUSDv1));
 
         // Mint to USER1
         vm.prank(OPERATOR);
-        MUSDv1.mint(USER1, amount);
-        assertEq(MUSDv1.balanceOf(USER1), amount);
+        NUSDv1.mint(USER1, amount);
+        assertEq(NUSDv1.balanceOf(USER1), amount);
 
         // USER1 initiates bridge send (burns tokens)
         vm.startPrank(USER1);
         vm.recordLogs();
-        bytes32 messageId = MUSDv1.send(
+        bytes32 messageId = NUSDv1.send(
             targetChainSelector,
             destinationRecipient,
             amount
@@ -55,12 +54,12 @@ contract BridgeTokenFlowTest is Test, HelperConfig, HelperTest {
             keccak256("BridgeRequest(bytes32,uint64,address,address,uint256)")
         );
         vm.stopPrank();
-        assertEq(MUSDv1.balanceOf(USER1), 0);
+        assertEq(NUSDv1.balanceOf(USER1), 0);
 
         // OPERATOR executes bridgeMint on destination chain
         vm.prank(BRIDGE_OPERATOR);
         vm.recordLogs();
-        MUSDv1.bridgeMint(
+        NUSDv1.bridgeMint(
             messageId,
             targetChainSelector,
             destinationRecipient,
@@ -83,7 +82,7 @@ contract BridgeTokenFlowTest is Test, HelperConfig, HelperTest {
             logs2[2].topics[0],
             keccak256("BridegeTokenReceived(bytes32,address,uint64,uint256)")
         );
-        assertEq(MUSDv1.balanceOf(destinationRecipient), amount - fee);
-        assertEq(MUSDv1.balanceOf(OWNER), fee);
+        assertEq(NUSDv1.balanceOf(destinationRecipient), amount - fee);
+        assertEq(NUSDv1.balanceOf(OWNER), fee);
     }
 }

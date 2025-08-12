@@ -86,7 +86,7 @@ export default function HowItWorksSection() {
                 <div>
                   <div className="flex items-center justify-between mb-2 sm:mb-3">
                     <span className="text-gray-700 dark:text-gray-300 font-semibold text-sm sm:text-base">
-                      Fiat-Backed MUSD
+                      Fiat-Backed NexUSD
                     </span>
                     <span className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">
                       67%
@@ -100,7 +100,7 @@ export default function HowItWorksSection() {
                 <div>
                   <div className="flex items-center justify-between mb-2 sm:mb-3">
                     <span className="text-gray-700 dark:text-gray-300 font-semibold text-sm sm:text-base">
-                      Crypto-Backed MUSD
+                      Crypto-Backed NexUSD
                     </span>
                     <span className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-200">
                       33%
@@ -145,7 +145,7 @@ export default function HowItWorksSection() {
                   <div className="space-y-2 sm:space-y-3">
                     <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl p-3 sm:p-4 backdrop-blur-sm">
                       <div className="text-gray-900 dark:text-gray-100 font-bold text-lg sm:text-2xl">
-                        100 MUSD
+                        100 NexUSD
                       </div>
                       <div className="text-gray-700 dark:text-gray-300 font-medium text-sm sm:text-base">
                         Crypto-backed
@@ -185,7 +185,7 @@ export default function HowItWorksSection() {
                   <div className="space-y-2 sm:space-y-3">
                     <div className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl p-3 sm:p-4 backdrop-blur-sm">
                       <div className="text-gray-900 dark:text-gray-100 font-bold text-lg sm:text-2xl">
-                        140 MUSD
+                        140 NexUSD
                       </div>
                       <div className="text-gray-700 dark:text-gray-300 font-medium text-sm sm:text-base">
                         Fiat-backed

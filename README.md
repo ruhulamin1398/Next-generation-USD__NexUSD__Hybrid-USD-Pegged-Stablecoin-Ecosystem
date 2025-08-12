@@ -42,9 +42,9 @@ When someone wants to change their **crypto-backed stablecoins** into **fiat-bac
 
 #### Example:
 
-- **Alice** has **100 MUSD** (crypto-backed), backed by **$140 worth of Ethereum**.
-- **Bob** (liquidity provider) takes Alice’s **100 MUSD (crypto-backed)**.
-- Bob gives Alice **140 MUSD (fiat-backed)** in return.
+- **Alice** has **100 NexUSD** (crypto-backed), backed by **$140 worth of Ethereum**.
+- **Bob** (liquidity provider) takes Alice’s **100 NexUSD (crypto-backed)**.
+- Bob gives Alice **140 NexUSD (fiat-backed)** in return.
 - The swap can also work in reverse (fiat to crypto) when needed.
 
 ---

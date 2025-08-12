@@ -31,7 +31,7 @@ contract Interaction is HelperConfig {
     }
 
     // function transfer() public {
-    //     MUSD.transfer(0x3a93D544242a24c66Eb1BCceE00d7AA04f55B12c, 15 * 10 ** 6);
+    //     NUSD.transfer(0x3a93D544242a24c66Eb1BCceE00d7AA04f55B12c, 15 * 10 ** 6);
     // }
 
     function fundLink() public {
@@ -42,10 +42,10 @@ contract Interaction is HelperConfig {
     }
 
     // function send() public {
-    //     MUSD.send(
+    //     NUSD.send(
     //         CCIPchains["BNB"].chainSelector,
     //         USER2,
-    //         MUSD_BNB_CONTRACT,
+    //         NUSD_BNB_CONTRACT,
     //         15 * 10 ** 6
     //     );
     // }
