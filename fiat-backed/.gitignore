@@ -1,0 +1,15 @@
+# Compiler files
+cache/
+out/
+
+
+broadcast/
+
+ 
+# Docs
+docs/
+
+# Dotenv file
+.env
+node_modules/
+/broadcast/
