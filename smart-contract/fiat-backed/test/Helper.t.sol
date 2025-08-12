@@ -4,39 +4,39 @@ pragma solidity ^0.8.30;
 import {Test} from "forge-std/Test.sol";
 import {Script} from "forge-std/Script.sol";
 
-import {TestMaven} from "../src/TestMaven.sol";
-import {TestMavenV2} from "../src/v2/TestMavenV2.sol";
+import {NexUSD} from "../src/NexUSD.sol";
+import {NexUSDV2} from "../src/v2/NexUSDV2.sol";
 
-import {DeployMaven} from "../script/DeployMaven.s.sol";
-import {UpgradeMaven} from "../script/UpgradeMaven.s.sol";
+import {DeployNexUSD} from "../script/DeployNexUSD.s.sol";
+import {UpgradeNexUSD} from "../script/UpgradeNexUSD.s.sol";
 
 import {HelperConfig} from "../script/HelperConfig.s.sol";
 
 contract HelperTest is Test, HelperConfig {
     function deployV1() public {
-        DeployMaven deployer = new DeployMaven();
+        DeployNexUSD deployer = new DeployNexUSD();
         proxy = deployer.run();
-        MUSDv1 = TestMaven(proxy);
+        NUSDv1 = NexUSD(proxy);
         vm.startPrank(OWNER);
-        MUSDv1.grantRole(MUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR);
+        NUSDv1.grantRole(NUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR);
         vm.stopPrank();
     }
 
     function upgradeToV2() public {
-        UpgradeMaven upgrader = new UpgradeMaven();
+        UpgradeNexUSD upgrader = new UpgradeNexUSD();
         upgrader.run(proxy);
-        MUSDv2 = TestMavenV2(proxy);
+        NUSDv2 = NexUSDV2(proxy);
     }
 
     function allowNewChainV1(uint64 chainSelector) public {
-        vm.prank(ADMIN);
-        MUSDv1.addAllowlistedChain(chainSelector, CCIPchains[chainSelector]);
+        vm.startPrank(ADMIN);
+        NUSDv1.addAllowlistedChain(chainSelector, CCIPchains[chainSelector]);
         vm.stopPrank();
     }
 
     function allowNewChainV2(uint64 chainSelector) public {
-        vm.prank(ADMIN);
-        MUSDv2.addAllowlistedChain(chainSelector, CCIPchains[chainSelector]);
+        vm.startPrank(ADMIN);
+        NUSDv2.addAllowlistedChain(chainSelector, CCIPchains[chainSelector]);
         vm.stopPrank();
     }
 }

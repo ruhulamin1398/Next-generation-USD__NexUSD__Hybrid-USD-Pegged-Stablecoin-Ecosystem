@@ -3,9 +3,9 @@
 pragma solidity ^0.8.30;
 
 import {console, console2} from "forge-std/Script.sol";
-import {TestMaven} from "../../src/TestMaven.sol";
+import {NexUSD} from "../../src/NexUSD.sol";
 
-import {DeployMaven} from "../../script/DeployMaven.s.sol";
+import {DeployNexUSD} from "../../script/DeployNexUSD.s.sol";
 
 import {HelperTest} from "../Helper.t.sol";
 
@@ -17,14 +17,14 @@ contract V1ToV2 is HelperTest {
     }
 
     function testVersionAndDecimalsAfterUpgrade() public {
-        assertEq(MUSDv1.version(), "1.0");
-        assertEq(MUSDv1.decimals(), 6);
+        assertEq(NUSDv1.version(), "1.0");
+        assertEq(NUSDv1.decimals(), 6);
 
         // Upgrade
         upgradeToV2();
 
-        assertEq(MUSDv2.version(), "2.0");
-        assertEq(MUSDv2.decimals(), 6);
+        assertEq(NUSDv2.version(), "2.0");
+        assertEq(NUSDv2.decimals(), 6);
     }
 
     function testStorageAndBalancesRetainedAfterUpgrade() public {
