@@ -126,7 +126,7 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
         address ownerAddress,
         address operator
     ) public initializer {
-        __NexUSDController_init("NexUSD", "NexUSD", ownerAddress, operator);
+        __NexUSDController_init("Next Generation USD", "NexUSD", ownerAddress, operator);
         __UUPSUpgradeable_init();
     }
 
