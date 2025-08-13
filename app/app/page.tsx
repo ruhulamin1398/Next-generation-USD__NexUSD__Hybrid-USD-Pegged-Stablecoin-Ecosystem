@@ -1,6 +1,7 @@
 import Navigation from "./components/Navigation";
 import HeroSection from "./components/HeroSection";
 import FeaturesSection from "./components/FeaturesSection";
+import MultiChainSection from "./components/MultiChainSection";
 import HowItWorksSection from "./components/HowItWorksSection";
 import VisionSection from "./components/VisionSection";
 import Footer from "./components/Footer";
@@ -12,7 +13,7 @@ export default function Home() {
     <div className="min-h-screen">
       <HeroSection />
       <FeaturesSection />
-
+      <MultiChainSection />
       <ComplianceSection />
       <HowItWorksSection />
       <VisionSection />

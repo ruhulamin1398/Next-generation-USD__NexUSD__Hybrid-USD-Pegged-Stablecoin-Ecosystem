@@ -1,5 +1,11 @@
 # NexUSD Fiat backed contract – Next-generation USD (NexUSD)- USD paged stable coin
 
+## Deployed at
+
+```
+ Amoy-Polygon : 0x6Db9d8fea1B96FE25B2382a6b26656D9Eb260502
+```
+
 ## What is NexUSD?
 
 NexUSD is a USD-pegged ERC-20 stablecoin with:
