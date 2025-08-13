@@ -13,3 +13,4 @@ docs/
 .env
 node_modules/
 /broadcast/
+lib/

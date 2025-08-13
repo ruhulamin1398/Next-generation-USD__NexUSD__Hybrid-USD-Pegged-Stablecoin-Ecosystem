@@ -39,6 +39,13 @@ export default function Navigation() {
                 How It Works
               </Link>
               <Link
+                href="/#multichain"
+                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
+                title="NexUSD Goes Multi-Chain - Access NexUSD across multiple blockchain testnet networks with both crypto-backed and fiat-backed implementations"
+              >
+                Multi-Chain
+              </Link>
+              <Link
                 href="/docs"
                 className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
               >
@@ -181,6 +188,13 @@ export default function Navigation() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 How It Works
+              </a>
+              <a
+                href="#multichain"
+                className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Multi-Chain
               </a>
               <Link
                 href="/docs"
