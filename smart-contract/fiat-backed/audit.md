@@ -10,7 +10,7 @@ The following contracts were included in the scope of this audit:
 
 ## Summary
 
-The NexUSD system implements an upgradeable ERC20 token (NUSD) with advanced access control, pausable functionality, blocklist mechanisms, and a cross-chain bridge pattern. The architecture separates storage, core logic, and upgradeable implementation for maintainability and upgrade safety. The contracts leverage OpenZeppelin's upgradeable libraries and follow best practices for modularity and security.
+The NexUSD system implements an upgradeable ERC20 token (NexUSD) with advanced access control, pausable functionality, blocklist mechanisms, and a cross-chain bridge pattern. The architecture separates storage, core logic, and upgradeable implementation for maintainability and upgrade safety. The contracts leverage OpenZeppelin's upgradeable libraries and follow best practices for modularity and security.
 
 ## Key Findings
 
@@ -24,12 +24,11 @@ The NexUSD system implements an upgradeable ERC20 token (NUSD) with advanced acc
 
 ### Potential Issues and Recommendations
 
-| Severity         | Issue                                             | Recommendation                                                                                                 |
-|------------------|--------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
-| Informational    | Centralized Bridge Mechanism                      | Consider a decentralized or automated bridge (e.g., relayers, light clients, or third-party bridge providers). |
-| Low              | Centralization of Power                           | Use a multi-signature wallet or DAO for `DEFAULT_ADMIN_ROLE` to reduce single point of failure.                |
-| Low              | Bridge Max Supply Race Condition                  | Implement atomicity or compensation logic to prevent loss of funds if destination mint fails after source burn. |
-
+| Severity      | Issue                            | Recommendation                                                                                                  |
+| ------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Informational | Centralized Bridge Mechanism     | Consider a decentralized or automated bridge (e.g., relayers, light clients, or third-party bridge providers).  |
+| Low           | Centralization of Power          | Use a multi-signature wallet or DAO for `DEFAULT_ADMIN_ROLE` to reduce single point of failure.                 |
+| Low           | Bridge Max Supply Race Condition | Implement atomicity or compensation logic to prevent loss of funds if destination mint fails after source burn. |
 
 ## Detailed Findings
 
@@ -69,9 +68,9 @@ This centralization of power creates a single point of failure. If the account w
 - **Root Cause:** Lack of atomicity between burn (source) and mint (destination) operations across chains.
 
 **Recommendation:**
+
 - Implement a compensation or refund mechanism if the destination mint fails (e.g., allow the operator to re-mint on the source chain in such cases).
 - Consider using a two-phase commit or escrow pattern to ensure atomicity, or leverage cross-chain messaging protocols that support rollback on failure.
-
 
 ## Additional Recommendations
 
@@ -81,7 +80,3 @@ This centralization of power creates a single point of failure. If the account w
   - [OpenZeppelin Upgradeable Contracts](https://docs.openzeppelin.com/contracts/4.x/upgradeable)
   - [EIP-2535: Diamonds](https://eips.ethereum.org/EIPS/eip-2535)
   - [EIP-2612: Permit](https://eips.ethereum.org/EIPS/eip-2612)
-
- 
-
-

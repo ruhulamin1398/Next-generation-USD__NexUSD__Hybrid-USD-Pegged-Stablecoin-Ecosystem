@@ -23,7 +23,7 @@ abstract contract BaseStorage {
     bytes32 public constant BRIDGE_OPERATOR_ROLE =
         keccak256("BRIDGE_OPERATOR_ROLE");
 
-    /// @notice Maximum supply of the NexUSD token (100 million NUSD, 6 decimals).
+    /// @notice Maximum supply of the NexUSD token (100 million NexUSD, 6 decimals).
     uint256 public constant MAX_SUPPLY = 100_000_000 * 10 ** 6;
 
     /// @notice Mapping of allowlisted chains for cross-chain operations.

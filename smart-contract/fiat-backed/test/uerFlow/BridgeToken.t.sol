@@ -27,17 +27,17 @@ contract BridgeTokenFlowTest is Test, HelperConfig, HelperTest {
 
         // Allow the chain for cross-chain transfer
         vm.prank(ADMIN);
-        NUSDv1.addAllowlistedChain(targetChainSelector, address(NUSDv1));
+        NexUSDv1.addAllowlistedChain(targetChainSelector, address(NexUSDv1));
 
         // Mint to USER1
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER1, amount);
-        assertEq(NUSDv1.balanceOf(USER1), amount);
+        NexUSDv1.mint(USER1, amount);
+        assertEq(NexUSDv1.balanceOf(USER1), amount);
 
         // USER1 initiates bridge send (burns tokens)
         vm.startPrank(USER1);
         vm.recordLogs();
-        bytes32 messageId = NUSDv1.send(
+        bytes32 messageId = NexUSDv1.send(
             targetChainSelector,
             destinationRecipient,
             amount
@@ -54,12 +54,12 @@ contract BridgeTokenFlowTest is Test, HelperConfig, HelperTest {
             keccak256("BridgeRequest(bytes32,uint64,address,address,uint256)")
         );
         vm.stopPrank();
-        assertEq(NUSDv1.balanceOf(USER1), 0);
+        assertEq(NexUSDv1.balanceOf(USER1), 0);
 
         // OPERATOR executes bridgeMint on destination chain
         vm.prank(BRIDGE_OPERATOR);
         vm.recordLogs();
-        NUSDv1.bridgeMint(
+        NexUSDv1.bridgeMint(
             messageId,
             targetChainSelector,
             destinationRecipient,
@@ -82,7 +82,7 @@ contract BridgeTokenFlowTest is Test, HelperConfig, HelperTest {
             logs2[2].topics[0],
             keccak256("BridegeTokenReceived(bytes32,address,uint64,uint256)")
         );
-        assertEq(NUSDv1.balanceOf(destinationRecipient), amount - fee);
-        assertEq(NUSDv1.balanceOf(OWNER), fee);
+        assertEq(NexUSDv1.balanceOf(destinationRecipient), amount - fee);
+        assertEq(NexUSDv1.balanceOf(OWNER), fee);
     }
 }

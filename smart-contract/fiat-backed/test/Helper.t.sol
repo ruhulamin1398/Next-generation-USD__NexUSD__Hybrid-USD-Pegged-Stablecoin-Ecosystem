@@ -16,27 +16,27 @@ contract HelperTest is Test, HelperConfig {
     function deployV1() public {
         DeployNexUSD deployer = new DeployNexUSD();
         proxy = deployer.run();
-        NUSDv1 = NexUSD(proxy);
+        NexUSDv1 = NexUSD(proxy);
         vm.startPrank(OWNER);
-        NUSDv1.grantRole(NUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR);
+        NexUSDv1.grantRole(NexUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR);
         vm.stopPrank();
     }
 
     function upgradeToV2() public {
         UpgradeNexUSD upgrader = new UpgradeNexUSD();
         upgrader.run(proxy);
-        NUSDv2 = NexUSDV2(proxy);
+        NexUSDv2 = NexUSDV2(proxy);
     }
 
     function allowNewChainV1(uint64 chainSelector) public {
         vm.startPrank(ADMIN);
-        NUSDv1.addAllowlistedChain(chainSelector, CCIPchains[chainSelector]);
+        NexUSDv1.addAllowlistedChain(chainSelector, CCIPchains[chainSelector]);
         vm.stopPrank();
     }
 
     function allowNewChainV2(uint64 chainSelector) public {
         vm.startPrank(ADMIN);
-        NUSDv2.addAllowlistedChain(chainSelector, CCIPchains[chainSelector]);
+        NexUSDv2.addAllowlistedChain(chainSelector, CCIPchains[chainSelector]);
         vm.stopPrank();
     }
 }

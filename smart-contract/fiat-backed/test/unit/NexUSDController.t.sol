@@ -19,81 +19,81 @@ contract NexUSDControllerTest is HelperConfig, HelperTest {
 
     function testAddToBlocklist() public {
         vm.startPrank(OPERATOR);
-        NUSDv1.addToBlocklist(USER);
-        assertEq(NUSDv1.isBlocklisted(USER), true);
+        NexUSDv1.addToBlocklist(USER);
+        assertEq(NexUSDv1.isBlocklisted(USER), true);
         vm.stopPrank();
     }
 
     function testRemoveFromBlocklist() public {
         vm.startPrank(OPERATOR);
-        NUSDv1.addToBlocklist(USER);
-        NUSDv1.removeFromBlocklist(USER);
-        assertEq(NUSDv1.isBlocklisted(USER), false);
+        NexUSDv1.addToBlocklist(USER);
+        NexUSDv1.removeFromBlocklist(USER);
+        assertEq(NexUSDv1.isBlocklisted(USER), false);
         vm.stopPrank();
     }
 
     function testBlocklistPreventsTransfer() public {
         uint256 amount = 1000 * 1e6;
         vm.startPrank(OPERATOR);
-        NUSDv1.mint(USER, amount);
-        NUSDv1.addToBlocklist(USER);
+        NexUSDv1.mint(USER, amount);
+        NexUSDv1.addToBlocklist(USER);
         vm.stopPrank();
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.transfer(USER, amount);
+        NexUSDv1.transfer(USER, amount);
     }
 
     function testUnblocklistAllowsTransfer() public {
         uint256 amount = 1000 * 1e6;
         vm.startPrank(OPERATOR);
-        NUSDv1.mint(USER, amount);
-        NUSDv1.addToBlocklist(USER);
-        NUSDv1.removeFromBlocklist(USER);
+        NexUSDv1.mint(USER, amount);
+        NexUSDv1.addToBlocklist(USER);
+        NexUSDv1.removeFromBlocklist(USER);
         vm.stopPrank();
         vm.prank(USER);
-        NUSDv1.transfer(USER2, amount);
-        assertEq(NUSDv1.balanceOf(USER2), amount);
+        NexUSDv1.transfer(USER2, amount);
+        assertEq(NexUSDv1.balanceOf(USER2), amount);
     }
 
     function testPauseAndUnpause() public {
         vm.prank(OWNER);
-        NUSDv1.pause();
-        assertTrue(NUSDv1.paused());
+        NexUSDv1.pause();
+        assertTrue(NexUSDv1.paused());
         vm.prank(OWNER);
-        NUSDv1.unpause();
-        assertFalse(NUSDv1.paused());
+        NexUSDv1.unpause();
+        assertFalse(NexUSDv1.paused());
     }
 
     function testPauseRevertsIfNotOwner() public {
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.pause();
+        NexUSDv1.pause();
     }
 
     function testChangeOwner() public {
         address newOwner = USER2;
         vm.prank(OWNER);
-        NUSDv1.changeOwner(newOwner);
+        NexUSDv1.changeOwner(newOwner);
         // Should have new owner role
-        assertTrue(NUSDv1.hasRole(NUSDv1.DEFAULT_ADMIN_ROLE(), newOwner));
-        assertFalse(NUSDv1.hasRole(NUSDv1.DEFAULT_ADMIN_ROLE(), OWNER));
+        assertTrue(NexUSDv1.hasRole(NexUSDv1.DEFAULT_ADMIN_ROLE(), newOwner));
+        assertFalse(NexUSDv1.hasRole(NexUSDv1.DEFAULT_ADMIN_ROLE(), OWNER));
     }
 
     function testChangeOwnerRevertsIfZero() public {
         vm.prank(OWNER);
         vm.expectRevert();
-        NUSDv1.changeOwner(address(0));
+        NexUSDv1.changeOwner(address(0));
     }
 
     function testAddAndRemoveAllowlistedChain() public {
         uint64 chainId = 0x1234;
         address tokenAddr = address(0xBEEF);
         vm.prank(ADMIN);
-        NUSDv1.addAllowlistedChain(chainId, tokenAddr);
-        assertEq(NUSDv1.getAllowlistedChain(chainId), tokenAddr);
+        NexUSDv1.addAllowlistedChain(chainId, tokenAddr);
+        assertEq(NexUSDv1.getAllowlistedChain(chainId), tokenAddr);
         vm.prank(ADMIN);
-        NUSDv1.removeAllowlistedChain(chainId);
-        assertEq(NUSDv1.getAllowlistedChain(chainId), address(0));
+        NexUSDv1.removeAllowlistedChain(chainId);
+        assertEq(NexUSDv1.getAllowlistedChain(chainId), address(0));
     }
 
     function testAddAllowlistedChainRevertsIfNotAdmin() public {
@@ -101,94 +101,94 @@ contract NexUSDControllerTest is HelperConfig, HelperTest {
         address tokenAddr = address(0xBEEF);
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.addAllowlistedChain(chainId, tokenAddr);
+        NexUSDv1.addAllowlistedChain(chainId, tokenAddr);
     }
 
     function testRemoveAllowlistedChainRevertsIfNotAdmin() public {
         uint64 chainId = 0x1234;
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.removeAllowlistedChain(chainId);
+        NexUSDv1.removeAllowlistedChain(chainId);
     }
 
     function testAddToBlocklistRevertsIfNotOperator() public {
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.addToBlocklist(USER2);
+        NexUSDv1.addToBlocklist(USER2);
     }
 
     function testRemoveFromBlocklistRevertsIfNotOperator() public {
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.removeFromBlocklist(USER2);
+        NexUSDv1.removeFromBlocklist(USER2);
     }
 
     function testBlocklistPreventsSending() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
         vm.prank(OPERATOR);
-        NUSDv1.addToBlocklist(USER);
+        NexUSDv1.addToBlocklist(USER);
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.transfer(USER2, amount);
+        NexUSDv1.transfer(USER2, amount);
     }
 
     function testBlocklistPreventsReceiving() public {
         uint256 amount = 5000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.addToBlocklist(USER2);
+        NexUSDv1.addToBlocklist(USER2);
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
         vm.startPrank(USER);
         vm.expectRevert();
-        NUSDv1.transfer(USER2, amount);
+        NexUSDv1.transfer(USER2, amount);
         vm.stopPrank();
     }
 
     function testBlocklistedSenderReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
         vm.prank(OPERATOR);
-        NUSDv1.addToBlocklist(USER);
+        NexUSDv1.addToBlocklist(USER);
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.transfer(USER2, amount);
+        NexUSDv1.transfer(USER2, amount);
     }
 
     function testChangeOwnerTransfersBalance() public {
         uint256 amount = 1000 * 1e6;
         address newOwner = USER2;
         vm.prank(OPERATOR);
-        NUSDv1.mint(OWNER, amount);
+        NexUSDv1.mint(OWNER, amount);
         vm.prank(OWNER);
-        NUSDv1.changeOwner(newOwner);
-        assertEq(NUSDv1.balanceOf(newOwner), amount);
-        assertEq(NUSDv1.balanceOf(OWNER), 0);
+        NexUSDv1.changeOwner(newOwner);
+        assertEq(NexUSDv1.balanceOf(newOwner), amount);
+        assertEq(NexUSDv1.balanceOf(OWNER), 0);
     }
 
     function testChangeOwnerNoBalance() public {
         address newOwner = USER2;
         vm.prank(OWNER);
-        NUSDv1.changeOwner(newOwner);
-        assertEq(NUSDv1.balanceOf(newOwner), 0);
+        NexUSDv1.changeOwner(newOwner);
+        assertEq(NexUSDv1.balanceOf(newOwner), 0);
     }
 
     function testAddToBlocklistAlreadyBlocklisted() public {
         vm.prank(OPERATOR);
-        NUSDv1.addToBlocklist(USER2);
+        NexUSDv1.addToBlocklist(USER2);
         // Should not revert or emit again, but should remain blocklisted
         vm.prank(OPERATOR);
-        NUSDv1.addToBlocklist(USER2);
-        assertTrue(NUSDv1.isBlocklisted(USER2));
+        NexUSDv1.addToBlocklist(USER2);
+        assertTrue(NexUSDv1.isBlocklisted(USER2));
     }
 
     function testRemoveFromBlocklistAlreadyUnblocked() public {
         // Should not revert or emit again, but should remain unblocked
         vm.prank(OPERATOR);
-        NUSDv1.removeFromBlocklist(USER2);
-        assertFalse(NUSDv1.isBlocklisted(USER2));
+        NexUSDv1.removeFromBlocklist(USER2);
+        assertFalse(NexUSDv1.isBlocklisted(USER2));
     }
 
     function testAddAllowlistedChainOverwrite() public {
@@ -196,18 +196,18 @@ contract NexUSDControllerTest is HelperConfig, HelperTest {
         address tokenAddr1 = address(0xBEEF);
         address tokenAddr2 = address(0xCAFE);
         vm.prank(ADMIN);
-        NUSDv1.addAllowlistedChain(chainId, tokenAddr1);
-        assertEq(NUSDv1.getAllowlistedChain(chainId), tokenAddr1);
+        NexUSDv1.addAllowlistedChain(chainId, tokenAddr1);
+        assertEq(NexUSDv1.getAllowlistedChain(chainId), tokenAddr1);
         vm.prank(ADMIN);
-        NUSDv1.addAllowlistedChain(chainId, tokenAddr2);
-        assertEq(NUSDv1.getAllowlistedChain(chainId), tokenAddr2);
+        NexUSDv1.addAllowlistedChain(chainId, tokenAddr2);
+        assertEq(NexUSDv1.getAllowlistedChain(chainId), tokenAddr2);
     }
 
     function testRemoveAllowlistedChainAlreadyRemoved() public {
         uint64 chainId = 0x1234;
         vm.prank(ADMIN);
-        NUSDv1.removeAllowlistedChain(chainId);
+        NexUSDv1.removeAllowlistedChain(chainId);
         // Should remain address(0)
-        assertEq(NUSDv1.getAllowlistedChain(chainId), address(0));
+        assertEq(NexUSDv1.getAllowlistedChain(chainId), address(0));
     }
 }

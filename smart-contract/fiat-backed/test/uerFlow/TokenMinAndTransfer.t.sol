@@ -22,123 +22,123 @@ contract TokenMintAndTransferTest is Test, HelperConfig, HelperTest {
     function testMintByOperator() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER1, amount);
-        assertEq(NUSDv1.balanceOf(USER1), amount);
+        NexUSDv1.mint(USER1, amount);
+        assertEq(NexUSDv1.balanceOf(USER1), amount);
     }
 
     function testMintByNonOperatorReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(USER1);
         vm.expectRevert();
-        NUSDv1.mint(USER1, amount);
+        NexUSDv1.mint(USER1, amount);
     }
 
     function testMintToZeroAddressReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
         vm.expectRevert();
-        NUSDv1.mint(address(0), amount);
+        NexUSDv1.mint(address(0), amount);
     }
 
     function testMintExceedingMaxSupplyReverts() public {
-        uint256 amount = NUSDv1.MAX_SUPPLY();
+        uint256 amount = NexUSDv1.MAX_SUPPLY();
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER1, amount);
-        assertEq(NUSDv1.totalSupply(), amount);
+        NexUSDv1.mint(USER1, amount);
+        assertEq(NexUSDv1.totalSupply(), amount);
         vm.prank(OPERATOR);
         vm.expectRevert();
-        NUSDv1.mint(USER1, 1);
+        NexUSDv1.mint(USER1, 1);
     }
 
     function testTransferByUser() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER1, amount);
+        NexUSDv1.mint(USER1, amount);
         vm.prank(USER1);
-        NUSDv1.transfer(USER2, amount);
-        assertEq(NUSDv1.balanceOf(USER1), 0);
-        assertEq(NUSDv1.balanceOf(USER2), amount);
+        NexUSDv1.transfer(USER2, amount);
+        assertEq(NexUSDv1.balanceOf(USER1), 0);
+        assertEq(NexUSDv1.balanceOf(USER2), amount);
     }
 
     function testTransferZeroAmount() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER1, amount);
+        NexUSDv1.mint(USER1, amount);
         vm.prank(USER1);
-        NUSDv1.transfer(USER2, 0);
-        assertEq(NUSDv1.balanceOf(USER1), amount);
-        assertEq(NUSDv1.balanceOf(USER2), 0);
+        NexUSDv1.transfer(USER2, 0);
+        assertEq(NexUSDv1.balanceOf(USER1), amount);
+        assertEq(NexUSDv1.balanceOf(USER2), 0);
     }
 
     function testTransferByNonHolderReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(USER2);
         vm.expectRevert();
-        NUSDv1.transfer(USER1, amount);
+        NexUSDv1.transfer(USER1, amount);
     }
 
     function testTransferToZeroAddressReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER1, amount);
+        NexUSDv1.mint(USER1, amount);
         vm.prank(USER1);
         vm.expectRevert();
-        NUSDv1.transfer(address(0), amount);
+        NexUSDv1.transfer(address(0), amount);
     }
 
     function testTransferWhenPausedReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER1, amount);
+        NexUSDv1.mint(USER1, amount);
         vm.prank(OWNER);
-        NUSDv1.pause();
+        NexUSDv1.pause();
         vm.prank(USER1);
         vm.expectRevert();
-        NUSDv1.transfer(USER2, amount);
+        NexUSDv1.transfer(USER2, amount);
     }
 
     function testMintToBlocklistedReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.addToBlocklist(USER1);
+        NexUSDv1.addToBlocklist(USER1);
         vm.prank(OPERATOR);
         vm.expectRevert();
-        NUSDv1.mint(USER1, amount);
+        NexUSDv1.mint(USER1, amount);
     }
 
     function testTransferFromBlocklistedReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER1, amount);
+        NexUSDv1.mint(USER1, amount);
         vm.prank(OPERATOR);
-        NUSDv1.addToBlocklist(USER1);
+        NexUSDv1.addToBlocklist(USER1);
         vm.prank(USER1);
         vm.expectRevert();
-        NUSDv1.transfer(USER2, amount);
+        NexUSDv1.transfer(USER2, amount);
     }
 
     function testTransferToBlocklistedReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER1, amount);
+        NexUSDv1.mint(USER1, amount);
         vm.prank(OPERATOR);
-        NUSDv1.addToBlocklist(USER2);
+        NexUSDv1.addToBlocklist(USER2);
         vm.prank(USER1);
         vm.expectRevert();
-        NUSDv1.transfer(USER2, amount);
+        NexUSDv1.transfer(USER2, amount);
     }
 
     function testMintToUnblocklistedThenTransfer() public {
         uint256 amount = 1000 * 1e6;
         // Mint to USER1
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER1, amount);
-        assertEq(NUSDv1.balanceOf(USER1), amount);
+        NexUSDv1.mint(USER1, amount);
+        assertEq(NexUSDv1.balanceOf(USER1), amount);
         // Transfer to USER2
         vm.prank(USER1);
-        NUSDv1.transfer(USER2, amount);
-        assertEq(NUSDv1.balanceOf(USER1), 0);
-        assertEq(NUSDv1.balanceOf(USER2), amount);
+        NexUSDv1.transfer(USER2, amount);
+        assertEq(NexUSDv1.balanceOf(USER1), 0);
+        assertEq(NexUSDv1.balanceOf(USER2), amount);
     }
 
     function testFullMintToTransferFlow() public {
@@ -146,17 +146,17 @@ contract TokenMintAndTransferTest is Test, HelperConfig, HelperTest {
         uint256 transferAmount = 1500 * 1e6;
         // Mint to USER1
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER1, mintAmount);
-        assertEq(NUSDv1.balanceOf(USER1), mintAmount);
+        NexUSDv1.mint(USER1, mintAmount);
+        assertEq(NexUSDv1.balanceOf(USER1), mintAmount);
         // USER1 transfers to USER2
         vm.prank(USER1);
-        NUSDv1.transfer(USER2, transferAmount);
-        assertEq(NUSDv1.balanceOf(USER1), mintAmount - transferAmount);
-        assertEq(NUSDv1.balanceOf(USER2), transferAmount);
+        NexUSDv1.transfer(USER2, transferAmount);
+        assertEq(NexUSDv1.balanceOf(USER1), mintAmount - transferAmount);
+        assertEq(NexUSDv1.balanceOf(USER2), transferAmount);
         // USER2 transfers back to USER1
         vm.prank(USER2);
-        NUSDv1.transfer(USER1, transferAmount);
-        assertEq(NUSDv1.balanceOf(USER1), mintAmount);
-        assertEq(NUSDv1.balanceOf(USER2), 0);
+        NexUSDv1.transfer(USER1, transferAmount);
+        assertEq(NexUSDv1.balanceOf(USER1), mintAmount);
+        assertEq(NexUSDv1.balanceOf(USER2), 0);
     }
 }

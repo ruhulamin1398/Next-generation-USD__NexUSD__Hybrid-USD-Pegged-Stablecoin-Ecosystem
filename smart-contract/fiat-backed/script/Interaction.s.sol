@@ -16,7 +16,7 @@ contract Interaction is HelperConfig {
             "ERC1967Proxy",
             block.chainid
         );
-        NUSDv1 = NexUSD(proxy);
+        NexUSDv1 = NexUSD(proxy);
 
         vm.startBroadcast();
 
@@ -27,11 +27,11 @@ contract Interaction is HelperConfig {
     }
 
     function mint() public {
-        NUSDv1.mint(USER1, 1000 * 10 ** 6);
+        NexUSDv1.mint(USER1, 1000 * 10 ** 6);
     }
 
     // function transfer() public {
-    //     NUSD.transfer(0x3a93D544242a24c66Eb1BCceE00d7AA04f55B12c, 15 * 10 ** 6);
+    //     NexUSD.transfer(0x3a93D544242a24c66Eb1BCceE00d7AA04f55B12c, 15 * 10 ** 6);
     // }
 
     function fundLink() public {
@@ -42,10 +42,10 @@ contract Interaction is HelperConfig {
     }
 
     // function send() public {
-    //     NUSD.send(
+    //     NexUSD.send(
     //         CCIPchains["BNB"].chainSelector,
     //         USER2,
-    //         NUSD_BNB_CONTRACT,
+    //         NexUSD_BNB_CONTRACT,
     //         15 * 10 ** 6
     //     );
     // }

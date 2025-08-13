@@ -15,52 +15,52 @@ contract NexUSDTest is HelperConfig, HelperTest {
     }
 
     function testDeployment() public view {
-        assertEq(NUSDv1.decimals(), 6);
-        assertEq(NUSDv1.name(), "NexUSD");
-        assertEq(NUSDv1.symbol(), "NUSD");
+        assertEq(NexUSDv1.decimals(), 6);
+        assertEq(NexUSDv1.name(), "NexUSD");
+        assertEq(NexUSDv1.symbol(), "NexUSD");
     }
 
     function testMintByOperator() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, amount);
-        assertEq(NUSDv1.balanceOf(USER), amount);
+        NexUSDv1.mint(USER, amount);
+        assertEq(NexUSDv1.balanceOf(USER), amount);
     }
 
     function testMintByNonOperatorReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
     }
 
     function testMintRevertsWhenExceedingMaxSupply() public {
         vm.startPrank(OPERATOR);
-        NUSDv1.mint(USER, NUSDv1.MAX_SUPPLY());
-        assertEq(NUSDv1.totalSupply(), NUSDv1.MAX_SUPPLY());
+        NexUSDv1.mint(USER, NexUSDv1.MAX_SUPPLY());
+        assertEq(NexUSDv1.totalSupply(), NexUSDv1.MAX_SUPPLY());
 
         vm.expectRevert();
-        NUSDv1.mint(USER, 1);
+        NexUSDv1.mint(USER, 1);
         vm.stopPrank();
     }
 
     function testBlocklistPreventsMint() public {
         uint256 amount = 1000 * 1e6;
         vm.startPrank(OPERATOR);
-        NUSDv1.addToBlocklist(USER);
+        NexUSDv1.addToBlocklist(USER);
         vm.expectRevert();
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
         vm.stopPrank();
     }
 
     function testBlocklistAllowsBurn() public {
         uint256 amount = 1000 * 1e6;
         vm.startPrank(OPERATOR);
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
 
-        NUSDv1.addToBlocklist(USER);
+        NexUSDv1.addToBlocklist(USER);
         vm.expectRevert();
-        NUSDv1.burn(USER, amount);
+        NexUSDv1.burn(USER, amount);
 
         vm.stopPrank();
     }
@@ -68,88 +68,88 @@ contract NexUSDTest is HelperConfig, HelperTest {
     function testBurnByOperator() public {
         uint256 amount = 1000 * 1e6;
         vm.startPrank(OPERATOR);
-        NUSDv1.mint(USER, amount);
-        NUSDv1.burn(USER, amount);
+        NexUSDv1.mint(USER, amount);
+        NexUSDv1.burn(USER, amount);
         vm.stopPrank();
-        assertEq(NUSDv1.balanceOf(USER), 0);
+        assertEq(NexUSDv1.balanceOf(USER), 0);
     }
 
     function testBurnByNonOperatorReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
         vm.expectRevert();
         vm.prank(USER);
-        NUSDv1.burn(USER, amount);
+        NexUSDv1.burn(USER, amount);
     }
 
     function testPausePreventsTransfer() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
         vm.prank(OWNER);
-        NUSDv1.pause();
+        NexUSDv1.pause();
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.transfer(USER, amount);
+        NexUSDv1.transfer(USER, amount);
     }
 
     function testUnpauseAllowsTransfer() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
         vm.startPrank(OWNER);
-        NUSDv1.pause();
-        NUSDv1.unpause();
+        NexUSDv1.pause();
+        NexUSDv1.unpause();
         vm.stopPrank();
         vm.prank(USER);
-        NUSDv1.transfer(USER, amount);
-        assertEq(NUSDv1.balanceOf(USER), amount);
+        NexUSDv1.transfer(USER, amount);
+        assertEq(NexUSDv1.balanceOf(USER), amount);
     }
 
     function testMintRevertsIfToZeroAddress() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
         vm.expectRevert();
-        NUSDv1.mint(address(0), amount);
+        NexUSDv1.mint(address(0), amount);
     }
 
     function testMintRevertsIfExceedsMaxSupply() public {
-        uint256 maxSupply = NUSDv1.MAX_SUPPLY();
+        uint256 maxSupply = NexUSDv1.MAX_SUPPLY();
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, maxSupply);
+        NexUSDv1.mint(USER, maxSupply);
         vm.prank(OPERATOR);
         vm.expectRevert();
-        NUSDv1.mint(USER, 1);
+        NexUSDv1.mint(USER, 1);
     }
 
     function testBurnRevertsIfNotOperator() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.burn(USER, amount);
+        NexUSDv1.burn(USER, amount);
     }
 
     function testSendRevertsIfRecipientZero() public {
         uint256 amount = 1000 * 1e6;
         allowNewChainV1(amoy);
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.send(amoy, address(0), amount);
+        NexUSDv1.send(amoy, address(0), amount);
     }
 
     function testSendRevertsIfChainNotAllowlisted() public {
         uint256 amount = 1000 * 1e6;
         uint64 notAllowlisted = 0x9999;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.send(notAllowlisted, USER2, amount);
+        NexUSDv1.send(notAllowlisted, USER2, amount);
     }
 
     function testSendRevertsIfNotEnoughBalance() public {
@@ -157,18 +157,18 @@ contract NexUSDTest is HelperConfig, HelperTest {
         allowNewChainV1(amoy);
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.send(amoy, USER2, amount);
+        NexUSDv1.send(amoy, USER2, amount);
     }
 
     function testBlocklistedSenderReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
         vm.prank(OPERATOR);
-        NUSDv1.addToBlocklist(USER);
+        NexUSDv1.addToBlocklist(USER);
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.transfer(USER2, amount);
+        NexUSDv1.transfer(USER2, amount);
     }
 
     function testSendEmitsBridgeRequest() public {
@@ -177,12 +177,12 @@ contract NexUSDTest is HelperConfig, HelperTest {
         allowNewChainV1(amoy);
 
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
 
         vm.recordLogs();
 
         vm.prank(USER);
-        NUSDv1.send(amoy, USER2, amount);
+        NexUSDv1.send(amoy, USER2, amount);
 
         // Retrieve recorded logs
         Vm.Log[] memory logs = vm.getRecordedLogs();
@@ -208,7 +208,7 @@ contract NexUSDTest is HelperConfig, HelperTest {
         address owner = OWNER;
         vm.prank(BRIDGE_OPERATOR);
         vm.recordLogs();
-        NUSDv1.bridgeMint(
+        NexUSDv1.bridgeMint(
             messageId,
             sourceChainSelector,
             recipient,
@@ -231,19 +231,19 @@ contract NexUSDTest is HelperConfig, HelperTest {
             logs[2].topics[0],
             keccak256("BridegeTokenReceived(bytes32,address,uint64,uint256)")
         );
-        assertEq(NUSDv1.balanceOf(recipient), amount - fee);
-        assertEq(NUSDv1.balanceOf(owner), fee);
+        assertEq(NexUSDv1.balanceOf(recipient), amount - fee);
+        assertEq(NexUSDv1.balanceOf(owner), fee);
     }
 
     function testSendRevertsWhenPaused() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
-        NUSDv1.mint(USER, amount);
+        NexUSDv1.mint(USER, amount);
         vm.prank(OWNER);
-        NUSDv1.pause();
+        NexUSDv1.pause();
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.send(amoy, USER2, amount);
+        NexUSDv1.send(amoy, USER2, amount);
     }
 
     function testbridgeMintRevertsWhenPaused() public {
@@ -253,10 +253,10 @@ contract NexUSDTest is HelperConfig, HelperTest {
         bytes32 messageId = keccak256("id");
         address recipient = USER;
         vm.prank(OWNER);
-        NUSDv1.pause();
+        NexUSDv1.pause();
         vm.prank(BRIDGE_OPERATOR);
         vm.expectRevert();
-        NUSDv1.bridgeMint(
+        NexUSDv1.bridgeMint(
             messageId,
             sourceChainSelector,
             recipient,
@@ -269,10 +269,10 @@ contract NexUSDTest is HelperConfig, HelperTest {
         uint256 amount = 1000 * 1e6;
 
         vm.prank(OPERATOR);
-        NUSDv1.addToBlocklist(USER);
+        NexUSDv1.addToBlocklist(USER);
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.send(amoy, USER2, amount);
+        NexUSDv1.send(amoy, USER2, amount);
     }
 
     function testbridgeMintRevertsIfRecipientIsBlocklisted() public {
@@ -282,10 +282,10 @@ contract NexUSDTest is HelperConfig, HelperTest {
         bytes32 messageId = keccak256("blocklist");
         address recipient = USER;
         vm.prank(OPERATOR);
-        NUSDv1.addToBlocklist(recipient);
+        NexUSDv1.addToBlocklist(recipient);
         vm.prank(BRIDGE_OPERATOR);
         vm.expectRevert();
-        NUSDv1.bridgeMint(messageId, scSelector, recipient, amount, fee);
+        NexUSDv1.bridgeMint(messageId, scSelector, recipient, amount, fee);
     }
 
     function testbridgeMintRevertsIfRecipientIsZero() public {
@@ -296,23 +296,23 @@ contract NexUSDTest is HelperConfig, HelperTest {
         address recipient = address(0);
         vm.prank(BRIDGE_OPERATOR);
         vm.expectRevert();
-        NUSDv1.bridgeMint(messageId, scSelector, recipient, amount, fee);
+        NexUSDv1.bridgeMint(messageId, scSelector, recipient, amount, fee);
     }
 
     function testbridgeMintRevertsIfMaxSupplyExceeded() public {
-        uint256 maxSupply = NUSDv1.MAX_SUPPLY();
+        uint256 maxSupply = NexUSDv1.MAX_SUPPLY();
         uint256 fee = 100 * 1e6;
         uint64 scSelector = amoy;
         bytes32 messageId = keccak256("max-supply");
         address recipient = USER;
         // Mint up to max supply
         vm.prank(OPERATOR);
-        NUSDv1.mint(recipient, maxSupply);
+        NexUSDv1.mint(recipient, maxSupply);
         // Try to bridge mint any positive amount
         uint256 amount = 1 * 1e6;
         vm.prank(BRIDGE_OPERATOR);
         vm.expectRevert();
-        NUSDv1.bridgeMint(messageId, scSelector, recipient, amount, fee);
+        NexUSDv1.bridgeMint(messageId, scSelector, recipient, amount, fee);
     }
 
     function testbridgeMintRevertsIfNotOperator() public {
@@ -323,14 +323,14 @@ contract NexUSDTest is HelperConfig, HelperTest {
         address recipient = USER;
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.bridgeMint(messageId, scSelector, recipient, amount, fee);
+        NexUSDv1.bridgeMint(messageId, scSelector, recipient, amount, fee);
     }
 
     function testOnlyMinimumCrossChainAmount_AllowsMinimum() public {
-        uint256 amount = NUSDv1.minimumCrossChainTransferAmount();
+        uint256 amount = NexUSDv1.minimumCrossChainTransferAmount();
         allowNewChainV1(amoy);
         vm.prank(USER);
         vm.expectRevert();
-        NUSDv1.send(amoy, USER2, amount);
+        NexUSDv1.send(amoy, USER2, amount);
     }
 }

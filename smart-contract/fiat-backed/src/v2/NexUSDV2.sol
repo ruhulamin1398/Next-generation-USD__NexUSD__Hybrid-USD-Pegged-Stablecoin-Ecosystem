@@ -127,7 +127,7 @@ contract NexUSDV2 is Initializable, UUPSUpgradeable, NexUSDControllerV2 {
         address ownerAddress,
         address operator
     ) public initializer {
-        __NexUSDController_init("NexUSD", "NUSD", ownerAddress, operator);
+        __NexUSDController_init("NexUSD", "NexUSD", ownerAddress, operator);
         __UUPSUpgradeable_init();
     }
 
@@ -136,7 +136,7 @@ contract NexUSDV2 is Initializable, UUPSUpgradeable, NexUSDControllerV2 {
     // =========================
 
     /**
-     * @notice Mints new NUSD tokens to a specified address.
+     * @notice Mints new NexUSD tokens to a specified address.
      * @dev Only callable by OPERATOR_ROLE. Enforces the MAX_SUPPLY limit.
      * @param to The address to receive the minted tokens.
      * @param amount The number of tokens to mint (6 decimals).
@@ -151,7 +151,7 @@ contract NexUSDV2 is Initializable, UUPSUpgradeable, NexUSDControllerV2 {
     }
 
     /**
-     * @notice Burns NUSD tokens from a specified address.
+     * @notice Burns NexUSD tokens from a specified address.
      * @dev Only callable by OPERATOR_ROLE. Used for supply reduction.
      * @param from The address whose tokens will be burned.
      * @param amount The number of tokens to burn (6 decimals).
@@ -165,7 +165,7 @@ contract NexUSDV2 is Initializable, UUPSUpgradeable, NexUSDControllerV2 {
     }
 
     /**
-     * @notice Sends NUSD tokens to a recipient on another chain.
+     * @notice Sends NexUSD tokens to a recipient on another chain.
      * @dev Only callable by allowlisted chains. Burns tokens from the sender's balance.
      * @param destinationChainSelector The selector of the destination chain.
      * @param destinationRecipient The recipient address on the destination chain.
@@ -301,7 +301,7 @@ contract NexUSDV2 is Initializable, UUPSUpgradeable, NexUSDControllerV2 {
     // =========================
 
     /**
-     * @notice Returns the number of decimals used for NUSD (fixed at 6).
+     * @notice Returns the number of decimals used for NexUSD (fixed at 6).
      * @return uint8 The number of decimals (6).
      */
     function decimals() public pure override returns (uint8) {

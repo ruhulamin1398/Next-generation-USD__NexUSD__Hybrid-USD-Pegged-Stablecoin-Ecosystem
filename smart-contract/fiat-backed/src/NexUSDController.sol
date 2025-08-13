@@ -101,7 +101,7 @@ abstract contract NexUSDController is
     /// @notice Initializes the NexUSDController contract with token details and role assignments.
     /// @dev Sets up ERC20 name/symbol, initializes access control, pausable, and permit modules. Grants admin and operator roles.
     /// @param name The name of the ERC20 token (e.g., "NexUSD").
-    /// @param symbol The symbol of the ERC20 token (e.g., "NUSD").
+    /// @param symbol The symbol of the ERC20 token (e.g., "NexUSD").
     /// @param ownerAddress The address to be granted DEFAULT_ADMIN_ROLE (owner).
     /// @param operator The address to be granted OPERATOR_ROLE (mint, burn, blocklist).
     function __NexUSDController_init(

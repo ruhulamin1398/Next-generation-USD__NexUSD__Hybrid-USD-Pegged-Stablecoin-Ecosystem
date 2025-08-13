@@ -17,8 +17,8 @@ abstract contract CodeConstants is Script {
     address immutable USER1 = 0x71D7F36C664Bb2fE8eA895d16AF14928eB812ebB;
     address immutable USER2 = 0xF948d3261917e59F13394423b6e5f1C4D9F85452;
 
-    NexUSD NUSDv1;
-    NexUSDV2 NUSDv2;
+    NexUSD NexUSDv1;
+    NexUSDV2 NexUSDv2;
     address proxy;
 
     mapping(uint64 => address) public CCIPchains; // all chains for ccip
