@@ -11,4 +11,5 @@ export interface Network {
   chainId?: number;
   rpcUrl?: string;
   explorerUrl?: string;
+  gasPrice?: string; // Gas price in gwei
 }

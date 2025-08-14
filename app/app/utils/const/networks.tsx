@@ -97,6 +97,7 @@ export const networks: Network[] = [
     chainId: 80002,
     rpcUrl: "https://rpc-amoy.polygon.technology",
     explorerUrl: "https://amoy.polygonscan.com",
+    gasPrice: "30", // 30 gwei for Polygon testnet
   },
   {
     name: "Ethereum Sepolia",
@@ -109,6 +110,7 @@ export const networks: Network[] = [
     chainId: 11155111,
     rpcUrl: "https://sepolia.infura.io/v3/YOUR_INFURA_KEY",
     explorerUrl: "https://sepolia.etherscan.io",
+    gasPrice: "20", // 20 gwei for Ethereum Sepolia
   },
 
   {
@@ -122,6 +124,7 @@ export const networks: Network[] = [
     chainId: 43113,
     rpcUrl: "https://api.avax-test.network/ext/bc/C/rpc",
     explorerUrl: "https://testnet.snowtrace.io",
+    gasPrice: "25", // 25 gwei for Avalanche Fuji
   },
   {
     name: "Optimism Sepolia",
@@ -135,6 +138,7 @@ export const networks: Network[] = [
     chainId: 11155420,
     rpcUrl: "https://sepolia.optimism.io",
     explorerUrl: "https://sepolia-optimism.etherscan.io",
+    gasPrice: "0.001", // 0.001 gwei for Optimism (very low)
   },
   {
     name: "Arbitrum Sepolia",
@@ -148,6 +152,7 @@ export const networks: Network[] = [
     chainId: 421614,
     rpcUrl: "https://sepolia-rollup.arbitrum.io/rpc",
     explorerUrl: "https://sepolia.arbiscan.io",
+    gasPrice: "0.1", // 0.1 gwei for Arbitrum (low)
   },
   {
     name: "BNB Smart Chain Testnet",
@@ -161,6 +166,7 @@ export const networks: Network[] = [
     chainId: 97,
     rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
     explorerUrl: "https://testnet.bscscan.com",
+    gasPrice: "1", // 1 gwei for BSC testnet
   },
 
   // Fiat Backed Networks (All Testnets)
@@ -176,6 +182,21 @@ export const networks: Network[] = [
     chainId: 80002,
     rpcUrl: "https://rpc-amoy.polygon.technology",
     explorerUrl: "https://amoy.polygonscan.com",
+    gasPrice: "30", // 30 gwei for Polygon testnet
+  },
+  {
+    name: "BNB Smart Chain Testnet",
+    logo: BnbIcon,
+    url: "https://testnet.bscscan.com/address/0x71e53ea9f5a19a0afb72d4ffcebb5c0da9c57152",
+    type: "fiat",
+    status: "live",
+    contractAddress: "0x71e53ea9f5a19a0afb72d4ffcebb5c0da9c57152",
+    description:
+      "BNB Smart Chain testnet for fiat-backed development and testing",
+    chainId: 97,
+    rpcUrl: "https://bsc-testnet.public.blastapi.io",
+    explorerUrl: "https://testnet.bscscan.com",
+    gasPrice: "1", // 1 gwei for BSC testnet
   },
   {
     name: "Ethereum Sepolia",
@@ -188,6 +209,7 @@ export const networks: Network[] = [
     chainId: 11155111,
     rpcUrl: "https://sepolia.infura.io/v3/YOUR_INFURA_KEY",
     explorerUrl: "https://sepolia.etherscan.io",
+    gasPrice: "20", // 20 gwei for Ethereum Sepolia
   },
   {
     name: "Avalanche Fuji",
@@ -200,6 +222,7 @@ export const networks: Network[] = [
     chainId: 43113,
     rpcUrl: "https://api.avax-test.network/ext/bc/C/rpc",
     explorerUrl: "https://testnet.snowtrace.io",
+    gasPrice: "25", // 25 gwei for Avalanche Fuji
   },
   {
     name: "Optimism Goerli",
@@ -213,6 +236,7 @@ export const networks: Network[] = [
     chainId: 420,
     rpcUrl: "https://goerli.optimism.io",
     explorerUrl: "https://goerli-optimism.etherscan.io",
+    gasPrice: "0.001", // 0.001 gwei for Optimism (very low)
   },
   {
     name: "Arbitrum Goerli",
@@ -226,18 +250,6 @@ export const networks: Network[] = [
     chainId: 421613,
     rpcUrl: "https://goerli-rollup.arbitrum.io/rpc",
     explorerUrl: "https://goerli.arbiscan.io",
-  },
-  {
-    name: "BNB Smart Chain Testnet",
-    logo: BnbIcon,
-    url: "#",
-    type: "fiat",
-    status: "coming-soon",
-    contractAddress: "",
-    description:
-      "BNB Smart Chain testnet for fiat-backed development and testing",
-    chainId: 97,
-    rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
-    explorerUrl: "https://testnet.bscscan.com",
+    gasPrice: "0.1", // 0.1 gwei for Arbitrum (low)
   },
 ];

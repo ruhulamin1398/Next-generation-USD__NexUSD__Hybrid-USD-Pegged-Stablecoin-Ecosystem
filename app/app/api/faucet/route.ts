@@ -108,6 +108,7 @@ export async function POST(request: NextRequest) {
     // Check operator balance (if applicable)
     try {
       const balance = await provider.getBalance(wallet.address);
+      console.log(" native balance at operator is " , balance)
       if (balance === BigInt(0)) {
         return NextResponse.json(
           { error: "Insufficient gas balance in operator wallet" },
