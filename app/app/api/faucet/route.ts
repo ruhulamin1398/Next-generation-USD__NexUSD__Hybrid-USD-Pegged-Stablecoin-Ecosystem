@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
     // Check operator balance (if applicable)
     try {
       const balance = await provider.getBalance(wallet.address);
-      if (balance === 0n) {
+      if (balance === BigInt(0)) {
         return NextResponse.json(
           { error: "Insufficient gas balance in operator wallet" },
           { status: 500 }
@@ -143,21 +143,24 @@ export async function POST(request: NextRequest) {
           { status: 500 }
         );
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error minting tokens:", error);
       
       // Handle specific error cases
-      if (error.code === "INSUFFICIENT_FUNDS") {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorCode = (error as { code?: string })?.code;
+      
+      if (errorCode === "INSUFFICIENT_FUNDS") {
         return NextResponse.json(
           { error: "Insufficient gas funds in operator wallet" },
           { status: 500 }
         );
-      } else if (error.code === "UNPREDICTABLE_GAS_LIMIT") {
+      } else if (errorCode === "UNPREDICTABLE_GAS_LIMIT") {
         return NextResponse.json(
           { error: "Transaction would fail. Please check contract permissions." },
           { status: 500 }
         );
-      } else if (error.message.includes("revert")) {
+      } else if (errorMessage.includes("revert")) {
         return NextResponse.json(
           { error: "Contract execution failed. Please check token contract." },
           { status: 500 }
@@ -169,7 +172,7 @@ export async function POST(request: NextRequest) {
         );
       }
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Faucet API error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
