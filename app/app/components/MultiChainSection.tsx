@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { networks } from "../utils/const/networks";
 import { Network } from "../interfaces/network";
+import Link from "next/link";
 
 export default function MultiChainSection() {
   const [activeTab, setActiveTab] = useState("fiat");
@@ -45,7 +46,13 @@ export default function MultiChainSection() {
             <span className="text-gray-900 dark:text-white font-semibold">
               fiat-backed
             </span>{" "}
-            implementations
+            implementations.{" "}
+            <Link
+              href="/faucet#faucet"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200"
+            >
+              Get free NexUSD tokens here
+            </Link>
           </p>
         </div>
 

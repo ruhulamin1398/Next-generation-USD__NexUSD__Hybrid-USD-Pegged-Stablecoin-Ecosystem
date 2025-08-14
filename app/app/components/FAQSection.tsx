@@ -20,12 +20,12 @@ export default function FAQSection() {
         {/* Header */}
         <div className="text-center mb-10 sm:mb-12 md:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4 sm:mb-6">
-            Frequently Asked Questions
+            FAQs
           </h2>
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-800 max-w-3xl mx-auto leading-relaxed px-4">
+          {/* <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-800 max-w-3xl mx-auto leading-relaxed px-4">
             Get answers to common questions about NexUSD, our technology,
             security measures, and how to get started.
-          </p>
+          </p> */}
         </div>
 
         {/* FAQ Items */}
