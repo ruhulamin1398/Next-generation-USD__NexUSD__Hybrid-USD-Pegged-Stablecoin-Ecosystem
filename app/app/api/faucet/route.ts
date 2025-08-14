@@ -20,7 +20,8 @@ interface FaucetRequest {
 
 export async function POST(request: NextRequest) {
   try {
-    const { address, network, amount, type }: FaucetRequest = await request.json();
+    const { address, network, amount, type }: FaucetRequest =
+      await request.json();
 
     // Validation
     if (!address || !network || !amount || !type) {
@@ -50,7 +51,8 @@ export async function POST(request: NextRequest) {
 
     // Find the network configuration
     const networkConfig = networks.find(
-      (net) => net.name === network && net.type === type && net.status === "live"
+      (net) =>
+        net.name === network && net.type === type && net.status === "live"
     );
 
     if (!networkConfig) {
@@ -119,22 +121,26 @@ export async function POST(request: NextRequest) {
     // Mint tokens
     try {
       console.log(`Minting ${amount} tokens to ${address} on ${network}`);
-      
+
       const tx = await contract.mint(address, amountWithDecimals, {
         gasLimit: 200000, // Set a reasonable gas limit
       });
 
       console.log(`Transaction sent: ${tx.hash}`);
-      
+
       // Wait for transaction confirmation
       const receipt = await tx.wait();
-      
+
       if (receipt.status === 1) {
         console.log(`Transaction confirmed: ${tx.hash}`);
         return NextResponse.json({
           success: true,
           transactionHash: tx.hash,
           message: `Successfully minted ${amount} NexUSD tokens`,
+          network: {
+            name: networkConfig.name,
+            explorerUrl: networkConfig.explorerUrl,
+          },
         });
       } else {
         console.error(`Transaction failed: ${tx.hash}`);
@@ -145,11 +151,12 @@ export async function POST(request: NextRequest) {
       }
     } catch (error: unknown) {
       console.error("Error minting tokens:", error);
-      
+
       // Handle specific error cases
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       const errorCode = (error as { code?: string })?.code;
-      
+
       if (errorCode === "INSUFFICIENT_FUNDS") {
         return NextResponse.json(
           { error: "Insufficient gas funds in operator wallet" },
@@ -157,7 +164,9 @@ export async function POST(request: NextRequest) {
         );
       } else if (errorCode === "UNPREDICTABLE_GAS_LIMIT") {
         return NextResponse.json(
-          { error: "Transaction would fail. Please check contract permissions." },
+          {
+            error: "Transaction would fail. Please check contract permissions.",
+          },
           { status: 500 }
         );
       } else if (errorMessage.includes("revert")) {

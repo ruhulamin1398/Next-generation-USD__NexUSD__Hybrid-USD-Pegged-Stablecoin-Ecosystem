@@ -15,6 +15,10 @@ interface FaucetResponse {
   success: boolean;
   transactionHash?: string;
   error?: string;
+  network?: {
+    name: string;
+    explorerUrl: string;
+  };
 }
 
 export default function FaucetPage() {
@@ -108,6 +112,7 @@ export default function FaucetPage() {
           [type]: {
             success: true,
             transactionHash: data.transactionHash,
+            network: data.network,
           },
         }));
         // Reset form on success
@@ -115,7 +120,10 @@ export default function FaucetPage() {
       } else {
         setResponses((prev) => ({
           ...prev,
-          [type]: { success: false, error: data.error || "Failed to mint tokens" },
+          [type]: {
+            success: false,
+            error: data.error || "Failed to mint tokens",
+          },
         }));
       }
     } catch (error) {
@@ -136,9 +144,35 @@ export default function FaucetPage() {
     return type === "fiat" ? fiatForm : cryptoForm;
   };
 
-  const updateForm = (type: "fiat" | "crypto", field: keyof FaucetForm, value: string) => {
+  const updateForm = (
+    type: "fiat" | "crypto",
+    field: keyof FaucetForm,
+    value: string
+  ) => {
     const setForm = type === "fiat" ? setFiatForm : setCryptoForm;
-    setForm((prev) => ({ ...prev, [field]: value }));
+    
+    // Handle amount field with validation
+    if (field === "amount") {
+      // Allow empty string for clearing the field
+      if (value === "") {
+        setForm((prev) => ({ ...prev, [field]: value }));
+        return;
+      }
+      
+      // Parse the number and validate
+      const numValue = parseFloat(value);
+      
+      // Prevent invalid numbers or values over 500
+      if (isNaN(numValue) || numValue < 0) {
+        return; // Don't update if invalid
+      }
+      
+      // Cap at 500 and format properly
+      const cappedValue = Math.min(numValue, 500);
+      setForm((prev) => ({ ...prev, [field]: cappedValue.toString() }));
+    } else {
+      setForm((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   const FaucetForm = ({ type }: { type: "fiat" | "crypto" }) => {
@@ -179,12 +213,13 @@ export default function FaucetPage() {
             >
               <option value="">Select Network</option>
               {availableNetworks.map((network, index) => (
-                <option 
-                  key={index} 
+                <option
+                  key={index}
                   value={network.name}
                   disabled={network.status === "coming-soon"}
                 >
-                  {network.name} {network.status === "coming-soon" ? "(Coming Soon)" : ""}
+                  {network.name}{" "}
+                  {network.status === "coming-soon" ? "(Coming Soon)" : ""}
                 </option>
               ))}
             </select>
@@ -197,12 +232,14 @@ export default function FaucetPage() {
                 Contract Address
               </label>
               {(() => {
-                const selectedNetwork = availableNetworks.find(n => n.name === form.network);
+                const selectedNetwork = availableNetworks.find(
+                  (n) => n.name === form.network
+                );
                 if (selectedNetwork && selectedNetwork.contractAddress) {
-                  const explorerUrl = selectedNetwork.explorerUrl 
+                  const explorerUrl = selectedNetwork.explorerUrl
                     ? `${selectedNetwork.explorerUrl}/address/${selectedNetwork.contractAddress}`
                     : "#";
-                  
+
                   return (
                     <div className="flex items-center space-x-2">
                       <code className="px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm font-mono text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 flex-1">
@@ -239,22 +276,51 @@ export default function FaucetPage() {
               type="number"
               value={form.amount}
               onChange={(e) => updateForm(type, "amount", e.target.value)}
+              onKeyDown={(e) => {
+                // Prevent 'e', 'E', '+', '-' keys for number input
+                if (['e', 'E', '+', '-'].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}
               placeholder="Enter amount"
               min="1"
               max="500"
+              step="0.01"
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             />
+            {form.amount && parseFloat(form.amount) > 500 && (
+              <p className="text-red-500 text-sm mt-1">
+                Maximum allowed amount is 500 tokens
+              </p>
+            )}
+            {form.amount && parseFloat(form.amount) <= 0 && (
+              <p className="text-red-500 text-sm mt-1">
+                Amount must be greater than 0
+              </p>
+            )}
           </div>
 
           {/* Submit Button */}
           <button
             onClick={() => handleSubmit(type)}
-            disabled={isLoading || !form.network || availableNetworks.find(n => n.name === form.network)?.status === "coming-soon"}
+            disabled={
+              isLoading ||
+              !form.network ||
+              !form.address ||
+              !form.amount ||
+              parseFloat(form.amount || "0") <= 0 ||
+              parseFloat(form.amount || "0") > 500 ||
+              availableNetworks.find((n) => n.name === form.network)?.status ===
+                "coming-soon"
+            }
             className="w-full bg-gray-900 hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-2 px-4 rounded-lg font-medium transition-colors duration-200"
           >
-            {isLoading ? "Processing..." : 
-             availableNetworks.find(n => n.name === form.network)?.status === "coming-soon" ? "Coming Soon" :
-             "Request Tokens"}
+            {isLoading
+              ? "Processing..."
+              : availableNetworks.find((n) => n.name === form.network)
+                  ?.status === "coming-soon"
+              ? "Coming Soon"
+              : "Request Tokens"}
           </button>
 
           {/* Response Display */}
@@ -274,28 +340,42 @@ export default function FaucetPage() {
                   {response.transactionHash && (
                     <div className="mt-2">
                       {(() => {
-                        const selectedNetwork = availableNetworks.find(n => n.name === form.network);
-                        const txUrl = selectedNetwork?.explorerUrl 
-                          ? `${selectedNetwork.explorerUrl}/tx/${response.transactionHash}`
-                          : "#";
+                        // Use network info from API response if available, otherwise fall back to local network config
+                        const explorerUrl = response.network?.explorerUrl || 
+                          availableNetworks.find((n) => n.name === form.network)?.explorerUrl ||
+                          "https://amoy.polygonscan.com"; // Default fallback for Polygon Amoy
                         
+                        const txUrl = `${explorerUrl}/tx/${response.transactionHash}`;
+
                         return (
-                          <a
-                            href={txUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center space-x-2 text-green-600 dark:text-green-300 text-sm hover:text-green-800 dark:hover:text-green-100 transition-colors duration-200"
-                          >
-                            <span>View Transaction</span>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
+                          <div>
+                            <a
+                              href={txUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center space-x-2 text-green-600 dark:text-green-300 text-sm hover:text-green-800 dark:hover:text-green-100 transition-colors duration-200 font-medium"
+                            >
+                              <span>View Transaction on Explorer</span>
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                />
+                              </svg>
+                            </a>
+                            <p className="text-green-600 dark:text-green-300 text-xs mt-1 font-mono break-all">
+                              TX: {response.transactionHash}
+                            </p>
+                          </div>
                         );
                       })()}
-                      <p className="text-green-600 dark:text-green-300 text-xs mt-1 font-mono break-all">
-                        {response.transactionHash}
-                      </p>
                     </div>
                   )}
                 </div>
@@ -308,10 +388,12 @@ export default function FaucetPage() {
           )}
 
           {/* No Live Networks Available Message */}
-          {availableNetworks.filter(n => n.status === "live").length === 0 && (
+          {availableNetworks.filter((n) => n.status === "live").length ===
+            0 && (
             <div className="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
               <p className="text-yellow-800 dark:text-yellow-200 font-medium">
-                ⚠️ No live networks are currently available for {type}-backed tokens.
+                ⚠️ No live networks are currently available for {type}-backed
+                tokens.
               </p>
               <p className="text-yellow-600 dark:text-yellow-300 text-sm mt-1">
                 Coming soon networks are listed above but not yet functional.
@@ -346,11 +428,13 @@ export default function FaucetPage() {
                 NexUSD Testnet Faucet
               </h1>
               <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed mb-3 md:mb-6 px-4">
-                Get testnet NexUSD tokens for development and testing. Request up to{" "}
+                Get testnet NexUSD tokens for development and testing. Request
+                up to{" "}
                 <span className="text-gray-900 dark:text-white font-semibold">
                   500 tokens
                 </span>{" "}
-                per request for both fiat-backed and crypto-backed implementations.
+                per request for both fiat-backed and crypto-backed
+                implementations.
               </p>
             </div>
 
@@ -397,7 +481,9 @@ export default function FaucetPage() {
                 <li>• Maximum 500 NexUSD tokens per request</li>
                 <li>• Only testnet networks are supported</li>
                 <li>• Tokens are for testing and development purposes only</li>
-                <li>• Ensure you have enough gas tokens for the target network</li>
+                <li>
+                  • Ensure you have enough gas tokens for the target network
+                </li>
                 <li>• Transaction may take a few minutes to complete</li>
               </ul>
             </div>
