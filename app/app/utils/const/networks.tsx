@@ -94,6 +94,9 @@ export const networks: Network[] = [
     status: "coming-soon",
     contractAddress: "",
     description: "Polygon testnet for crypto-backed development and testing",
+    chainId: 80002,
+    rpcUrl: "https://rpc-amoy.polygon.technology",
+    explorerUrl: "https://amoy.polygonscan.com",
   },
   {
     name: "Ethereum Sepolia",
@@ -103,6 +106,9 @@ export const networks: Network[] = [
     status: "coming-soon",
     contractAddress: "",
     description: "Ethereum testnet for crypto-backed development and testing",
+    chainId: 11155111,
+    rpcUrl: "https://sepolia.infura.io/v3/YOUR_INFURA_KEY",
+    explorerUrl: "https://sepolia.etherscan.io",
   },
 
   {
@@ -113,6 +119,9 @@ export const networks: Network[] = [
     status: "coming-soon",
     contractAddress: "",
     description: "Avalanche testnet for crypto-backed development and testing",
+    chainId: 43113,
+    rpcUrl: "https://api.avax-test.network/ext/bc/C/rpc",
+    explorerUrl: "https://testnet.snowtrace.io",
   },
   {
     name: "Optimism Sepolia",
@@ -123,6 +132,9 @@ export const networks: Network[] = [
     contractAddress: "",
     description:
       "Optimism testnet for crypto-backed layer 2 development and testing",
+    chainId: 11155420,
+    rpcUrl: "https://sepolia.optimism.io",
+    explorerUrl: "https://sepolia-optimism.etherscan.io",
   },
   {
     name: "Arbitrum Sepolia",
@@ -133,6 +145,9 @@ export const networks: Network[] = [
     contractAddress: "",
     description:
       "Arbitrum testnet for crypto-backed layer 2 development and testing",
+    chainId: 421614,
+    rpcUrl: "https://sepolia-rollup.arbitrum.io/rpc",
+    explorerUrl: "https://sepolia.arbiscan.io",
   },
   {
     name: "BNB Smart Chain Testnet",
@@ -143,6 +158,9 @@ export const networks: Network[] = [
     contractAddress: "",
     description:
       "BNB Smart Chain testnet for crypto-backed development and testing",
+    chainId: 97,
+    rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
+    explorerUrl: "https://testnet.bscscan.com",
   },
 
   // Fiat Backed Networks (All Testnets)
@@ -155,6 +173,9 @@ export const networks: Network[] = [
     status: "live",
     contractAddress: "0x6db9d8fea1b96fe25b2382a6b26656d9eb260502",
     description: "Polygon testnet for fiat-backed development and testing",
+    chainId: 80002,
+    rpcUrl: "https://rpc-amoy.polygon.technology",
+    explorerUrl: "https://amoy.polygonscan.com",
   },
   {
     name: "Ethereum Sepolia",
@@ -164,6 +185,9 @@ export const networks: Network[] = [
     status: "coming-soon",
     contractAddress: "",
     description: "Ethereum testnet for fiat-backed development and testing",
+    chainId: 11155111,
+    rpcUrl: "https://sepolia.infura.io/v3/YOUR_INFURA_KEY",
+    explorerUrl: "https://sepolia.etherscan.io",
   },
   {
     name: "Avalanche Fuji",
@@ -173,6 +197,9 @@ export const networks: Network[] = [
     status: "coming-soon",
     contractAddress: "",
     description: "Avalanche testnet for fiat-backed development and testing",
+    chainId: 43113,
+    rpcUrl: "https://api.avax-test.network/ext/bc/C/rpc",
+    explorerUrl: "https://testnet.snowtrace.io",
   },
   {
     name: "Optimism Goerli",
@@ -183,6 +210,9 @@ export const networks: Network[] = [
     contractAddress: "",
     description:
       "Optimism testnet for fiat-backed layer 2 development and testing",
+    chainId: 420,
+    rpcUrl: "https://goerli.optimism.io",
+    explorerUrl: "https://goerli-optimism.etherscan.io",
   },
   {
     name: "Arbitrum Goerli",
@@ -193,6 +223,9 @@ export const networks: Network[] = [
     contractAddress: "",
     description:
       "Arbitrum testnet for fiat-backed layer 2 development and testing",
+    chainId: 421613,
+    rpcUrl: "https://goerli-rollup.arbitrum.io/rpc",
+    explorerUrl: "https://goerli.arbiscan.io",
   },
   {
     name: "BNB Smart Chain Testnet",
@@ -203,5 +236,8 @@ export const networks: Network[] = [
     contractAddress: "",
     description:
       "BNB Smart Chain testnet for fiat-backed development and testing",
+    chainId: 97,
+    rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
+    explorerUrl: "https://testnet.bscscan.com",
   },
 ];

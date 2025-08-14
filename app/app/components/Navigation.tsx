@@ -57,6 +57,12 @@ export default function Navigation() {
               >
                 FAQs
               </Link>
+              <Link
+                href="/faucet"
+                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
+              >
+                Faucet
+              </Link>
             </div>
           </div>
 
@@ -209,6 +215,13 @@ export default function Navigation() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 FAQs
+              </Link>
+              <Link
+                href="/faucet"
+                className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Faucet
               </Link>
               <a
                 href="#vision"

@@ -8,4 +8,7 @@ export interface Network {
   status: "live" | "coming-soon";
   contractAddress?: string;
   description?: string;
+  chainId?: number;
+  rpcUrl?: string;
+  explorerUrl?: string;
 }
