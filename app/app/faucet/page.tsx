@@ -150,26 +150,13 @@ export default function FaucetPage() {
     value: string
   ) => {
     const setForm = type === "fiat" ? setFiatForm : setCryptoForm;
-    
-    // Handle amount field with validation
+
+    // For amount field, just set the value as-is and let validation happen elsewhere
     if (field === "amount") {
-      // Allow empty string for clearing the field
-      if (value === "") {
+      // Only allow numbers, decimal points, and empty string
+      if (value === "" || /^\d*\.?\d*$/.test(value)) {
         setForm((prev) => ({ ...prev, [field]: value }));
-        return;
       }
-      
-      // Parse the number and validate
-      const numValue = parseFloat(value);
-      
-      // Prevent invalid numbers or values over 500
-      if (isNaN(numValue) || numValue < 0) {
-        return; // Don't update if invalid
-      }
-      
-      // Cap at 500 and format properly
-      const cappedValue = Math.min(numValue, 500);
-      setForm((prev) => ({ ...prev, [field]: cappedValue.toString() }));
     } else {
       setForm((prev) => ({ ...prev, [field]: value }));
     }
@@ -275,25 +262,38 @@ export default function FaucetPage() {
             <input
               type="number"
               value={form.amount}
-              onChange={(e) => updateForm(type, "amount", e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                // Allow empty string or valid numbers
+                if (value === "" || (!isNaN(Number(value)) && Number(value) >= 0)) {
+                  updateForm(type, "amount", value);
+                }
+              }}
+              onBlur={(e) => {
+                // When user leaves the field, cap the value at 500
+                const value = e.target.value;
+                if (value && Number(value) > 500) {
+                  updateForm(type, "amount", "500");
+                }
+              }}
               onKeyDown={(e) => {
                 // Prevent 'e', 'E', '+', '-' keys for number input
-                if (['e', 'E', '+', '-'].includes(e.key)) {
+                if (["e", "E", "+", "-"].includes(e.key)) {
                   e.preventDefault();
                 }
               }}
               placeholder="Enter amount"
-              min="1"
+              min="0"
               max="500"
               step="0.01"
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
             />
-            {form.amount && parseFloat(form.amount) > 500 && (
+            {form.amount && Number(form.amount) > 500 && (
               <p className="text-red-500 text-sm mt-1">
                 Maximum allowed amount is 500 tokens
               </p>
             )}
-            {form.amount && parseFloat(form.amount) <= 0 && (
+            {form.amount && Number(form.amount) <= 0 && form.amount !== "" && (
               <p className="text-red-500 text-sm mt-1">
                 Amount must be greater than 0
               </p>
@@ -308,8 +308,8 @@ export default function FaucetPage() {
               !form.network ||
               !form.address ||
               !form.amount ||
-              parseFloat(form.amount || "0") <= 0 ||
-              parseFloat(form.amount || "0") > 500 ||
+              Number(form.amount || "0") <= 0 ||
+              Number(form.amount || "0") > 500 ||
               availableNetworks.find((n) => n.name === form.network)?.status ===
                 "coming-soon"
             }
@@ -341,10 +341,12 @@ export default function FaucetPage() {
                     <div className="mt-2">
                       {(() => {
                         // Use network info from API response if available, otherwise fall back to local network config
-                        const explorerUrl = response.network?.explorerUrl || 
-                          availableNetworks.find((n) => n.name === form.network)?.explorerUrl ||
+                        const explorerUrl =
+                          response.network?.explorerUrl ||
+                          availableNetworks.find((n) => n.name === form.network)
+                            ?.explorerUrl ||
                           "https://amoy.polygonscan.com"; // Default fallback for Polygon Amoy
-                        
+
                         const txUrl = `${explorerUrl}/tx/${response.transactionHash}`;
 
                         return (
