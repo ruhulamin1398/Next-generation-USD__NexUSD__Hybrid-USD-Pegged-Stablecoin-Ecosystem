@@ -47,13 +47,13 @@ export const FaucetSection: React.FC = () => {
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 px-4">
             Request for free NexUSD
           </h1>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed mb-3 md:mb-6 px-4">
+          {/* <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed mb-3 md:mb-6 px-4">
             Get testnet NexUSD tokens for development and testing. Request up to{" "}
             <span className="text-gray-900 dark:text-white font-semibold">
               500 tokens
             </span>{" "}
             per request for both fiat-backed and crypto-backed implementations.
-          </p>
+          </p> */}
         </div>
 
         {/* Tab Navigation */}
