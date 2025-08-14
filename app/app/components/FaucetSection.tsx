@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { networks } from "../utils/const/networks";
-import { useFaucet } from "../hooks/useFaucet";
+import { useFaucet, FaucetFormData } from "../hooks/useFaucet";
 import { FaucetFormComponent } from "./FaucetForm";
 
 export const FaucetSection: React.FC = () => {
@@ -25,7 +25,7 @@ export const FaucetSection: React.FC = () => {
 
   const handleUpdateForm =
     (type: "fiat" | "crypto") => (field: string, value: string) => {
-      updateForm(type, field as any, value);
+      updateForm(type, field as keyof FaucetFormData, value);
     };
 
   const handleSubmit = (type: "fiat" | "crypto") => () => {
