@@ -41,7 +41,7 @@ NexUSD-C is a crypto-backed stablecoin system featuring:
 ### Setup
 ```bash
 # Clone and setup
-git clone <repository-url>
+git clone https://github.com/mosharaf6/Next-generation-USD__NexUSD__Hybrid-USD-Pegged-Stablecoin-Ecosystem.git
 cd smart-contract/Crypto-Backed
 
 # Install dependencies
