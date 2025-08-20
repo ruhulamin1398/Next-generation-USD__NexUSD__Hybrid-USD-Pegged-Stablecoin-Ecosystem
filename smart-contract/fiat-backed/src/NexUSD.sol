@@ -81,10 +81,7 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
     /// @param sourceChainSelector The chain selector of the source chain.
     /// @param amount The amount of tokens received.
     event BridegeTokenReceived(
-        bytes32 indexed messageId,
-        address indexed to,
-        uint64 indexed sourceChainSelector,
-        uint256 amount
+        bytes32 indexed messageId, address indexed to, uint64 indexed sourceChainSelector, uint256 amount
     );
     // =========================
     //      ✅ Modifiers
@@ -100,6 +97,7 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
     }
     /// @dev Modifier that checks if the amount is above the minimum cross-chain transfer amount.
     /// @param amount The amount to check.
+
     modifier onlyMinimumCrossChainAmount(uint256 amount) {
         if (amount < minimumCrossChainTransferAmount) {
             revert NotEnoughBalance(amount);
@@ -122,10 +120,7 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
      * @param ownerAddress The address to be granted the DEFAULT_ADMIN_ROLE (owner ).
      * @param operator The address to be granted the OPERATOR_ROLE (mint, blocklist, destroy).
      */
-    function initialize(
-        address ownerAddress,
-        address operator
-    ) public initializer {
+    function initialize(address ownerAddress, address operator) public initializer {
         __NexUSDController_init("Next Generation USD", "NexUSD", ownerAddress, operator);
         __UUPSUpgradeable_init();
     }
@@ -155,10 +150,7 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
      * @param from The address whose tokens will be burned.
      * @param amount The number of tokens to burn (6 decimals).
      */
-    function burn(
-        address from,
-        uint256 amount
-    ) external onlyRole(OPERATOR_ROLE) {
+    function burn(address from, uint256 amount) external onlyRole(OPERATOR_ROLE) {
         _burn(from, amount);
         emit Burn(msg.sender, from, amount);
     }
@@ -171,11 +163,7 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
      * @param amount The number of tokens to send (6 decimals).
      * @return messageId The unique ID of the cross-chain message.
      */
-    function send(
-        uint64 destinationChainSelector,
-        address destinationRecipient,
-        uint256 amount
-    )
+    function send(uint64 destinationChainSelector, address destinationRecipient, uint256 amount)
         external
         onlyAllowlistedChain(destinationChainSelector)
         whenNotPaused
@@ -193,19 +181,8 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
 
         _burn(msg.sender, amount);
         // Emit an event with message details
-        messageId = _generateMessageId(
-            destinationChainSelector,
-            receiverContract,
-            destinationRecipient,
-            amount
-        );
-        emit BridgeRequest(
-            messageId,
-            destinationChainSelector,
-            receiverContract,
-            destinationRecipient,
-            amount
-        );
+        messageId = _generateMessageId(destinationChainSelector, receiverContract, destinationRecipient, amount);
+        emit BridgeRequest(messageId, destinationChainSelector, receiverContract, destinationRecipient, amount);
 
         // Return the message ID
         return messageId;
@@ -220,13 +197,7 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
      * @param amount The number of tokens requested(6 decimals).
      * @param fee ,the number of token will send to owner account
      */
-    function bridgeMint(
-        bytes32 messageId,
-        uint64 sourceChainSelector,
-        address recipient,
-        uint256 amount,
-        uint256 fee
-    )
+    function bridgeMint(bytes32 messageId, uint64 sourceChainSelector, address recipient, uint256 amount, uint256 fee)
         external
         whenNotPaused
         notBlocklistedRecipient(recipient)
@@ -241,12 +212,7 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
         _mint(recipient, amount - fee);
         _mint(owner, fee);
 
-        emit BridegeTokenReceived(
-            messageId,
-            recipient,
-            sourceChainSelector,
-            amount
-        );
+        emit BridegeTokenReceived(messageId, recipient, sourceChainSelector, amount);
     }
 
     // =========================
@@ -258,9 +224,7 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
      * @dev Only callable by ADMIN_ROLE.
      * @param newImplementation The address of the new contract implementation.
      */
-    function _authorizeUpgrade(
-        address newImplementation
-    ) internal override onlyRole(ADMIN_ROLE) {}
+    function _authorizeUpgrade(address newImplementation) internal override onlyRole(ADMIN_ROLE) {}
 
     // =========================
     //   ✅ Private Functions
@@ -281,19 +245,18 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
         uint256 amount
     ) private view returns (bytes32 messageId) {
         // You can use block.timestamp or a nonce for uniqueness
-        return
-            keccak256(
-                abi.encodePacked(
-                    destinationChainSelector,
-                    receiverContract,
-                    destinationRecipient,
-                    amount,
-                    block.timestamp,
-                    blockhash(block.number - 1),
-                    address(this),
-                    msg.sender
-                )
-            );
+        return keccak256(
+            abi.encodePacked(
+                destinationChainSelector,
+                receiverContract,
+                destinationRecipient,
+                amount,
+                block.timestamp,
+                blockhash(block.number - 1),
+                address(this),
+                msg.sender
+            )
+        );
     }
 
     // =========================

@@ -188,15 +188,9 @@ contract NexUSDTest is HelperConfig, HelperTest {
         Vm.Log[] memory logs = vm.getRecordedLogs();
 
         // Assert the first log is a Transfer (burn)
-        assertEq(
-            logs[0].topics[0],
-            keccak256("Transfer(address,address,uint256)")
-        );
+        assertEq(logs[0].topics[0], keccak256("Transfer(address,address,uint256)"));
         // Assert the second log is BridgeRequest
-        assertEq(
-            logs[1].topics[0],
-            keccak256("BridgeRequest(bytes32,uint64,address,address,uint256)")
-        );
+        assertEq(logs[1].topics[0], keccak256("BridgeRequest(bytes32,uint64,address,address,uint256)"));
     }
 
     function testbridgeMintEmitsBridegeTokenReceived() public {
@@ -208,29 +202,14 @@ contract NexUSDTest is HelperConfig, HelperTest {
         address owner = OWNER;
         vm.prank(BRIDGE_OPERATOR);
         vm.recordLogs();
-        NexUSDv1.bridgeMint(
-            messageId,
-            sourceChainSelector,
-            recipient,
-            amount,
-            fee
-        );
+        NexUSDv1.bridgeMint(messageId, sourceChainSelector, recipient, amount, fee);
         Vm.Log[] memory logs = vm.getRecordedLogs();
         // Assert the first log is Transfer (mint to recipient)
-        assertEq(
-            logs[0].topics[0],
-            keccak256("Transfer(address,address,uint256)")
-        );
+        assertEq(logs[0].topics[0], keccak256("Transfer(address,address,uint256)"));
         // Assert the second log is Transfer (mint to owner)
-        assertEq(
-            logs[1].topics[0],
-            keccak256("Transfer(address,address,uint256)")
-        );
+        assertEq(logs[1].topics[0], keccak256("Transfer(address,address,uint256)"));
         // Assert the third log is BridegeTokenReceived
-        assertEq(
-            logs[2].topics[0],
-            keccak256("BridegeTokenReceived(bytes32,address,uint64,uint256)")
-        );
+        assertEq(logs[2].topics[0], keccak256("BridegeTokenReceived(bytes32,address,uint64,uint256)"));
         assertEq(NexUSDv1.balanceOf(recipient), amount - fee);
         assertEq(NexUSDv1.balanceOf(owner), fee);
     }
@@ -256,13 +235,7 @@ contract NexUSDTest is HelperConfig, HelperTest {
         NexUSDv1.pause();
         vm.prank(BRIDGE_OPERATOR);
         vm.expectRevert();
-        NexUSDv1.bridgeMint(
-            messageId,
-            sourceChainSelector,
-            recipient,
-            amount,
-            fee
-        );
+        NexUSDv1.bridgeMint(messageId, sourceChainSelector, recipient, amount, fee);
     }
 
     function testbridgeMintRevertsIfSenderIsBlocklisted() public {

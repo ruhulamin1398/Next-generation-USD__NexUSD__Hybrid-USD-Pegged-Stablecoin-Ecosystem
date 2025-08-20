@@ -12,10 +12,7 @@ import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract Interaction is HelperConfig {
     function run() external {
-        proxy = DevOpsTools.get_most_recent_deployment(
-            "ERC1967Proxy",
-            block.chainid
-        );
+        proxy = DevOpsTools.get_most_recent_deployment("ERC1967Proxy", block.chainid);
         NexUSDv1 = NexUSD(proxy);
 
         vm.startBroadcast();
@@ -35,10 +32,7 @@ contract Interaction is HelperConfig {
     // }
 
     function fundLink() public {
-        IERC20(0x0Fd9e8d3aF1aaee056EB9e802c3A762a667b1904).transfer(
-            proxy,
-            10 * 10 ** 18
-        );
+        IERC20(0x0Fd9e8d3aF1aaee056EB9e802c3A762a667b1904).transfer(proxy, 10 * 10 ** 18);
     }
 
     // function send() public {

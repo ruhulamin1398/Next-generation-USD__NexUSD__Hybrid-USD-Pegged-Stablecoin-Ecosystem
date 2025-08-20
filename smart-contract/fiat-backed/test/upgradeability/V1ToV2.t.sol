@@ -93,15 +93,9 @@ contract V1ToV2 is HelperTest {
         Vm.Log[] memory entries = vm.getRecordedLogs();
 
         // Check that the first event is Transfer (burn)
-        assertEq(
-            entries[0].topics[0],
-            keccak256("Transfer(address,address,uint256)")
-        );
+        assertEq(entries[0].topics[0], keccak256("Transfer(address,address,uint256)"));
         // Check that the second event is BridgeRequest
-        assertEq(
-            entries[1].topics[0],
-            keccak256("BridgeRequest(bytes32,uint64,address,address,uint256)")
-        );
+        assertEq(entries[1].topics[0], keccak256("BridgeRequest(bytes32,uint64,address,address,uint256)"));
     }
 
     function testPermitSignatureStillValidAfterUpgrade() public {

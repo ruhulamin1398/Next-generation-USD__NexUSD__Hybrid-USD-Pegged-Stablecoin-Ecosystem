@@ -17,16 +17,13 @@ contract DeployNexUSD is CodeConstants {
 
     function deployNexUSD() public returns (address) {
         vm.startBroadcast();
-        
+
         // First deploy the implementation contract
         Options memory opts;
         address implementation = Upgrades.deployImplementation("NexUSD.sol", opts);
-        
+
         // Then deploy our custom NexUSDProxy with the implementation and initialization data
-        NexUSDProxy proxy = new NexUSDProxy(
-            implementation,
-            abi.encodeCall(NexUSD.initialize, (OWNER, OPERATOR))
-        );
+        NexUSDProxy proxy = new NexUSDProxy(implementation, abi.encodeCall(NexUSD.initialize, (OWNER, OPERATOR)));
 
         vm.stopBroadcast();
         return address(proxy);

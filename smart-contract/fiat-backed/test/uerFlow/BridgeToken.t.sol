@@ -37,51 +37,26 @@ contract BridgeTokenFlowTest is Test, HelperConfig, HelperTest {
         // USER1 initiates bridge send (burns tokens)
         vm.startPrank(USER1);
         vm.recordLogs();
-        bytes32 messageId = NexUSDv1.send(
-            targetChainSelector,
-            destinationRecipient,
-            amount
-        );
+        bytes32 messageId = NexUSDv1.send(targetChainSelector, destinationRecipient, amount);
         Vm.Log[] memory logs = vm.getRecordedLogs();
         // First event: Transfer (burn)
-        assertEq(
-            logs[0].topics[0],
-            keccak256("Transfer(address,address,uint256)")
-        );
+        assertEq(logs[0].topics[0], keccak256("Transfer(address,address,uint256)"));
         // Second event: BridgeRequest
-        assertEq(
-            logs[1].topics[0],
-            keccak256("BridgeRequest(bytes32,uint64,address,address,uint256)")
-        );
+        assertEq(logs[1].topics[0], keccak256("BridgeRequest(bytes32,uint64,address,address,uint256)"));
         vm.stopPrank();
         assertEq(NexUSDv1.balanceOf(USER1), 0);
 
         // OPERATOR executes bridgeMint on destination chain
         vm.prank(BRIDGE_OPERATOR);
         vm.recordLogs();
-        NexUSDv1.bridgeMint(
-            messageId,
-            targetChainSelector,
-            destinationRecipient,
-            amount,
-            fee
-        );
+        NexUSDv1.bridgeMint(messageId, targetChainSelector, destinationRecipient, amount, fee);
         Vm.Log[] memory logs2 = vm.getRecordedLogs();
         // First event: Transfer (mint to recipient)
-        assertEq(
-            logs2[0].topics[0],
-            keccak256("Transfer(address,address,uint256)")
-        );
+        assertEq(logs2[0].topics[0], keccak256("Transfer(address,address,uint256)"));
         // Second event: Transfer (mint to owner)
-        assertEq(
-            logs2[1].topics[0],
-            keccak256("Transfer(address,address,uint256)")
-        );
+        assertEq(logs2[1].topics[0], keccak256("Transfer(address,address,uint256)"));
         // Third event: BridegeTokenReceived
-        assertEq(
-            logs2[2].topics[0],
-            keccak256("BridegeTokenReceived(bytes32,address,uint64,uint256)")
-        );
+        assertEq(logs2[2].topics[0], keccak256("BridegeTokenReceived(bytes32,address,uint64,uint256)"));
         assertEq(NexUSDv1.balanceOf(destinationRecipient), amount - fee);
         assertEq(NexUSDv1.balanceOf(OWNER), fee);
     }

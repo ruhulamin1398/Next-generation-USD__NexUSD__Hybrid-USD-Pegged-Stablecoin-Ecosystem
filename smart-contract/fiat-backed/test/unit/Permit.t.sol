@@ -23,15 +23,10 @@ contract PermitTest is HelperConfig, HelperTest {
         uint256 deadline
     ) internal view returns (uint8 v, bytes32 r, bytes32 s) {
         bytes32 DOMAIN_SEPARATOR = NexUSDv1.DOMAIN_SEPARATOR();
-        bytes32 PERMIT_TYPEHASH = keccak256(
-            "Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)"
-        );
-        bytes32 structHash = keccak256(
-            abi.encode(PERMIT_TYPEHASH, user, spender, value, nonce, deadline)
-        );
-        bytes32 digest = keccak256(
-            abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, structHash)
-        );
+        bytes32 PERMIT_TYPEHASH =
+            keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
+        bytes32 structHash = keccak256(abi.encode(PERMIT_TYPEHASH, user, spender, value, nonce, deadline));
+        bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, structHash));
         return vm.sign(userPrivateKey, digest);
     }
 
@@ -44,14 +39,7 @@ contract PermitTest is HelperConfig, HelperTest {
         uint256 nonce = NexUSDv1.nonces(user);
         vm.prank(OPERATOR);
         NexUSDv1.mint(user, amount);
-        (uint8 v, bytes32 r, bytes32 s) = _getPermitSignature(
-            user,
-            userPrivateKey,
-            spender,
-            amount,
-            nonce,
-            deadline
-        );
+        (uint8 v, bytes32 r, bytes32 s) = _getPermitSignature(user, userPrivateKey, spender, amount, nonce, deadline);
         NexUSDv1.permit(user, spender, amount, deadline, v, r, s);
         assertEq(NexUSDv1.allowance(user, spender), amount);
         assertEq(NexUSDv1.nonces(user), nonce + 1);
@@ -68,14 +56,7 @@ contract PermitTest is HelperConfig, HelperTest {
         uint256 nonce = NexUSDv1.nonces(user);
         vm.prank(OPERATOR);
         NexUSDv1.mint(user, amount);
-        (uint8 v, bytes32 r, bytes32 s) = _getPermitSignature(
-            user,
-            userPrivateKey,
-            spender,
-            amount,
-            nonce,
-            deadline
-        );
+        (uint8 v, bytes32 r, bytes32 s) = _getPermitSignature(user, userPrivateKey, spender, amount, nonce, deadline);
         vm.expectRevert();
         NexUSDv1.permit(user, spender, amount, deadline, v, r, s);
     }
@@ -90,14 +71,7 @@ contract PermitTest is HelperConfig, HelperTest {
         vm.prank(OPERATOR);
         NexUSDv1.mint(user, amount);
         uint256 wrongKey = 0xBEEF;
-        (uint8 v, bytes32 r, bytes32 s) = _getPermitSignature(
-            user,
-            wrongKey,
-            spender,
-            amount,
-            nonce,
-            deadline
-        );
+        (uint8 v, bytes32 r, bytes32 s) = _getPermitSignature(user, wrongKey, spender, amount, nonce, deadline);
         vm.expectRevert();
         NexUSDv1.permit(user, spender, amount, deadline, v, r, s);
     }
@@ -112,14 +86,7 @@ contract PermitTest is HelperConfig, HelperTest {
         uint256 nonce = NexUSDv1.nonces(user);
         vm.prank(OPERATOR);
         NexUSDv1.mint(user, amount);
-        (uint8 v, bytes32 r, bytes32 s) = _getPermitSignature(
-            user,
-            userPrivateKey,
-            spender,
-            amount,
-            nonce,
-            deadline
-        );
+        (uint8 v, bytes32 r, bytes32 s) = _getPermitSignature(user, userPrivateKey, spender, amount, nonce, deadline);
         vm.expectRevert();
         NexUSDv1.permit(user, wrongSpender, amount, deadline, v, r, s);
         assertEq(NexUSDv1.allowance(user, spender), 0);
@@ -134,14 +101,7 @@ contract PermitTest is HelperConfig, HelperTest {
         uint256 nonce = NexUSDv1.nonces(user) + 1;
         vm.prank(OPERATOR);
         NexUSDv1.mint(user, amount);
-        (uint8 v, bytes32 r, bytes32 s) = _getPermitSignature(
-            user,
-            userPrivateKey,
-            spender,
-            amount,
-            nonce,
-            deadline
-        );
+        (uint8 v, bytes32 r, bytes32 s) = _getPermitSignature(user, userPrivateKey, spender, amount, nonce, deadline);
         vm.expectRevert();
         NexUSDv1.permit(user, spender, amount, deadline, v, r, s);
     }
@@ -155,14 +115,7 @@ contract PermitTest is HelperConfig, HelperTest {
         uint256 nonce = NexUSDv1.nonces(user);
         vm.prank(OPERATOR);
         NexUSDv1.mint(user, 1000 * 1e6);
-        (uint8 v, bytes32 r, bytes32 s) = _getPermitSignature(
-            user,
-            userPrivateKey,
-            spender,
-            amount,
-            nonce,
-            deadline
-        );
+        (uint8 v, bytes32 r, bytes32 s) = _getPermitSignature(user, userPrivateKey, spender, amount, nonce, deadline);
         NexUSDv1.permit(user, spender, amount, deadline, v, r, s);
         assertEq(NexUSDv1.allowance(user, spender), 0);
         assertEq(NexUSDv1.nonces(user), nonce + 1);

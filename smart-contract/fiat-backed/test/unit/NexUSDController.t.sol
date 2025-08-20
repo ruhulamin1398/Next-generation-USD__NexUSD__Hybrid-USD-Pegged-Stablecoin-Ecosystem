@@ -14,7 +14,7 @@ import {HelperTest} from "../Helper.t.sol";
 
 contract NexUSDControllerTest is HelperConfig, HelperTest {
     function setUp() public {
-         deployV1();
+        deployV1();
     }
 
     function testAddToBlocklist() public {

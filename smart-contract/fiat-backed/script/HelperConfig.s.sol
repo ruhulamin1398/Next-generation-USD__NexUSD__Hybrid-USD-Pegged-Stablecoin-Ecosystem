@@ -9,8 +9,7 @@ import {NexUSDV2} from "../src/v2/NexUSDV2.sol";
 abstract contract CodeConstants is Script {
     address immutable OWNER = 0x3ff88B69d1762AA444c85c30C4B0B795f9c48B59;
     address immutable OPERATOR = 0x93d918a0f5c16a1a2dBbE60f8dfD014B6CdD4013;
-    address immutable BRIDGE_OPERATOR =
-        0x93d918a0f5c16a1a2dBbE60f8dfD014B6CdD4013;
+    address immutable BRIDGE_OPERATOR = 0x93d918a0f5c16a1a2dBbE60f8dfD014B6CdD4013;
     address immutable ADMIN;
 
     address USER = 0xddD4759f7a7762c17910706E3F4c773c198687B3;

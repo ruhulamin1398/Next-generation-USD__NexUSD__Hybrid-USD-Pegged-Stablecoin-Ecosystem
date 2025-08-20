@@ -26,9 +26,11 @@
 pragma solidity 0.8.30;
 
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {ERC20PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
+import {ERC20PausableUpgradeable} from
+    "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
 import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
-import {ERC20PermitUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
+import {ERC20PermitUpgradeable} from
+    "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
 
 import {BaseStorage} from "./BaseStorage.sol";
 
@@ -38,7 +40,6 @@ import {BaseStorage} from "./BaseStorage.sol";
  * @dev Inherits from BaseStorage, ERC20, ERC20Pausable, AccessControl, and ERC20Permit (all upgradeable).
  *      Designed for upgradeability and secure role-based access control.
  */
-
 abstract contract NexUSDController is
     BaseStorage,
     ERC20Upgradeable,
@@ -90,6 +91,7 @@ abstract contract NexUSDController is
     }
     /// @notice Ensures the recipient is not blocklisted.
     /// @param to The address of the recipient.
+
     modifier notBlocklistedRecipient(address to) {
         if (blockedAccounts[to]) revert BlocklistedRecipient(to);
         _;
@@ -104,12 +106,10 @@ abstract contract NexUSDController is
     /// @param symbol The symbol of the ERC20 token (e.g., "NexUSD").
     /// @param ownerAddress The address to be granted DEFAULT_ADMIN_ROLE (owner).
     /// @param operator The address to be granted OPERATOR_ROLE (mint, burn, blocklist).
-    function __NexUSDController_init(
-        string memory name,
-        string memory symbol,
-        address ownerAddress,
-        address operator
-    ) internal onlyInitializing {
+    function __NexUSDController_init(string memory name, string memory symbol, address ownerAddress, address operator)
+        internal
+        onlyInitializing
+    {
         owner = ownerAddress;
         minimumCrossChainTransferAmount = 1; // Default to 1, can be updated by owner
         __ERC20_init(name, symbol);
@@ -127,9 +127,7 @@ abstract contract NexUSDController is
     /// @notice Changes the owner of the contract.
     /// @dev Only callable by DEFAULT_ADMIN_ROLE (owner).
     /// @param newOwner The address to be set as the new owner.
-    function changeOwner(
-        address newOwner
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function changeOwner(address newOwner) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (newOwner == address(0)) revert InvalidNewOwner();
         address oldOwner = owner;
         owner = newOwner;
@@ -146,9 +144,7 @@ abstract contract NexUSDController is
     /// @notice Sets the minimum amount for cross-chain transfers.
     /// @dev Only callable by DEFAULT_ADMIN_ROLE (owner).
     /// @param amount The minimum amount to set for cross-chain transfers.
-    function setMinimumCrossChainTransferAmount(
-        uint256 amount
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setMinimumCrossChainTransferAmount(uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
         minimumCrossChainTransferAmount = amount;
     }
 
@@ -163,9 +159,7 @@ abstract contract NexUSDController is
     /// @notice Removes an account from the blocklist.
     /// @dev Only callable by OPERATOR_ROLE.
     /// @param account The address to be removed from the blocklist.
-    function removeFromBlocklist(
-        address account
-    ) external onlyRole(OPERATOR_ROLE) {
+    function removeFromBlocklist(address account) external onlyRole(OPERATOR_ROLE) {
         blockedAccounts[account] = false;
         emit UserUnBlocked(account);
     }
@@ -174,10 +168,7 @@ abstract contract NexUSDController is
     /// @dev Only callable by ADMIN_ROLE.
     /// @param chainSelector The chain selector to add.
     /// @param tokenAddress The address of the token contract on the allowlisted chain.
-    function addAllowlistedChain(
-        uint64 chainSelector,
-        address tokenAddress
-    ) external onlyRole(ADMIN_ROLE) {
+    function addAllowlistedChain(uint64 chainSelector, address tokenAddress) external onlyRole(ADMIN_ROLE) {
         allowlistedChains[chainSelector] = tokenAddress;
         emit ChainAllowlisted(chainSelector, tokenAddress);
     }
@@ -185,9 +176,7 @@ abstract contract NexUSDController is
     /// @notice Removes a chain from the allowlisted chains for cross-chain operations.
     /// @dev Only callable by ADMIN_ROLE.
     /// @param chainSelector The chain selector to remove.
-    function removeAllowlistedChain(
-        uint64 chainSelector
-    ) external onlyRole(ADMIN_ROLE) {
+    function removeAllowlistedChain(uint64 chainSelector) external onlyRole(ADMIN_ROLE) {
         allowlistedChains[chainSelector] = address(0);
         emit ChainRemovedFromAllowlisted(chainSelector);
     }
@@ -217,11 +206,7 @@ abstract contract NexUSDController is
     /// @param from The address of the sender.
     /// @param to The address of the recipient.
     /// @param value The amount being transferred.
-    function _update(
-        address from,
-        address to,
-        uint256 value
-    )
+    function _update(address from, address to, uint256 value)
         internal
         override(ERC20Upgradeable, ERC20PausableUpgradeable)
         notBlocklistedSender(from)
