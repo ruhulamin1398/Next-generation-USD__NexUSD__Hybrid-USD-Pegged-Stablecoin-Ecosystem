@@ -208,7 +208,7 @@ export const networks: Network[] = [
     description: "Avalanche testnet for fiat-backed development and testing",
     chainId: 43113,
     rpcUrl: "https://api.avax-test.network/ext/bc/C/rpc",
-    explorerUrl: "https://testnet.snowtrace.io",
+    explorerUrl: "https://testnet.snowscan.xyz",
     gasPrice: "0.001", // 0.001 gwei for Avalanche Fuji
   },
   {
