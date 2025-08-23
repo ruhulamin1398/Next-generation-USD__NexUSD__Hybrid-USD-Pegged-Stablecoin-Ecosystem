@@ -124,7 +124,7 @@ export const networks: Network[] = [
     chainId: 43113,
     rpcUrl: "https://api.avax-test.network/ext/bc/C/rpc",
     explorerUrl: "https://testnet.snowtrace.io",
-    gasPrice: "25", // 25 gwei for Avalanche Fuji
+    gasPrice: "0.001", // 25 gwei for Avalanche Fuji
   },
   {
     name: "Optimism Sepolia",
@@ -199,6 +199,19 @@ export const networks: Network[] = [
     gasPrice: "1", // 1 gwei for BSC testnet
   },
   {
+    name: "Avalanche Fuji",
+    logo: AvalancheIcon,
+    url: "#",
+    type: "fiat",
+    status: "live",
+    contractAddress: "0x8ff02cFB12F00C023E24743744E59e8e79D22d76",
+    description: "Avalanche testnet for fiat-backed development and testing",
+    chainId: 43113,
+    rpcUrl: "https://api.avax-test.network/ext/bc/C/rpc",
+    explorerUrl: "https://testnet.snowtrace.io",
+    gasPrice: "0.001", // 0.001 gwei for Avalanche Fuji
+  },
+  {
     name: "Ethereum Sepolia",
     logo: EthereumIcon,
     url: "#",
@@ -210,19 +223,6 @@ export const networks: Network[] = [
     rpcUrl: "https://sepolia.infura.io/v3/YOUR_INFURA_KEY",
     explorerUrl: "https://sepolia.etherscan.io",
     gasPrice: "20", // 20 gwei for Ethereum Sepolia
-  },
-  {
-    name: "Avalanche Fuji",
-    logo: AvalancheIcon,
-    url: "#",
-    type: "fiat",
-    status: "coming-soon",
-    contractAddress: "",
-    description: "Avalanche testnet for fiat-backed development and testing",
-    chainId: 43113,
-    rpcUrl: "https://api.avax-test.network/ext/bc/C/rpc",
-    explorerUrl: "https://testnet.snowtrace.io",
-    gasPrice: "25", // 25 gwei for Avalanche Fuji
   },
   {
     name: "Optimism Goerli",
