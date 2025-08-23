@@ -201,7 +201,7 @@ export const networks: Network[] = [
   {
     name: "Avalanche Fuji",
     logo: AvalancheIcon,
-    url: "#",
+    url: "https://testnet.snowscan.xyz/token/0x8ff02cfb12f00c023e24743744e59e8e79d22d76",
     type: "fiat",
     status: "live",
     contractAddress: "0x8ff02cFB12F00C023E24743744E59e8e79D22d76",
