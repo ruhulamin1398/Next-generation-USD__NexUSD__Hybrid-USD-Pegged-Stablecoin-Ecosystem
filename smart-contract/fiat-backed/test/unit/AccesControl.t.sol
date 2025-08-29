@@ -82,16 +82,5 @@ contract AccessControlTest is HelperConfig, HelperTest {
         assertEq(NexUSDv1.owner(), newOwner);
     }
 
-    function testAddAndRevokeCrossChainOperatorRole() public {
-        // OWNER grants BRIDGE_OPERATOR_ROLE
-        vm.startPrank(OWNER);
-        NexUSDv1.grantRole(NexUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR);
-        vm.stopPrank();
-        assertTrue(NexUSDv1.hasRole(NexUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR));
-        // OWNER revokes BRIDGE_OPERATOR_ROLE
-        vm.startPrank(OWNER);
-        NexUSDv1.revokeRole(NexUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR);
-        vm.stopPrank();
-        assertFalse(NexUSDv1.hasRole(NexUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR));
-    }
+ 
 }

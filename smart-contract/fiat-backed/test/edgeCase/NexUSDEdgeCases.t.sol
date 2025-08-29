@@ -65,16 +65,7 @@ contract EdgeCasesTest is HelperConfig, HelperTest {
         assertFalse(NexUSDv1.paused());
     }
 
-    function testMintMaxSupplyTwiceReverts() public {
-        uint256 maxSupply = NexUSDv1.MAX_SUPPLY();
-        vm.prank(OPERATOR);
-        NexUSDv1.mint(USER, maxSupply);
-        assertEq(NexUSDv1.totalSupply(), maxSupply);
-        vm.prank(OPERATOR);
-        vm.expectRevert();
-        NexUSDv1.mint(USER, 1);
-    }
-
+ 
     function testTransferToZeroAddressReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
@@ -118,26 +109,7 @@ contract EdgeCasesTest is HelperConfig, HelperTest {
         NexUSDv1.mint(USER, amount);
     }
 
-    function testAddAllowlistedChainTwice() public {
-        uint64 chainId = 0x1234;
-        address tokenAddr1 = address(0xBEEF);
-        address tokenAddr2 = address(0xCAFE);
-        vm.prank(ADMIN);
-        NexUSDv1.addAllowlistedChain(chainId, tokenAddr1);
-        assertEq(NexUSDv1.getAllowlistedChain(chainId), tokenAddr1);
-        vm.prank(ADMIN);
-        NexUSDv1.addAllowlistedChain(chainId, tokenAddr2);
-        assertEq(NexUSDv1.getAllowlistedChain(chainId), tokenAddr2);
-    }
-
-    function testRemoveAllowlistedChainTwice() public {
-        uint64 chainId = 0x1234;
-        vm.prank(ADMIN);
-        NexUSDv1.removeAllowlistedChain(chainId);
-        vm.prank(ADMIN);
-        NexUSDv1.removeAllowlistedChain(chainId);
-        assertEq(NexUSDv1.getAllowlistedChain(chainId), address(0));
-    }
+ 
 
     function testChangeOwnerToZeroAddressReverts() public {
         vm.prank(OWNER);

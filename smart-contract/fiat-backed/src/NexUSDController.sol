@@ -68,13 +68,7 @@ abstract contract NexUSDController is
     /// @notice Emitted when a user is removed from the blocklist.
     /// @param account The address that was unblocked.
     event UserUnBlocked(address indexed account);
-    /// @notice Emitted when a chain is added to the allowlist.
-    /// @param chainSelector The chain selector that was added.
-    /// @param tokenAddress The token contract address on the allowlisted chain.
-    event ChainAllowlisted(uint64 indexed chainSelector, address tokenAddress);
-    /// @notice Emitted when a chain is removed from the allowlist.
-    /// @param chainSelector The chain selector that was removed.
-    event ChainRemovedFromAllowlisted(uint64 indexed chainSelector);
+ 
     /// @notice Emitted when the contract owner changes.
     /// @param newOwner The new owner address.
     event OwnerChanged(address indexed newOwner);
@@ -164,22 +158,7 @@ abstract contract NexUSDController is
         emit UserUnBlocked(account);
     }
 
-    /// @notice Adds a chain to the allowlisted chains for cross-chain operations.
-    /// @dev Only callable by ADMIN_ROLE.
-    /// @param chainSelector The chain selector to add.
-    /// @param tokenAddress The address of the token contract on the allowlisted chain.
-    function addAllowlistedChain(uint64 chainSelector, address tokenAddress) external onlyRole(ADMIN_ROLE) {
-        allowlistedChains[chainSelector] = tokenAddress;
-        emit ChainAllowlisted(chainSelector, tokenAddress);
-    }
-
-    /// @notice Removes a chain from the allowlisted chains for cross-chain operations.
-    /// @dev Only callable by ADMIN_ROLE.
-    /// @param chainSelector The chain selector to remove.
-    function removeAllowlistedChain(uint64 chainSelector) external onlyRole(ADMIN_ROLE) {
-        allowlistedChains[chainSelector] = address(0);
-        emit ChainRemovedFromAllowlisted(chainSelector);
-    }
+ 
 
     // =========================
     //   ✅ Public Functions
@@ -226,7 +205,5 @@ abstract contract NexUSDController is
         return blockedAccounts[account];
     }
 
-    function getAllowlistedChain(uint64 chainId) public view returns (address) {
-        return allowlistedChains[chainId];
-    }
+   
 }

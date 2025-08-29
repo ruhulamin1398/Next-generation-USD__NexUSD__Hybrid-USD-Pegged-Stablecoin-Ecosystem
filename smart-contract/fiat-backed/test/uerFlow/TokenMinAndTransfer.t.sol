@@ -40,15 +40,7 @@ contract TokenMintAndTransferTest is Test, HelperConfig, HelperTest {
         NexUSDv1.mint(address(0), amount);
     }
 
-    function testMintExceedingMaxSupplyReverts() public {
-        uint256 amount = NexUSDv1.MAX_SUPPLY();
-        vm.prank(OPERATOR);
-        NexUSDv1.mint(USER1, amount);
-        assertEq(NexUSDv1.totalSupply(), amount);
-        vm.prank(OPERATOR);
-        vm.expectRevert();
-        NexUSDv1.mint(USER1, 1);
-    }
+ 
 
     function testTransferByUser() public {
         uint256 amount = 1000 * 1e6;

@@ -85,32 +85,8 @@ contract NexUSDControllerTest is HelperConfig, HelperTest {
         NexUSDv1.changeOwner(address(0));
     }
 
-    function testAddAndRemoveAllowlistedChain() public {
-        uint64 chainId = 0x1234;
-        address tokenAddr = address(0xBEEF);
-        vm.prank(ADMIN);
-        NexUSDv1.addAllowlistedChain(chainId, tokenAddr);
-        assertEq(NexUSDv1.getAllowlistedChain(chainId), tokenAddr);
-        vm.prank(ADMIN);
-        NexUSDv1.removeAllowlistedChain(chainId);
-        assertEq(NexUSDv1.getAllowlistedChain(chainId), address(0));
-    }
-
-    function testAddAllowlistedChainRevertsIfNotAdmin() public {
-        uint64 chainId = 0x1234;
-        address tokenAddr = address(0xBEEF);
-        vm.prank(USER);
-        vm.expectRevert();
-        NexUSDv1.addAllowlistedChain(chainId, tokenAddr);
-    }
-
-    function testRemoveAllowlistedChainRevertsIfNotAdmin() public {
-        uint64 chainId = 0x1234;
-        vm.prank(USER);
-        vm.expectRevert();
-        NexUSDv1.removeAllowlistedChain(chainId);
-    }
-
+  
+ 
     function testAddToBlocklistRevertsIfNotOperator() public {
         vm.prank(USER);
         vm.expectRevert();
@@ -191,23 +167,5 @@ contract NexUSDControllerTest is HelperConfig, HelperTest {
         assertFalse(NexUSDv1.isBlocklisted(USER2));
     }
 
-    function testAddAllowlistedChainOverwrite() public {
-        uint64 chainId = 0x1234;
-        address tokenAddr1 = address(0xBEEF);
-        address tokenAddr2 = address(0xCAFE);
-        vm.prank(ADMIN);
-        NexUSDv1.addAllowlistedChain(chainId, tokenAddr1);
-        assertEq(NexUSDv1.getAllowlistedChain(chainId), tokenAddr1);
-        vm.prank(ADMIN);
-        NexUSDv1.addAllowlistedChain(chainId, tokenAddr2);
-        assertEq(NexUSDv1.getAllowlistedChain(chainId), tokenAddr2);
-    }
-
-    function testRemoveAllowlistedChainAlreadyRemoved() public {
-        uint64 chainId = 0x1234;
-        vm.prank(ADMIN);
-        NexUSDv1.removeAllowlistedChain(chainId);
-        // Should remain address(0)
-        assertEq(NexUSDv1.getAllowlistedChain(chainId), address(0));
-    }
+ 
 }

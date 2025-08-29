@@ -17,8 +17,7 @@ contract HelperTest is Test, HelperConfig {
         DeployNexUSD deployer = new DeployNexUSD();
         proxy = deployer.run();
         NexUSDv1 = NexUSD(proxy);
-        vm.startPrank(OWNER);
-        NexUSDv1.grantRole(NexUSDv1.BRIDGE_OPERATOR_ROLE(), BRIDGE_OPERATOR);
+        vm.startPrank(OWNER); 
         vm.stopPrank();
     }
 
@@ -27,16 +26,5 @@ contract HelperTest is Test, HelperConfig {
         upgrader.run(proxy);
         NexUSDv2 = NexUSDV2(proxy);
     }
-
-    function allowNewChainV1(uint64 chainSelector) public {
-        vm.startPrank(ADMIN);
-        NexUSDv1.addAllowlistedChain(chainSelector, CCIPchains[chainSelector]);
-        vm.stopPrank();
-    }
-
-    function allowNewChainV2(uint64 chainSelector) public {
-        vm.startPrank(ADMIN);
-        NexUSDv2.addAllowlistedChain(chainSelector, CCIPchains[chainSelector]);
-        vm.stopPrank();
-    }
+ 
 }

@@ -73,31 +73,7 @@ contract V1ToV2 is HelperTest {
         assertEq(NexUSDv2.balanceOf(USER1), 550e6);
     }
 
-    function testBridgeRequestEventAfterUpgrade() public {
-        // Upgrade
-        upgradeToV2();
-
-        allowNewChainV2(amoy);
-
-        // Mint to USER1 and test send emits BridgeRequest
-        vm.startPrank(OPERATOR);
-        NexUSDv2.mint(USER1, 1000e6);
-        vm.stopPrank();
-
-        vm.recordLogs();
-
-        vm.prank(USER1);
-        // We'll just check that the event is emitted, not the exact values
-        NexUSDv2.send(amoy, USER2, 100e6);
-
-        Vm.Log[] memory entries = vm.getRecordedLogs();
-
-        // Check that the first event is Transfer (burn)
-        assertEq(entries[0].topics[0], keccak256("Transfer(address,address,uint256)"));
-        // Check that the second event is BridgeRequest
-        assertEq(entries[1].topics[0], keccak256("BridgeRequest(bytes32,uint64,address,address,uint256)"));
-    }
-
+ 
     function testPermitSignatureStillValidAfterUpgrade() public {
         // Simulate permit signature before upgrade
         uint256 privateKey = 0xA11CE;
@@ -139,24 +115,7 @@ contract V1ToV2 is HelperTest {
         assertFalse(NexUSDv2.paused());
     }
 
-    function testbridgeMintAfterUpgrade() public {
-        // Upgrade first
-
-        upgradeToV2();
-
-        // Operator mints cross-chain
-        vm.startPrank(OPERATOR);
-        bytes32 messageId = keccak256("msg");
-        uint64 sourceChain = 1234;
-        address recipient = USER1;
-        uint256 amount = 100e6;
-        uint256 fee = 1e6;
-        vm.stopPrank();
-        vm.startPrank(BRIDGE_OPERATOR);
-        NexUSDv2.bridgeMint(messageId, sourceChain, recipient, amount, fee);
-        vm.stopPrank();
-        assertEq(NexUSDv2.balanceOf(recipient), amount - fee);
-    }
+ 
 
     function testFuzzUpgradeDoesNotCorruptStorage(uint256 fuzzAmount) public {
         fuzzAmount = bound(fuzzAmount, 1, 10_000_000e6);

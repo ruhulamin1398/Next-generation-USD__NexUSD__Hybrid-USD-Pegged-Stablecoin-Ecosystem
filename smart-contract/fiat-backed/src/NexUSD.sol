@@ -39,12 +39,7 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
     // =========================
     //      ✅ Errors
     // =========================
-
-    /// @dev Error thrown when minting would exceed the maximum supply.
-    error MaxSupplyExceeded();
-    error NotEnoughBalance(uint256 amount); // Used to make sure contract has enough balance.
-    error DestinationChainNotAllowlisted(uint64 destinationChainSelector); // Used when the destination chain has not been allowlisted by the contract owner.
-
+ 
     // =========================
     //      ✅ Events
     // =========================
@@ -61,49 +56,13 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
     /// @param amount The number of tokens burned.
     event Burn(address indexed operator, address indexed from, uint256 amount);
 
-    /// @notice Emitted when a cross-chain token transfer is requested.
-    /// @param messageId The unique ID of the message.
-    /// @param destinationChainSelector The chain selector of the destination chain.
-    /// @param receiverContract The address of the receiver contract on the destination chain.
-    /// @param destinationRecipient The recipient address on the destination chain.
-    /// @param tokenAmount The token amount to be transferred.
-    event BridgeRequest(
-        bytes32 indexed messageId,
-        uint64 indexed destinationChainSelector,
-        address receiverContract,
-        address destinationRecipient,
-        uint256 tokenAmount
-    );
-
-    /// @notice Emitted when tokens are received from another chain.
-    /// @param messageId The unique ID of the cross-chain message.
-    /// @param to The address receiving tokens on this chain.
-    /// @param sourceChainSelector The chain selector of the source chain.
-    /// @param amount The amount of tokens received.
-    event BridegeTokenReceived(
-        bytes32 indexed messageId, address indexed to, uint64 indexed sourceChainSelector, uint256 amount
-    );
+ 
     // =========================
     //      ✅ Modifiers
     // =========================
 
-    /// @dev Modifier that checks if the chain with the given destinationChainSelector is allowlisted.
-    /// @param _destinationChainSelector The selector of the destination chain.
-    modifier onlyAllowlistedChain(uint64 _destinationChainSelector) {
-        if (allowlistedChains[_destinationChainSelector] == address(0)) {
-            revert DestinationChainNotAllowlisted(_destinationChainSelector);
-        }
-        _;
-    }
-    /// @dev Modifier that checks if the amount is above the minimum cross-chain transfer amount.
-    /// @param amount The amount to check.
-
-    modifier onlyMinimumCrossChainAmount(uint256 amount) {
-        if (amount < minimumCrossChainTransferAmount) {
-            revert NotEnoughBalance(amount);
-        }
-        _;
-    }
+ 
+ 
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -137,9 +96,7 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
      */
     function mint(address to, uint256 amount) external onlyRole(OPERATOR_ROLE) {
         if (to == address(0)) revert InvalidRecipient();
-        if (totalSupply() + amount > MAX_SUPPLY) {
-            revert MaxSupplyExceeded();
-        }
+       
         _mint(to, amount);
         emit Mint(msg.sender, to, amount);
     }
@@ -155,65 +112,9 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
         emit Burn(msg.sender, from, amount);
     }
 
-    /**
-     * @notice Sends NexUSD tokens to a recipient on another chain.
-     * @dev Only callable by allowlisted chains. Burns tokens from the sender's balance.
-     * @param destinationChainSelector The selector of the destination chain.
-     * @param destinationRecipient The recipient address on the destination chain.
-     * @param amount The number of tokens to send (6 decimals).
-     * @return messageId The unique ID of the cross-chain message.
-     */
-    function send(uint64 destinationChainSelector, address destinationRecipient, uint256 amount)
-        external
-        onlyAllowlistedChain(destinationChainSelector)
-        whenNotPaused
-        notBlocklistedSender(msg.sender)
-        onlyMinimumCrossChainAmount(amount)
-        returns (bytes32 messageId)
-    {
-        if (destinationRecipient == address(0)) revert InvalidRecipient();
-        address receiverContract = allowlistedChains[destinationChainSelector];
+  
 
-        uint256 balance = balanceOf(msg.sender);
-        if (balance < amount) {
-            revert NotEnoughBalance(amount);
-        }
-
-        _burn(msg.sender, amount);
-        // Emit an event with message details
-        messageId = _generateMessageId(destinationChainSelector, receiverContract, destinationRecipient, amount);
-        emit BridgeRequest(messageId, destinationChainSelector, receiverContract, destinationRecipient, amount);
-
-        // Return the message ID
-        return messageId;
-    }
-
-    /**
-     * @notice Handles the reception of tokens from another chain.
-     * @dev Only callable by BRIDGE_OPERATOR_ROLE. Mints tokens to the recipient on this chain.
-     * @param messageId The unique ID of the cross-chain message.
-     * @param sourceChainSelector The selector of the source chain.
-     * @param recipient The address receiving the tokens on this chain.
-     * @param amount The number of tokens requested(6 decimals).
-     * @param fee ,the number of token will send to owner account
-     */
-    function bridgeMint(bytes32 messageId, uint64 sourceChainSelector, address recipient, uint256 amount, uint256 fee)
-        external
-        whenNotPaused
-        notBlocklistedRecipient(recipient)
-        onlyRole(BRIDGE_OPERATOR_ROLE)
-    {
-        if (totalSupply() + amount > MAX_SUPPLY) {
-            revert MaxSupplyExceeded();
-        }
-
-        if (recipient == address(0)) revert InvalidRecipient();
-        // Mint tokens to the destination user
-        _mint(recipient, amount - fee);
-        _mint(owner, fee);
-
-        emit BridegeTokenReceived(messageId, recipient, sourceChainSelector, amount);
-    }
+  
 
     // =========================
     //   ✅ Internal Functions
