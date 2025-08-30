@@ -65,7 +65,6 @@ contract EdgeCasesTest is HelperConfig, HelperTest {
         assertFalse(NexUSDv1.paused());
     }
 
- 
     function testTransferToZeroAddressReverts() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);
@@ -108,8 +107,6 @@ contract EdgeCasesTest is HelperConfig, HelperTest {
         vm.expectRevert();
         NexUSDv1.mint(USER, amount);
     }
-
- 
 
     function testChangeOwnerToZeroAddressReverts() public {
         vm.prank(OWNER);

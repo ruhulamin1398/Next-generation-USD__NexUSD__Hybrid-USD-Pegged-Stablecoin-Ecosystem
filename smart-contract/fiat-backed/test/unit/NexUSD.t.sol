@@ -33,7 +33,7 @@ contract NexUSDTest is HelperConfig, HelperTest {
         vm.expectRevert();
         NexUSDv1.mint(USER, amount);
     }
- 
+
     function testBlocklistPreventsMint() public {
         uint256 amount = 1000 * 1e6;
         vm.startPrank(OPERATOR);
@@ -103,7 +103,6 @@ contract NexUSDTest is HelperConfig, HelperTest {
         vm.expectRevert();
         NexUSDv1.mint(address(0), amount);
     }
- 
 
     function testBurnRevertsIfNotOperator() public {
         uint256 amount = 1000 * 1e6;
@@ -113,9 +112,6 @@ contract NexUSDTest is HelperConfig, HelperTest {
         vm.expectRevert();
         NexUSDv1.burn(USER, amount);
     }
-
- 
- 
 
     function testBlocklistedSenderReverts() public {
         uint256 amount = 1000 * 1e6;
@@ -128,11 +124,4 @@ contract NexUSDTest is HelperConfig, HelperTest {
         vm.expectRevert();
         NexUSDv1.transfer(USER2, amount);
     }
-
- 
-
- 
-
-
- 
 }

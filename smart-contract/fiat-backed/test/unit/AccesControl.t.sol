@@ -81,6 +81,4 @@ contract AccessControlTest is HelperConfig, HelperTest {
         // Storage owner variable should be updated
         assertEq(NexUSDv1.owner(), newOwner);
     }
-
- 
 }

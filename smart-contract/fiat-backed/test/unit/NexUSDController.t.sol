@@ -85,8 +85,6 @@ contract NexUSDControllerTest is HelperConfig, HelperTest {
         NexUSDv1.changeOwner(address(0));
     }
 
-  
- 
     function testAddToBlocklistRevertsIfNotOperator() public {
         vm.prank(USER);
         vm.expectRevert();
@@ -166,6 +164,4 @@ contract NexUSDControllerTest is HelperConfig, HelperTest {
         NexUSDv1.removeFromBlocklist(USER2);
         assertFalse(NexUSDv1.isBlocklisted(USER2));
     }
-
- 
 }

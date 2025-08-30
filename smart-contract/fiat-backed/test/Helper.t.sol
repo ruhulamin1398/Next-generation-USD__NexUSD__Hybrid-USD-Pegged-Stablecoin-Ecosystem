@@ -17,7 +17,7 @@ contract HelperTest is Test, HelperConfig {
         DeployNexUSD deployer = new DeployNexUSD();
         proxy = deployer.run();
         NexUSDv1 = NexUSD(proxy);
-        vm.startPrank(OWNER); 
+        vm.startPrank(OWNER);
         vm.stopPrank();
     }
 
@@ -26,5 +26,4 @@ contract HelperTest is Test, HelperConfig {
         upgrader.run(proxy);
         NexUSDv2 = NexUSDV2(proxy);
     }
- 
 }

@@ -68,7 +68,7 @@ abstract contract NexUSDControllerV2 is
     /// @notice Emitted when a user is removed from the blocklist.
     /// @param account The address that was unblocked.
     event UserUnBlocked(address indexed account);
- 
+
     /// @notice Emitted when the contract owner changes.
     /// @param oldOwner The old owner address.
     /// @param newOwner The new owner address.
@@ -159,7 +159,6 @@ abstract contract NexUSDControllerV2 is
         emit UserUnBlocked(account);
     }
 
- 
     // =========================
     //   ✅ Public Functions
     // =========================
@@ -204,5 +203,4 @@ abstract contract NexUSDControllerV2 is
     function isBlocklisted(address account) public view returns (bool) {
         return blockedAccounts[account];
     }
- 
 }

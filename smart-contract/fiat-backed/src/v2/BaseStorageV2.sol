@@ -19,11 +19,9 @@ abstract contract BaseStorageV2 {
 
     /// @notice Role identifier for operators (mint, burn, blocklist management).
     bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
- 
+
     /// @notice Maximum supply of the NexUSD token (100 million NexUSD, 6 decimals).
     uint256 public constant MAX_SUPPLY = 100_000_000 * 10 ** 6;
-
- 
 
     /// @notice Mapping to track blocklisted accounts.
     /// @dev True if the account is blocklisted, false otherwise. Blocklisted accounts are restricted from transfers, minting, and burning.

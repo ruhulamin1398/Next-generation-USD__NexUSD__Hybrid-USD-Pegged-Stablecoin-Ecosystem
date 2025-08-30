@@ -40,8 +40,6 @@ contract TokenMintAndTransferTest is Test, HelperConfig, HelperTest {
         NexUSDv1.mint(address(0), amount);
     }
 
- 
-
     function testTransferByUser() public {
         uint256 amount = 1000 * 1e6;
         vm.prank(OPERATOR);

@@ -39,7 +39,7 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
     // =========================
     //      ✅ Errors
     // =========================
- 
+
     // =========================
     //      ✅ Events
     // =========================
@@ -56,13 +56,9 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
     /// @param amount The number of tokens burned.
     event Burn(address indexed operator, address indexed from, uint256 amount);
 
- 
     // =========================
     //      ✅ Modifiers
     // =========================
-
- 
- 
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -96,7 +92,7 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
      */
     function mint(address to, uint256 amount) external onlyRole(OPERATOR_ROLE) {
         if (to == address(0)) revert InvalidRecipient();
-       
+
         _mint(to, amount);
         emit Mint(msg.sender, to, amount);
     }
@@ -111,10 +107,6 @@ contract NexUSD is Initializable, UUPSUpgradeable, NexUSDController {
         _burn(from, amount);
         emit Burn(msg.sender, from, amount);
     }
-
-  
-
-  
 
     // =========================
     //   ✅ Internal Functions

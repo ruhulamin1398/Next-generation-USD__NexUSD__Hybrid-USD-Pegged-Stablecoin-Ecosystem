@@ -73,7 +73,6 @@ contract V1ToV2 is HelperTest {
         assertEq(NexUSDv2.balanceOf(USER1), 550e6);
     }
 
- 
     function testPermitSignatureStillValidAfterUpgrade() public {
         // Simulate permit signature before upgrade
         uint256 privateKey = 0xA11CE;
@@ -114,8 +113,6 @@ contract V1ToV2 is HelperTest {
         vm.stopPrank();
         assertFalse(NexUSDv2.paused());
     }
-
- 
 
     function testFuzzUpgradeDoesNotCorruptStorage(uint256 fuzzAmount) public {
         fuzzAmount = bound(fuzzAmount, 1, 10_000_000e6);
