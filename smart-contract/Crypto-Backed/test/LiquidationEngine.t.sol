@@ -7,6 +7,7 @@ import "src/CollateralVault.sol";
 import "src/NexUSD-C.sol";
 import "test/mocks/MockOracle.sol";
 import "test/mocks/MockERC20.sol";
+import "openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract LiquidationEngineTest is Test {
     LiquidationEngine liquidationEngine;
@@ -28,17 +29,29 @@ contract LiquidationEngineTest is Test {
         collateralToken = new MockERC20("Wrapped Ether", "WETH", 18);
         oracle = new MockOracle(2000 * 10 ** 8);
 
-        vault = new CollateralVault(
-            address(collateralToken),
-            address(oracle),
-            address(nexUSD),
-            COLLATERALIZATION_RATIO,
-            address(this), // initialOwner of vault is test contract
-            address(0) // _liquidationEngineAddress is address(0) (temporary for debugging)
+        // Deploy LiquidationEngine first
+        liquidationEngine = new LiquidationEngine(address(this));
+
+        // Deploy vault implementation
+        CollateralVault vaultImpl = new CollateralVault();
+
+        // Deploy proxy for vault
+        ERC1967Proxy vaultProxy = new ERC1967Proxy(
+            address(vaultImpl),
+            abi.encodeWithSelector(
+                CollateralVault.initialize.selector,
+                address(collateralToken),
+                address(oracle),
+                address(nexUSD),
+                COLLATERALIZATION_RATIO,
+                address(this),
+                address(liquidationEngine)
+            )
         );
 
-        // Deploy LiquidationEngine and set its address in the vault
-        liquidationEngine = new LiquidationEngine();
+        vault = CollateralVault(address(vaultProxy));
+
+        // Set the liquidation engine address in the vault
         vault.setLiquidationEngineAddress(address(liquidationEngine));
 
         collateralToken.mint(user, 10e18);
@@ -85,6 +98,56 @@ contract LiquidationEngineTest is Test {
 
         // Liquidator tries to liquidate the position
         vm.startPrank(liquidator);
+        vm.expectRevert("Position is not undercollateralized");
+        liquidationEngine.liquidate(vault, user);
+        vm.stopPrank();
+    }
+
+    function testSetLiquidationThreshold() public {
+        uint256 newThreshold = 150;
+        liquidationEngine.setLiquidationThreshold(newThreshold);
+        assertEq(liquidationEngine.liquidationThreshold(), newThreshold);
+    }
+
+    function testSetLiquidationThreshold_Revert_IfNotOwner() public {
+        vm.prank(address(1));
+        vm.expectRevert();
+        liquidationEngine.setLiquidationThreshold(150);
+    }
+
+    function testSetLiquidationThreshold_Revert_IfTooLow() public {
+        vm.expectRevert("Threshold must be at least 100%");
+        liquidationEngine.setLiquidationThreshold(99);
+    }
+
+    function testSetLiquidationThreshold_Revert_IfTooHigh() public {
+        vm.expectRevert("Threshold cannot exceed 200%");
+        liquidationEngine.setLiquidationThreshold(201);
+    }
+
+    function testSetLiquidationThreshold_EmitsEvent() public {
+        uint256 oldThreshold = liquidationEngine.liquidationThreshold();
+        uint256 newThreshold = 160;
+
+        vm.expectEmit(true, true, true, true);
+        emit LiquidationEngine.LiquidationThresholdUpdated(oldThreshold, newThreshold);
+
+        liquidationEngine.setLiquidationThreshold(newThreshold);
+    }
+
+    function testLiquidate_WithUpdatedThreshold() public {
+        // Update threshold to 130% (lower than current 140%)
+        liquidationEngine.setLiquidationThreshold(130);
+
+        // Setup user position at exactly 140% (should not be liquidatable with 130% threshold)
+        vm.startPrank(user);
+        vault.depositCollateral(1e18);
+        vault.mintNexUSD(1400e18); // 140% CR
+        vm.stopPrank();
+
+        // Try to liquidate - should fail because position is not under 130%
+        vm.startPrank(liquidator);
+        nexUSD.approve(address(liquidationEngine), type(uint256).max);
         vm.expectRevert("Position is not undercollateralized");
         liquidationEngine.liquidate(vault, user);
         vm.stopPrank();

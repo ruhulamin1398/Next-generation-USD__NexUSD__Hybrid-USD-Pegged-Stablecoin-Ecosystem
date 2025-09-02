@@ -37,10 +37,12 @@ forge script script/Deploy.s.sol \
 ```
 
 ## What gets deployed
-1. **NexUSD-C Token** - The upgradeable stablecoin
-2. **CollateralFactory** - Factory for creating vaults
-3. **LiquidationEngine** - Handles liquidations
-4. **Example CollateralVault** - A vault for WETH (if available)
+1. **LiquidationEngine** - Handles liquidations
+2. **CollateralFactory Implementation** - The upgradeable factory contract implementation
+3. **CollateralFactory Proxy** - ERC1967 proxy pointing to the implementation
+4. **NexUSD-C Token Implementation** - The upgradeable stablecoin implementation
+5. **NexUSD-C Token Proxy** - ERC1967 proxy for the stablecoin
+6. **Example CollateralVault** - A vault for WETH (if available)
 
 ## After Deployment
 The script will output all contract addresses. Save these for future reference.
@@ -58,4 +60,3 @@ ETHERSCAN_API_KEY=your_etherscan_key_here
 - Always test on testnets first
 - Verify contracts on block explorers
 - Consider using hardware wallets for mainnet
-x

@@ -1,24 +1,28 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/utils/ReentrancyGuardUpgradeable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/utils/PausableUpgradeable.sol";
 import "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
-import "openzeppelin-contracts/contracts/access/Ownable.sol";
 import "./interfaces/IOracle.sol";
 import "./NexUSD-C.sol";
 
 // Vault for holding collateral and minting NexUSD-C
 // @author mosharaf6
 // Each vault handles one collateral type (like WETH, WBTC, etc)
-contract CollateralVault is Ownable {
+contract CollateralVault is Initializable, OwnableUpgradeable, UUPSUpgradeable, ReentrancyGuardUpgradeable, PausableUpgradeable {
     // Set liquidation engine address - needed for liquidations
     function setLiquidationEngineAddress(address _liquidationEngineAddress) public onlyOwner {
         liquidationEngineAddress = _liquidationEngineAddress;
     }
 
-    IERC20 public immutable collateralToken;
-    IOracle public immutable oracle;
-    NexUSDC public immutable nexUSD;
-    uint256 public immutable collateralizationRatio;
+    IERC20 public collateralToken;
+    IOracle public oracle;
+    NexUSDC public nexUSD;
+    uint256 public collateralizationRatio;
 
     mapping(address => uint256) public collateralAmount;
     mapping(address => uint256) public mintedAmount;
@@ -38,14 +42,33 @@ contract CollateralVault is Ownable {
         _;
     }
 
-    constructor(
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    // Initialize the vault - only called once during deployment
+    function initialize(
         address _collateralToken,
         address _oracle,
         address _nexUSD,
         uint256 _collateralizationRatio,
         address initialOwner,
         address _liquidationEngineAddress
-    ) Ownable(initialOwner) {
+    ) external initializer {
+        require(_collateralToken != address(0), "Invalid collateral token");
+        require(_oracle != address(0), "Invalid oracle address");
+        require(_nexUSD != address(0), "Invalid NexUSD address");
+        require(initialOwner != address(0), "Invalid owner address");
+        require(_liquidationEngineAddress != address(0), "Invalid liquidation engine");
+        require(_collateralizationRatio >= 100, "CR must be at least 100%");
+        require(_collateralizationRatio <= 1000, "CR cannot exceed 1000%");
+
+        __Ownable_init(initialOwner);
+        __UUPSUpgradeable_init();
+        __ReentrancyGuard_init();
+        __Pausable_init();
+
         collateralToken = IERC20(_collateralToken);
         oracle = IOracle(_oracle);
         nexUSD = NexUSDC(_nexUSD);
@@ -55,7 +78,9 @@ contract CollateralVault is Ownable {
 
     // For transferring collateral during liquidations
     function transferOutCollateral(address to, uint256 amount) external onlyLiquidationEngine {
-        collateralToken.transfer(to, amount);
+        require(to != address(0), "Cannot transfer to zero address");
+        require(amount > 0, "Amount must be greater than 0");
+        require(collateralToken.transfer(to, amount), "Collateral transfer failed");
     }
 
     // Update user's collateral balance - used by liquidation engine
@@ -83,16 +108,25 @@ contract CollateralVault is Ownable {
         yieldGenerator = _yieldGenerator;
     }
 
+    // Emergency pause/unpause functions
+    function pause() external onlyOwner {
+        _pause();
+    }
+
+    function unpause() external onlyOwner {
+        _unpause();
+    }
+
     // Deposit collateral to the vault
-    function depositCollateral(uint256 amount) external {
+    function depositCollateral(uint256 amount) external nonReentrant whenNotPaused {
         require(amount > 0, "Amount must be greater than 0");
-        collateralToken.transferFrom(msg.sender, address(this), amount);
+        require(collateralToken.transferFrom(msg.sender, address(this), amount), "Collateral transfer failed");
         collateralAmount[msg.sender] += amount;
         emit CollateralDeposited(msg.sender, amount);
     }
 
     // Withdraw collateral (but keep enough for existing debt)
-    function withdrawCollateral(uint256 amount) external {
+    function withdrawCollateral(uint256 amount) external nonReentrant whenNotPaused {
         require(amount > 0, "Amount must be greater than 0");
         require(collateralAmount[msg.sender] >= amount, "Insufficient collateral");
 
@@ -100,12 +134,12 @@ contract CollateralVault is Ownable {
         require(amount <= maxWithdraw, "Withdrawal would make position undercollateralized");
 
         collateralAmount[msg.sender] -= amount;
-        collateralToken.transfer(msg.sender, amount);
+        require(collateralToken.transfer(msg.sender, amount), "Collateral transfer failed");
         emit CollateralWithdrawn(msg.sender, amount);
     }
 
     // Mint NexUSD against your collateral
-    function mintNexUSD(uint256 amount) external {
+    function mintNexUSD(uint256 amount) external nonReentrant whenNotPaused {
         require(amount > 0, "Amount must be greater than 0");
 
         uint256 maxMint = maxMintable(msg.sender);
@@ -117,7 +151,7 @@ contract CollateralVault is Ownable {
     }
 
     // Burn NexUSD to reduce debt
-    function burnNexUSD(uint256 amount) external {
+    function burnNexUSD(uint256 amount) external nonReentrant whenNotPaused {
         require(amount > 0, "Amount must be greater than 0");
         require(mintedAmount[msg.sender] >= amount, "Insufficient minted amount");
 
@@ -132,13 +166,17 @@ contract CollateralVault is Ownable {
             return 0;
         }
         uint256 price = _getPrice();
-        return (nexUSDAmount * collateralizationRatio * 1e18) / (price * 100);
+        require(price > 0, "Invalid price");
+        // Use better precision: (nexUSDAmount * collateralizationRatio * 1e18) / (price * 100)
+        return (nexUSDAmount * collateralizationRatio * 10 ** 18) / (price * 100);
     }
 
     // Calculate max NexUSD user can mint with their collateral
     function maxMintable(address user) public view returns (uint256) {
         uint256 price = _getPrice();
-        uint256 maxNexUSD = (collateralAmount[user] * price * 100) / (collateralizationRatio * 1e18);
+        require(price > 0, "Invalid price");
+        // Use better precision: (collateralAmount * price * 100) / (collateralizationRatio * 1e18)
+        uint256 maxNexUSD = (collateralAmount[user] * price * 100) / (collateralizationRatio * 10 ** 18);
         return maxNexUSD - mintedAmount[user];
     }
 
@@ -156,4 +194,7 @@ contract CollateralVault is Ownable {
     function getCollateralPrice() public view returns (uint256) {
         return _getPrice();
     }
+
+    // Required for UUPS upgrades
+    function _authorizeUpgrade(address) internal override onlyOwner {}
 }

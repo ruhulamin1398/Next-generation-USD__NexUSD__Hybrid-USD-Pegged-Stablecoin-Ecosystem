@@ -6,12 +6,15 @@ import "src/CollateralVault.sol";
 import "src/NexUSD-C.sol";
 import "test/mocks/MockOracle.sol";
 import "test/mocks/MockERC20.sol";
+import "test/mocks/MockLiquidationEngine.sol";
+import "openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract CollateralVaultTest is Test {
     CollateralVault vault;
     NexUSDC nexUSD;
     MockOracle oracle;
     MockERC20 collateralToken;
+    MockLiquidationEngine liquidationEngine;
 
     address user = address(1);
     uint256 constant COLLATERALIZATION_RATIO = 140;
@@ -22,15 +25,26 @@ contract CollateralVaultTest is Test {
 
         collateralToken = new MockERC20("Wrapped Ether", "WETH", 18);
         oracle = new MockOracle(2000 * 10 ** 8);
+        liquidationEngine = new MockLiquidationEngine();
 
-        vault = new CollateralVault(
-            address(collateralToken),
-            address(oracle),
-            address(nexUSD),
-            COLLATERALIZATION_RATIO,
-            address(this),
-            address(0)
+        // Deploy vault implementation
+        CollateralVault vaultImpl = new CollateralVault();
+
+        // Deploy proxy for vault
+        ERC1967Proxy vaultProxy = new ERC1967Proxy(
+            address(vaultImpl),
+            abi.encodeWithSelector(
+                CollateralVault.initialize.selector,
+                address(collateralToken),
+                address(oracle),
+                address(nexUSD),
+                COLLATERALIZATION_RATIO,
+                address(this),
+                address(liquidationEngine)
+            )
         );
+
+        vault = CollateralVault(address(vaultProxy));
 
         nexUSD.transferOwnership(address(vault));
 

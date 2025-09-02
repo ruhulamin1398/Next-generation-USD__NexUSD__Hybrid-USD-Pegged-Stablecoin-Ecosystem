@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import "openzeppelin-contracts/contracts/access/Ownable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
+import "openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
 import "./CollateralVault.sol";
 import "./NexUSD-C.sol";
 import "openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
@@ -9,10 +11,10 @@ import "openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 // Factory for creating collateral vaults
 // @author mosharaf6
 // Deploys vault contracts for different collateral types
-contract CollateralFactory is Ownable {
+contract CollateralFactory is Initializable, OwnableUpgradeable, UUPSUpgradeable {
     NexUSDC public nexUSD;
     address public liquidationEngine;
-    uint256 public constant DEFAULT_CR = 140; // 140%
+    uint256 public defaultCR = 140; // 140%
 
     struct VaultInfo {
         address vaultAddress;
@@ -24,6 +26,7 @@ contract CollateralFactory is Ownable {
     address[] public supportedCollaterals;
 
     event VaultCreated(address indexed collateralToken, address vaultAddress);
+    event DefaultCRUpdated(uint256 oldCR, uint256 newCR);
 
     mapping(address => bool) public isVault;
 
@@ -32,7 +35,15 @@ contract CollateralFactory is Ownable {
         _;
     }
 
-    constructor(address _owner, address _liquidationEngine) Ownable(_owner) {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    // Initialize the factory - only called once during deployment
+    function initialize(address _liquidationEngine) external initializer {
+        __Ownable_init(msg.sender);
+        __UUPSUpgradeable_init();
         liquidationEngine = _liquidationEngine;
 
         // Deploy the main NexUSD token with upgradeable proxy
@@ -47,14 +58,33 @@ contract CollateralFactory is Ownable {
         external
         onlyOwner
     {
+        require(_collateralToken != address(0), "Invalid collateral token");
+        require(_oracle != address(0), "Invalid oracle address");
         require(collateralInfo[_collateralToken].vaultAddress == address(0), "Vault already exists");
-        uint256 cr = _collateralizationRatio == 0 ? DEFAULT_CR : _collateralizationRatio;
+        
+        uint256 cr = _collateralizationRatio == 0 ? defaultCR : _collateralizationRatio;
+        require(cr >= 100, "CR must be at least 100%");
+        require(cr <= 1000, "CR cannot exceed 1000%");
 
-        CollateralVault newVault =
-            new CollateralVault(_collateralToken, _oracle, address(nexUSD), cr, address(this), liquidationEngine);
+        // Deploy vault implementation
+        CollateralVault vaultImpl = new CollateralVault();
 
-        // Make sure liquidation engine is set correctly
-        newVault.setLiquidationEngineAddress(liquidationEngine);
+        // Deploy proxy for vault
+        ERC1967Proxy vaultProxy = new ERC1967Proxy(
+            address(vaultImpl),
+            abi.encodeWithSelector(
+                CollateralVault.initialize.selector,
+                _collateralToken,
+                _oracle,
+                address(nexUSD),
+                cr,
+                address(this),
+                liquidationEngine
+            )
+        );
+
+        CollateralVault newVault = CollateralVault(address(vaultProxy));
+
         isVault[address(newVault)] = true;
 
         collateralInfo[_collateralToken] =
@@ -67,6 +97,15 @@ contract CollateralFactory is Ownable {
     // Update liquidation engine address
     function setLiquidationEngine(address _liquidationEngine) external onlyOwner {
         liquidationEngine = _liquidationEngine;
+    }
+
+    // Update default collateralization ratio
+    function setDefaultCR(uint256 _defaultCR) external onlyOwner {
+        require(_defaultCR >= 100, "CR must be at least 100%");
+        require(_defaultCR <= 500, "CR cannot exceed 500%");
+        uint256 oldCR = defaultCR;
+        defaultCR = _defaultCR;
+        emit DefaultCRUpdated(oldCR, _defaultCR);
     }
 
     // Vaults can call this to mint NexUSD
@@ -93,4 +132,7 @@ contract CollateralFactory is Ownable {
     function getSupportedCollaterals() external view returns (address[] memory) {
         return supportedCollaterals;
     }
+
+    // Required for UUPS upgrades
+    function _authorizeUpgrade(address) internal override onlyOwner {}
 }

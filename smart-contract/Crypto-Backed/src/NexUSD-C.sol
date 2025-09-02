@@ -19,16 +19,22 @@ contract NexUSDC is ERC20Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
 
     // Only owner can mint tokens
     function mint(address to, uint256 amount) public onlyOwner {
+        require(to != address(0), "Cannot mint to zero address");
+        require(amount > 0, "Amount must be greater than 0");
         _mint(to, amount);
     }
 
-    // Burn tokens from address
+    // Burn tokens from address (only owner can call)
     function burn(address from, uint256 amount) public onlyOwner {
+        require(from != address(0), "Cannot burn from zero address");
+        require(amount > 0, "Amount must be greater than 0");
         _burn(from, amount);
     }
 
-    // Same as burn but with different name for compatibility
+    // Burn tokens from caller's address (user can burn their own tokens)
     function burnFrom(address from, uint256 amount) public onlyOwner {
+        require(from != address(0), "Cannot burn from zero address");
+        require(amount > 0, "Amount must be greater than 0");
         _burn(from, amount);
     }
 
