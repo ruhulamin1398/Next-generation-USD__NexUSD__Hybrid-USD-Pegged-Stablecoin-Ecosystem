@@ -13,3 +13,12 @@
 [submodule "smart-contract/fiat-backed/lib/openzeppelin-foundry-upgrades"]
 	path = smart-contract/fiat-backed/lib/openzeppelin-foundry-upgrades
 	url = https://github.com/OpenZeppelin/openzeppelin-foundry-upgrades
+[submodule "smart-contract/Crypto-Backed/lib/forge-std"]
+	path = smart-contract/Crypto-Backed/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "smart-contract/Crypto-Backed/lib/openzeppelin-contracts"]
+	path = smart-contract/Crypto-Backed/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "smart-contract/Crypto-Backed/lib/openzeppelin-contracts-upgradeable"]
+	path = smart-contract/Crypto-Backed/lib/openzeppelin-contracts-upgradeable
+	url = https://github.com/openzeppelin/openzeppelin-contracts-upgradeable
