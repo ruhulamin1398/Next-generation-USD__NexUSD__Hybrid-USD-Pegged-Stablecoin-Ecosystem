@@ -164,7 +164,7 @@ export const networks: Network[] = [
     description:
       "BNB Smart Chain testnet for crypto-backed development and testing",
     chainId: 97,
-    rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
+    rpcUrl: "https://endpoints.omniatech.io/v1/bsc/testnet/public",
     explorerUrl: "https://testnet.bscscan.com",
     gasPrice: "1", // 1 gwei for BSC testnet
   },
