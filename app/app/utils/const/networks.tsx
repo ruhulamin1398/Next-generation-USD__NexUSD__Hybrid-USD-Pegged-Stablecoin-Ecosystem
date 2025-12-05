@@ -164,9 +164,9 @@ export const networks: Network[] = [
     description:
       "BNB Smart Chain testnet for crypto-backed development and testing",
     chainId: 97,
-    rpcUrl: "https://endpoints.omniatech.io/v1/bsc/testnet/public",
+    rpcUrl: "https://bsc-testnet-rpc.publicnode.com",
     explorerUrl: "https://testnet.bscscan.com",
-    gasPrice: "1", // 1 gwei for BSC testnet
+    gasPrice: "2", // 1 gwei for BSC testnet
   },
 
   // Fiat Backed Networks (All Testnets)
@@ -194,9 +194,9 @@ export const networks: Network[] = [
     description:
       "BNB Smart Chain testnet for fiat-backed development and testing",
     chainId: 97,
-    rpcUrl: "https://bsc-testnet.public.blastapi.io",
+    rpcUrl: "https://data-seed-prebsc-1-s2.bnbchain.org:8545",
     explorerUrl: "https://testnet.bscscan.com",
-    gasPrice: "1", // 1 gwei for BSC testnet
+    gasPrice: "2", // 1 gwei for BSC testnet
   },
   {
     name: "Avalanche Fuji",
