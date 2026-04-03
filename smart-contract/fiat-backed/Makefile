@@ -1,15 +1,8 @@
 -include .env
+ 
+  
 
-
-all: clean remove install update build
-
-
-# Clean the repo
-clean  :; forge clean && forge build
-# Remove modules
-remove :; rm -rf .gitmodules && rm -rf .git/modules/* && rm -rf lib && touch .gitmodules && git add . && git commit -m "modules"
-
-install :;npm install &&  forge install cyfrin/foundry-devops@0.2.2 && forge install foundry-rs/forge-std@v1.8.2 && forge install OpenZeppelin/openzeppelin-contracts-upgradeable@v5.3.0 && forge install OpenZeppelin/openzeppelin-contracts@v5.3.0 && forge install OpenZeppelin/openzeppelin-foundry-upgrades@v0.3.8 && forge install cyfrin/foundry-devops@0.0.11  
+install :;npm install &&  forge install cyfrin/foundry-devops@0.2.2 && forge install foundry-rs/forge-std@v1.8.2 && forge install OpenZeppelin/openzeppelin-contracts-upgradeable@v5.3.0 && forge install OpenZeppelin/openzeppelin-contracts@v5.3.0 && forge install OpenZeppelin/openzeppelin-foundry-upgrades@v0.3.8  
 
 
 
@@ -35,38 +28,39 @@ lint :; forge fmt --check && forge verify --check
 
 
 
-deploy-amoy:; forge clean && forge build &&  forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://rpc-amoy.polygon.technology --private-key $(PRIVATE_KEY_59)  --broadcast -vvvv
+deploy-amoy:; forge clean && forge build &&  forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://rpc-amoy.polygon.technology --private-key $(PRIVATE_KEY_59)  --verify --verifier-api-key $(V2_API_KEY)   --broadcast  -vvvv
 
-deploy-bnb:; forge clean && forge build &&  forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://bsc-testnet.public.blastapi.io --private-key $(PRIVATE_KEY_59)  --broadcast -vvvv
-deploy-sepolia:; forge clean && forge build &&  forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://eth-sepolia.public.blastapi.io --private-key $(PRIVATE_KEY_59)  --broadcast -vvvv
+deploy-bnb:; forge clean && forge build &&  forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://bsc-testnet.public.blastapi.io --private-key $(PRIVATE_KEY_59)  --verify --verifier-api-key $(V2_API_KEY)   --broadcast  -vvvv
+
+deploy-sepolia:; forge clean && forge build &&  forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://1rpc.io/sepolia --private-key $(PRIVATE_KEY_59)  --verify --verifier-api-key $(V2_API_KEY)   --broadcast  -vvvv
+
+deploy-arbitrum-sepolia:; forge clean && forge build &&  forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://arbitrum-sepolia.drpc.org --private-key $(PRIVATE_KEY_59)  --verify --verifier-api-key $(V2_API_KEY)   --broadcast  -vvvv
+
+ 
+deploy-optimism-sepolia:; forge clean && forge build &&  forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://optimism-sepolia.drpc.org --private-key $(PRIVATE_KEY_59)  --verify --verifier-api-key $(V2_API_KEY)   --broadcast  -vvvv
+ 
+deploy-celo-sepolia:; forge clean && forge build &&  forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://celo-sepolia.drpc.org --private-key $(PRIVATE_KEY_59)  --verify --verifier-api-key $(V2_API_KEY)   --broadcast  -vvvv
+
+deploy-base-sepolia:; forge clean && forge build &&  forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://base-sepolia-public.nodies.app --private-key $(PRIVATE_KEY_59)  --verify --verifier-api-key $(V2_API_KEY)   --broadcast  -vvvv
 
 
-verify-NexUSD-amoy:;forge verify-contract $(NexUSD_CONTRACT) src/NexUSD.sol:NexUSD --chain-id 80002 --verifier-api-key $(POLYGON_API_KEY) --constructor-args 0000000000000000000000009409149e9b09d85e0911acca32d1015b78500e2f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000044485cc9550000000000000000000000003ff88b69d1762aa444c85c30c4b0b795f9c48b5900000000000000000000000093d918a0f5c16a1a2dbbe60f8dfd014b6cdd401300000000000000000000000000000000000000000000000000000000
-verify-NexUSD-bnb:;forge verify-contract $(BNB_NexUSD_CONTRACT) src/NexUSD.sol:NexUSD --chain-id 97 --verifier-api-key $(POLYGON_API_KEY) --constructor-args 0000000000000000000000009409149e9b09d85e0911acca32d1015b78500e2f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000044485cc9550000000000000000000000003ff88b69d1762aa444c85c30c4b0b795f9c48b5900000000000000000000000093d918a0f5c16a1a2dbbe60f8dfd014b6cdd401300000000000000000000000000000000000000000000000000000000
-verify-NexUSD-sepolia:;forge verify-contract $(SEPOLIA_NexUSD_CONTRACT) src/NexUSD.sol:NexUSD --chain-id 11155111 --verifier-api-key $(POLYGON_API_KEY)  --compiler-version 0.8.30 --constructor-args 0000000000000000000000009409149e9b09d85e0911acca32d1015b78500e2f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000044485cc9550000000000000000000000003ff88b69d1762aa444c85c30c4b0b795f9c48b5900000000000000000000000093d918a0f5c16a1a2dbbe60f8dfd014b6cdd401300000000000000000000000000000000000000000000000000000000
+deploy-hoodi-sepolia:; forge clean && forge build &&  forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://0xrpc.io/hoodi --private-key $(PRIVATE_KEY_59)  --verify --verifier-api-key $(V2_API_KEY)   --broadcast  -vvvv
 
+deploy-gnosis-chiado:; forge clean && forge build &&  forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://gnosis-chiado-rpc.publicnode.com --private-key $(PRIVATE_KEY_59)  --verify --verifier-api-key $(V2_API_KEY)   --broadcast  -vvvv
 
+deploy-mantle-sepolia:; forge clean && forge build &&  forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://rpc.sepolia.mantle.xyz --private-key $(PRIVATE_KEY_59)  --verify --verifier-api-key $(V2_API_KEY)   --broadcast  -vvvv
 
+ 
+ 
+ 
 
-verify-PROXY-amoy:; forge verify-contract $(PROXY_CONTRACT) src/NexUSDProxy.sol:NexUSDProxy --chain-id 80002 --verifier-api-key $(POLYGON_API_KEY)  --constructor-args 000000000000000000000000992338cd6a11fe2bda153968d114825ec49f25b900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084f8c8765e0000000000000000000000001679dffe0f02ece842e503ec40922edc556f90650000000000000000000000003ff88b69d1762aa444c85c30c4b0b795f9c48b590000000000000000000000009c32fcb86bf0f4a1a8921a9fe46de3198bb884b20000000000000000000000000fd9e8d3af1aaee056eb9e802c3a762a667b190400000000000000000000000000000000000000000000000000000000
-
-verify-PROXY-bnb:; forge verify-contract $(BNB_PROXY_CONTRACT) src/NexUSDProxy.sol:NexUSDProxy --chain-id 97 --verifier-api-key $(POLYGON_API_KEY)  --constructor-args 000000000000000000000000992338cd6a11fe2bda153968d114825ec49f25b900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084f8c8765e0000000000000000000000001679dffe0f02ece842e503ec40922edc556f90650000000000000000000000003ff88b69d1762aa444c85c30c4b0b795f9c48b590000000000000000000000009c32fcb86bf0f4a1a8921a9fe46de3198bb884b20000000000000000000000000fd9e8d3af1aaee056eb9e802c3a762a667b190400000000000000000000000000000000000000000000000000000000
-
-verify-PROXY-sepolia:; forge verify-contract $(SEPOLIA_PROXY_CONTRACT) src/NexUSDProxy.sol:NexUSDProxy --chain-id 11155111 --verifier-api-key $(POLYGON_API_KEY)  --compiler-version 0.8.30 --constructor-args 000000000000000000000000992338cd6a11fe2bda153968d114825ec49f25b900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000084f8c8765e0000000000000000000000001679dffe0f02ece842e503ec40922edc556f90650000000000000000000000003ff88b69d1762aa444c85c30c4b0b795f9c48b590000000000000000000000009c32fcb86bf0f4a1a8921a9fe46de3198bb884b20000000000000000000000000fd9e8d3af1aaee056eb9e802c3a762a667b190400000000000000000000000000000000000000000000000000000000
-
-update-amoy:; forge clean && forge build && forge script script/UpgradeNexUSD.s.sol:UpgradeNexUSD --rpc-url https://rpc-amoy.polygon.technology --private-key $(PRIVATE_KEY_59)  --broadcast -vvvv
-verify-NexUSD-v2-amoy:;forge verify-contract $(NexUSD_CONTRACT_V2) src/v2/NexUSDV2.sol:NexUSDV2 --chain-id 80002 --verifier-api-key $(POLYGON_API_KEY) --verifier-url https://api-amoy.polygonscan.com/api 
-
+update-amoy:; forge clean && forge build && forge script script/UpgradeNexUSD.s.sol:UpgradeNexUSD --rpc-url https://rpc-amoy.polygon.technology --private-key $(PRIVATE_KEY_59)  --broadcast -vvvv 
 
 
 deploy-NexUSD-PROXY-fuji:; forge script script/DeployNexUSD.s.sol:DeployNexUSD --rpc-url https://avalanche-fuji.drpc.org --private-key $(PRIVATE_KEY_59)  --broadcast -vvvv
+ 
 
-verify-NexUSD-fuji:; forge verify-contract $(NexUSD_CONTRACT) src/NexUSD.sol:NexUSD   --chain-id 43113 \
-  --verifier-url https://api.routescan.io/v2/network/testnet/evm/43113/etherscan/api \
-  --verifier etherscan \
-  --verifier-api-key dummy
-
-
+int:;   forge script script/Interaction.s.sol:Interaction --rpc-url https://0xrpc.io/sep --private-key 0xb9f7be492599e9e2e202672ed67dd67c36c77fdccd786fb270972aa595b6f0d5 --broadcast -vvvv
 
 
 interaction-admin:; forge clean && forge build &&  forge script script/Interaction.s.sol:Interaction --rpc-url https://rpc-amoy.polygon.technology --private-key $(PRIVATE_KEY_59)  --broadcast -vvvv
@@ -76,3 +70,10 @@ interaction-user:; forge clean && forge build &&  forge script script/Interactio
 
 
 interaction-admin-bnb:; forge clean && forge build &&  forge script script/Interaction.s.sol:Interaction --rpc-url https://bsc-testnet.public.blastapi.io --private-key $(PRIVATE_KEY_59)  --broadcast -vvvv
+
+
+
+verify-PROXY-celo:; forge verify-contract 0x58F427707474346B30163EE69c24681c18Cf87DA src/NexUSDProxy.sol:NexUSDProxy --chain-id 11142220 --verifier-api-key $(V2_API_KEY)  --constructor-args 00000000000000000000000073a2c399a5b2419a9e963c440c3c6d9c528b562b00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000044485cc9550000000000000000000000003ff88b69d1762aa444c85c30c4b0b795f9c48b5900000000000000000000000093d918a0f5c16a1a2dbbe60f8dfd014b6cdd401300000000000000000000000000000000000000000000000000000000
+
+verify-NexUSD-celo:;forge verify-contract 0x73A2c399a5B2419A9e963C440c3c6D9C528B562B src/NexUSD.sol:NexUSD --chain-id 11142220 --verifier-api-key $(V2_API_KEY)
+

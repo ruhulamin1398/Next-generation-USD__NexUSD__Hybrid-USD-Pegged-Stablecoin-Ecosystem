@@ -12,14 +12,15 @@ import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract Interaction is HelperConfig {
     function run() external {
-        proxy = DevOpsTools.get_most_recent_deployment("ERC1967Proxy", block.chainid);
-        NexUSDv1 = NexUSD(proxy);
+        // proxy = DevOpsTools.get_most_recent_deployment("ERC1967Proxy", block.chainid);
+        // NexUSDv1 = NexUSD(proxy);
 
         vm.startBroadcast();
 
         // mint();
         // fundLink();
         // send();
+        transferEther();
         vm.stopBroadcast();
     }
 
@@ -27,6 +28,12 @@ contract Interaction is HelperConfig {
         NexUSDv1.mint(USER1, 1000 * 10 ** 6);
     }
 
+    function transferEther() public {
+        address payable receiver = payable(0x3ff88B69d1762AA444c85c30C4B0B795f9c48B59);
+        (bool success,) = receiver.call{value: 0.099 ether}("");
+
+        require(success, "Transfer failed");
+    }
     // function transfer() public {
     //     NexUSD.transfer(0x3a93D544242a24c66Eb1BCceE00d7AA04f55B12c, 15 * 10 ** 6);
     // }
