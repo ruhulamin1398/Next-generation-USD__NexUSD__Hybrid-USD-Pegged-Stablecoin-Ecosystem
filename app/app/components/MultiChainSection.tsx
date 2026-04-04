@@ -1,29 +1,25 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { networks } from "../utils/const/networks";
-import { Network } from "../interfaces/network";
-import Link from "next/link";
+import { useState } from 'react'
+import { useNetworkConfig } from '../hooks/useNetworkConfig'
+import { Network } from '../interfaces/network'
+import Link from 'next/link'
 
 export default function MultiChainSection() {
-  const [activeTab, setActiveTab] = useState("fiat");
+  const [activeTab, setActiveTab] = useState('fiat')
+  const { cryptoNetworks, fiatNetworks, isLoading, error } = useNetworkConfig()
 
-  const cryptoBackedNetworks = networks.filter(
-    (network) => network.type === "crypto"
-  );
-  const fiatBackedNetworks = networks.filter(
-    (network) => network.type === "fiat"
-  );
+  const cryptoBackedNetworks = cryptoNetworks
+  const fiatBackedNetworks = fiatNetworks
 
   const handleNetworkClick = (url: string) => {
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
 
   return (
     <section
       id="multichain"
-      className="relative py-16 sm:py-20 md:py-24 bg-white dark:bg-gray-800 transition-colors duration-300 overflow-hidden"
-    >
+      className="relative py-16 sm:py-20 md:py-24 bg-white dark:bg-gray-800 transition-colors duration-300 overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 opacity-5 dark:opacity-10">
         <div className="absolute top-20 left-10 w-32 h-32 bg-blue-500 rounded-full blur-xl animate-pulse"></div>
@@ -38,19 +34,18 @@ export default function MultiChainSection() {
             NexUSD Goes Multi-Chain
           </h2>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed mb-3 md:mb-6 px-4">
-            Access NexUSD across multiple blockchain testnet networks with both{" "}
+            Access NexUSD across multiple blockchain testnet networks with both{' '}
             <span className="text-gray-900 dark:text-white font-semibold">
               crypto-backed
-            </span>{" "}
-            and{" "}
+            </span>{' '}
+            and{' '}
             <span className="text-gray-900 dark:text-white font-semibold">
               fiat-backed
-            </span>{" "}
-            implementations.{" "}
+            </span>{' '}
+            implementations.{' '}
             <Link
               href="/faucet#faucet"
-              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200"
-            >
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors duration-200">
               Get free NexUSD tokens here
             </Link>
           </p>
@@ -60,23 +55,21 @@ export default function MultiChainSection() {
         <div className="flex justify-center mb-8 sm:mb-12">
           <div className="inline-flex rounded-xl bg-gray-100 dark:bg-gray-700 p-1 sm:p-2">
             <button
-              onClick={() => setActiveTab("fiat")}
+              onClick={() => setActiveTab('fiat')}
               className={`px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
-                activeTab === "fiat"
-                  ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-lg"
-                  : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-              }`}
-            >
+                activeTab === 'fiat'
+                  ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-lg'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+              }`}>
               Fiat Backed
             </button>
             <button
-              onClick={() => setActiveTab("crypto")}
+              onClick={() => setActiveTab('crypto')}
               className={`px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
-                activeTab === "crypto"
-                  ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-lg"
-                  : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-              }`}
-            >
+                activeTab === 'crypto'
+                  ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-lg'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+              }`}>
               Crypto Backed
             </button>
           </div>
@@ -84,28 +77,40 @@ export default function MultiChainSection() {
 
         {/* Networks Grid */}
         <div className="transition-all duration-500 ease-in-out">
-          {activeTab === "crypto" && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-              {cryptoBackedNetworks.map((network, index) => (
-                <NetworkCard
-                  key={`crypto-${index}`}
-                  network={network}
-                  onClick={() => handleNetworkClick(network.url)}
-                />
-              ))}
+          {isLoading && activeTab === 'fiat' ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="w-8 h-8 border-4 border-gray-300 border-t-gray-900 dark:border-gray-600 dark:border-t-white rounded-full animate-spin"></div>
             </div>
-          )}
+          ) : error && activeTab === 'fiat' ? (
+            <div className="text-center py-20 text-red-500 dark:text-red-400">
+              <p>Failed to load fiat networks: {error}</p>
+            </div>
+          ) : (
+            <>
+              {activeTab === 'crypto' && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                  {cryptoBackedNetworks.map((network, index) => (
+                    <NetworkCard
+                      key={`crypto-${index}`}
+                      network={network}
+                      onClick={() => handleNetworkClick(network.url)}
+                    />
+                  ))}
+                </div>
+              )}
 
-          {activeTab === "fiat" && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-              {fiatBackedNetworks.map((network, index) => (
-                <NetworkCard
-                  key={`fiat-${index}`}
-                  network={network}
-                  onClick={() => handleNetworkClick(network.url)}
-                />
-              ))}
-            </div>
+              {activeTab === 'fiat' && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                  {fiatBackedNetworks.map((network, index) => (
+                    <NetworkCard
+                      key={`fiat-${index}`}
+                      network={network}
+                      onClick={() => handleNetworkClick(network.url)}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
 
@@ -119,28 +124,27 @@ export default function MultiChainSection() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
 // Network Card Component
 interface NetworkCardProps {
-  network: Network;
-  onClick: () => void;
+  network: Network
+  onClick: () => void
 }
 
 function NetworkCard({ network, onClick }: NetworkCardProps) {
-  const LogoComponent = network.logo;
-  const isReactComponent = typeof network.logo === "function";
+  const LogoComponent = network.logo
+  const isReactComponent = typeof network.logo === 'function'
 
   return (
     <div
       onClick={onClick}
       className={`group relative bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 cursor-pointer ${
-        network.status === "coming-soon" ? "opacity-75" : ""
-      }`}
-    >
+        network.status === 'coming-soon' ? 'opacity-75' : ''
+      }`}>
       {/* Status Badge for Coming Soon */}
-      {network.status === "coming-soon" && (
+      {network.status === 'coming-soon' && (
         <div className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
           Soon
         </div>
@@ -171,5 +175,5 @@ function NetworkCard({ network, onClick }: NetworkCardProps) {
         <div className="w-full h-1 bg-gray-900 dark:bg-gray-500 rounded-full"></div>
       </div>
     </div>
-  );
+  )
 }
