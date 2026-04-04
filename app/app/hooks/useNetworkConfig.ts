@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 
-import { networks as staticNetworks } from "../utils/const/networks";
 import type { Network } from "../interfaces/network";
 
 export type NetworkType = "crypto" | "fiat";
@@ -12,6 +11,7 @@ export interface BackendNetworkConfig {
     contractAddress: string;
     decimals: number;
     rpcUrl: string;
+    logoUrl: string;
     network: string;
     explorerUrl: string;
     totalHolders: number;
@@ -33,6 +33,11 @@ export interface UseNetworkConfigReturn {
     cryptoNetworks: Network[];
     isLoading: boolean;
     error: string | null;
+    networksSummary: {
+        totalSupply: number;
+        totalHolders: number;
+        totalTransferred: number;
+    };
     getNetworkByName: (name: string) => Network | undefined;
     getNetworkByChainId: (chainId: number) => Network | undefined;
     filterNetworks: (filter?: NetworkFilter) => Network[];
@@ -41,7 +46,7 @@ export interface UseNetworkConfigReturn {
 function mapBackendConfigToNetwork(config: BackendNetworkConfig): Network {
     return {
         name: config.title,
-        logo: "",
+        logo: config.logoUrl || "",
         url: config.explorerUrl
             ? `${config.explorerUrl}/address/${config.contractAddress}`
             : "#",
@@ -53,15 +58,29 @@ function mapBackendConfigToNetwork(config: BackendNetworkConfig): Network {
     };
 }
 
+function mapNetworkToCryptoNetwork(network: Network): Network {
+    return {
+        ...network,
+        type: "crypto",
+        status: "coming-soon",
+        contractAddress: "",
+        url: network.explorerUrl || "#",
+    };
+}
+
 export const useNetworkConfig = (): UseNetworkConfigReturn => {
-    const [fiatNetworks, setFiatNetworks] = useState<Network[]>([]);
+    const [fiatNetworkConfigs, setFiatNetworkConfigs] = useState<BackendNetworkConfig[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Crypto networks are always static and coming-soon
+    const fiatNetworks = useMemo(
+        () => fiatNetworkConfigs.map(mapBackendConfigToNetwork),
+        [fiatNetworkConfigs]
+    );
+
     const cryptoNetworks = useMemo(
-        () => staticNetworks.filter((n) => n.type === "crypto"),
-        []
+        () => fiatNetworks.map(mapNetworkToCryptoNetwork),
+        [fiatNetworks]
     );
 
     useEffect(() => {
@@ -77,7 +96,7 @@ export const useNetworkConfig = (): UseNetworkConfigReturn => {
                 }
                 const data: BackendNetworkConfig[] = await response.json();
                 if (!cancelled) {
-                    setFiatNetworks(data.map(mapBackendConfigToNetwork));
+                    setFiatNetworkConfigs(data);
                 }
             } catch (err) {
                 if (!cancelled) {
@@ -134,6 +153,24 @@ export const useNetworkConfig = (): UseNetworkConfigReturn => {
         },
         [allNetworks]
     );
+    const networksSummary = useMemo(() => {
+        const totalSupply = fiatNetworkConfigs.reduce(
+            (sum, config) => sum + config.totalSupply,
+            0
+        );
+
+        const totalHolders = fiatNetworkConfigs.reduce(
+            (sum, config) => sum + config.totalHolders,
+            0
+        );
+
+        const totalTransferred = fiatNetworkConfigs.reduce(
+            (sum, config) => sum + config.totalTransferred,
+            0
+        );
+
+        return { totalSupply, totalHolders, totalTransferred };
+    }, [fiatNetworkConfigs]);
 
     return {
         allNetworks,
@@ -142,6 +179,7 @@ export const useNetworkConfig = (): UseNetworkConfigReturn => {
         cryptoNetworks,
         isLoading,
         error,
+        networksSummary,
         getNetworkByName,
         getNetworkByChainId,
         filterNetworks,

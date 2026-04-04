@@ -1,7 +1,19 @@
+'use client'
+
+import { useNetworkConfig } from '../hooks/useNetworkConfig'
+
 export default function HeroSection() {
+  const { fiatNetworks, isLoading, networksSummary } = useNetworkConfig()
+
+  const compactNum = (n: number) =>
+    new Intl.NumberFormat('en', {
+      notation: 'compact',
+      maximumFractionDigits: 2
+    }).format(n)
+
   return (
     <>
-      <section className="relative min-h-screen bg-gray-900 backdrop-blur-sm py-20 lg:py-32 overflow-hidden">
+      <section className="relative min-h-screen bg-gray-900 backdrop-blur-sm py-12 lg:py-20 overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-gray-400/10 dark:bg-gray-600/10 rounded-full blur-3xl animate-pulse"></div>
@@ -11,25 +23,67 @@ export default function HeroSection() {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="mb-6 sm:mb-8">
+            {/* <div className="mb-6 sm:mb-8">
               <span className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-gray-800 text-gray-200 border border-gray-700">
                 <span className="w-2 h-2 bg-gray-500 rounded-full mr-2 animate-pulse"></span>
                 Now Live on Multiple Blockchains
               </span>
-            </div>
+            </div> */}
 
-            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-bold text-white mb-6 sm:mb-8 leading-tight px-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-7xl font-bold text-white mb-2 sm:mb-3 leading-tight px-2">
               Next-Generation
               <span className="block text-gray-100">USD Stablecoin</span>
             </h1>
 
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 mb-8 sm:mb-12 max-w-5xl mx-auto leading-relaxed font-light px-4">
-              Hybrid USD-pegged stablecoin ecosystem backed by both fiat
-              reserves and crypto assets.
-              <span className="block mt-2 font-medium text-white">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 mb-8 sm:mb-8 max-w-5xl mx-auto leading-relaxed font-light px-4">
+              Hybrid USD-pegged stablecoin ecosystem backed by fiat reserves and
+              crypto assets.
+              {/* <span className="block mt-2 font-medium text-white">
                 Designed for scalability, transparency, and interoperability.
-              </span>
+              </span> */}
             </p>
+
+            <div className="mx-auto mb-10 max-w-5xl px-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-xl">
+                  <div className="text-sm uppercase tracking-[0.24em] text-gray-400 mb-4">
+                    Live Networks
+                  </div>
+                  <div className="text-4xl font-semibold text-white">
+                    {isLoading ? '...' : fiatNetworks.length}
+                  </div>
+                  <div className="mt-2 text-sm text-gray-400">
+                    More comming soon.
+                  </div>
+                </div>
+                <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-xl">
+                  <div className="text-sm uppercase tracking-[0.24em] text-gray-400 mb-4">
+                    Total Supply
+                  </div>
+                  <div className="text-4xl font-semibold text-white">
+                    {isLoading
+                      ? '...'
+                      : `${compactNum(networksSummary.totalSupply)}+`}
+                  </div>
+                  <div className="mt-2 text-sm text-gray-400">
+                    Combined across networks.
+                  </div>
+                </div>
+                <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-xl">
+                  <div className="text-sm uppercase tracking-[0.24em] text-gray-400 mb-4">
+                    Total Holders
+                  </div>
+                  <div className="text-4xl font-semibold text-white">
+                    {isLoading
+                      ? '...'
+                      : `${compactNum(networksSummary.totalHolders)}+`}
+                  </div>
+                  <div className="mt-2 text-sm text-gray-400">
+                    Total wallets holding NexUSD today.
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 px-4">
               <button className="group bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 border border-gray-600 text-white px-6 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-base sm:text-lg font-semibold hover:shadow-2xl transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
@@ -39,8 +93,7 @@ export default function HeroSection() {
                     className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-200"
                     fill="none"
                     stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                    viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -52,18 +105,17 @@ export default function HeroSection() {
               </button>
               <button className="group bg-gray-800 border-2 border-gray-600 text-gray-300 hover:border-gray-400 hover:text-gray-100 hover:bg-gray-700 px-6 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-base sm:text-lg font-semibold transition-all duration-300 hover:shadow-xl transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900">
                 <span className="flex items-center justify-center">
-                  Read Documentation
+                  View Networks
                   <svg
-                    className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-200"
+                    className="ml-2 w-5 h-5 group-hover:translate-y-1 transition-transform duration-200"
                     fill="none"
                     stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                    viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      d="M12 5v14m0 0l6-6m-6 6l-6-6"
                     />
                   </svg>
                 </span>
@@ -127,5 +179,5 @@ export default function HeroSection() {
         </div>
       </section>
     </>
-  );
+  )
 }

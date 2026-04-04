@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { networks } from "../utils/const/networks";
+import { useNetworkConfig } from "../hooks/useNetworkConfig";
 import { useFaucet, FaucetFormData } from "../hooks/useFaucet";
 import { FaucetFormComponent } from "./FaucetForm";
 
@@ -7,16 +7,10 @@ export const FaucetSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState("fiat");
   const { fiatForm, cryptoForm, responses, isLoading, updateForm, submitForm } =
     useFaucet();
-
-  const cryptoBackedNetworks = networks.filter(
-    (network) => network.type === "crypto"
-  );
-  const fiatBackedNetworks = networks.filter(
-    (network) => network.type === "fiat"
-  );
+  const { fiatNetworks, cryptoNetworks } = useNetworkConfig();
 
   const getAvailableNetworks = (type: "fiat" | "crypto") => {
-    return type === "fiat" ? fiatBackedNetworks : cryptoBackedNetworks;
+    return type === "fiat" ? fiatNetworks : cryptoNetworks;
   };
 
   const getCurrentForm = (type: "fiat" | "crypto") => {
