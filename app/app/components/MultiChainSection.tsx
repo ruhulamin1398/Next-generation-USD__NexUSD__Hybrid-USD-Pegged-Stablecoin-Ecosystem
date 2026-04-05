@@ -121,13 +121,13 @@ export default function MultiChainSection() {
         </div>
 
         {/* Footer Note */}
-        <div className="text-center mt-12 sm:mt-16">
+        {/* <div className="text-center mt-12 sm:mt-16">
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-3xl mx-auto">
             NexUSD testnet deployments across multiple blockchain networks for
             both crypto-backed and fiat-backed implementations. Click on any
             network to view the testnet block explorer.
           </p>
-        </div>
+        </div> */}
       </div>
     </section>
   )
@@ -139,26 +139,44 @@ interface NetworkCardProps {
   onClick: () => void
 }
 
+function formatNumber(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`
+  return n.toLocaleString()
+}
+
 function NetworkCard({ network, onClick }: NetworkCardProps) {
   const LogoComponent = network.logo
   const isReactComponent = typeof network.logo === 'function'
+  const isComingSoon = network.status === 'coming-soon'
+  const hasStats =
+    network.totalSupply !== undefined ||
+    network.totalHolders !== undefined ||
+    network.totalTransferred !== undefined
 
   return (
     <div
-      onClick={onClick}
-      className={`group relative bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 cursor-pointer ${
-        network.status === 'coming-soon' ? 'opacity-75' : ''
+      className={`group relative flex flex-col bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden ${
+        isComingSoon ? 'opacity-70' : ''
       }`}>
-      {/* Status Badge for Coming Soon */}
-      {network.status === 'coming-soon' && (
-        <div className="absolute -top-2 -right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-          Soon
-        </div>
-      )}
+      {/* Status pill */}
+      <div className="absolute top-3 right-3 z-10">
+        {isComingSoon ? (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-700">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block" />
+            Soon
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+            Live
+          </span>
+        )}
+      </div>
 
-      {/* Network Logo */}
-      <div className="flex items-center justify-center mb-3 sm:mb-4">
-        <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 p-2">
+      {/* Card top: logo + name */}
+      <div className="flex flex-col items-center pt-6 pb-4 px-4">
+        <div className="w-14 h-14 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 p-2 shadow-sm">
           {isReactComponent ? (
             <LogoComponent />
           ) : (
@@ -169,16 +187,80 @@ function NetworkCard({ network, onClick }: NetworkCardProps) {
             />
           )}
         </div>
+        <h3 className="text-sm font-bold text-gray-900 dark:text-white text-center leading-tight">
+          {network.name}
+        </h3>
       </div>
 
-      {/* Network Name */}
-      <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white text-center group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors duration-300">
-        {network.name}
-      </h3>
+      {/* Divider */}
+      {hasStats && <div className="mx-4 h-px bg-gray-100 dark:bg-gray-800" />}
 
-      {/* Hover Effect */}
-      <div className="mt-3 sm:mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <div className="w-full h-1 bg-gray-900 dark:bg-gray-500 rounded-full"></div>
+      {/* Stats grid */}
+      {hasStats && (
+        <div className="grid grid-cols-3 gap-px bg-gray-100 dark:bg-gray-800 mx-4 my-3 rounded-xl overflow-hidden text-center">
+          <div className="bg-white dark:bg-gray-900 px-1 py-2">
+            <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
+              {network.totalSupply !== undefined
+                ? formatNumber(network.totalSupply)
+                : '—'}
+            </p>
+            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
+              Supply
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-900 px-1 py-2">
+            <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
+              {network.totalHolders !== undefined
+                ? formatNumber(network.totalHolders)
+                : '—'}
+            </p>
+            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
+              Holders
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-900 px-1 py-2">
+            <p className="text-xs font-semibold text-gray-900 dark:text-white truncate">
+              {network.totalTransferred !== undefined
+                ? formatNumber(network.totalTransferred)
+                : '—'}
+            </p>
+            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
+              Transfers
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Explorer link */}
+      <div className="px-4 pb-4 mt-auto">
+        {!isComingSoon && network.explorerUrl ? (
+          <button
+            type="button"
+            onClick={onClick}
+            className="w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 border border-blue-200 dark:border-blue-800 transition-colors duration-200">
+            Explorer
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="w-3 h-3">
+              <path
+                fillRule="evenodd"
+                d="M8.914 6.025a.75.75 0 0 1 1.06 0 3.5 3.5 0 0 1 0 4.95l-2 2a3.5 3.5 0 0 1-5.396-4.402.75.75 0 0 1 1.251.827 2 2 0 0 0 3.085 2.514l2-2a2 2 0 0 0 0-2.829.75.75 0 0 1 0-1.06Z"
+                clipRule="evenodd"
+              />
+              <path
+                fillRule="evenodd"
+                d="M7.086 9.975a.75.75 0 0 1-1.06 0 3.5 3.5 0 0 1 0-4.95l2-2a3.5 3.5 0 0 1 5.396 4.402.75.75 0 0 1-1.251-.827 2 2 0 0 0-3.085-2.514l-2 2a2 2 0 0 0 0 2.829.75.75 0 0 1 0 1.06Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        ) : isComingSoon ? (
+          <div className="w-full py-1.5 rounded-lg text-xs font-semibold text-center text-gray-400 dark:text-gray-600 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
+            Coming soon
+          </div>
+        ) : null}
       </div>
     </div>
   )

@@ -7,6 +7,10 @@ export const FaucetSection: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedNetworks, setSelectedNetworks] = useState<string[]>([])
   const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [networkAddressMap, setNetworkAddressMap] = useState<
+    Record<string, string>
+  >({})
   const { fiatNetworks, cryptoNetworks } = useNetworkConfig()
 
   const allNetworks = [...fiatNetworks, ...cryptoNetworks]
@@ -32,10 +36,113 @@ export const FaucetSection: React.FC = () => {
     setSelectedNetworks((prev) => {
       const key = getNetworkKey(network)
       if (prev.includes(key)) {
-        return prev.filter((item) => item !== key)
+        const next = prev.filter((item) => item !== key)
+        setNetworkAddressMap((addressMap) => {
+          const { [key]: _, ...remaining } = addressMap
+          return remaining
+        })
+        return next
       }
       return [...prev, key]
     })
+  }
+
+  const selectedNetworkItems = allNetworks.filter((network) =>
+    selectedNetworks.includes(getNetworkKey(network))
+  )
+
+  const handleAddressChange = (network: Network, value: string) => {
+    setNetworkAddressMap((prev) => ({
+      ...prev,
+      [getNetworkKey(network)]: value
+    }))
+  }
+
+  type RequestState = {
+    status: 'idle' | 'pending' | 'success' | 'error'
+    txHash?: string
+    error?: string
+  }
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [networkRequestState, setNetworkRequestState] = useState<
+    Record<string, RequestState>
+  >({})
+
+  const handleOpenModal = () => setIsModalOpen(true)
+  const handleCloseModal = () => setIsModalOpen(false)
+
+  const resolveExplorerUrl = (network: Network, hash: string) => {
+    if (!network.explorerUrl) return '#'
+    const base = network.explorerUrl.replace(/\/address\/.*$/i, '')
+    return base.endsWith('/') ? `${base}tx/${hash}` : `${base}/tx/${hash}`
+  }
+
+  const getRequestNetworkId = (network: Network) =>
+    network.id || network.name.toLowerCase().replace(/\s+/g, '-')
+
+  const handleGetTokens = async () => {
+    setIsSubmitting(true)
+    setNetworkRequestState((prev) => {
+      const next = { ...prev }
+      selectedNetworkItems.forEach((network) => {
+        next[getNetworkKey(network)] = { status: 'pending' }
+      })
+      return next
+    })
+
+    await Promise.all(
+      selectedNetworkItems.map(async (network) => {
+        const key = getNetworkKey(network)
+        const address = networkAddressMap[key]?.trim() ?? ''
+        if (!address) {
+          setNetworkRequestState((prev) => ({
+            ...prev,
+            [key]: { status: 'error', error: 'Address required' }
+          }))
+          return
+        }
+
+        try {
+          const response = await fetch('/api/airdrop', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              network: getRequestNetworkId(network),
+              address,
+              amount: 500
+            })
+          })
+
+          if (!response.ok) {
+            const payload = await response.text()
+            throw new Error(payload || response.statusText)
+          }
+
+          const data = await response.json()
+          setNetworkRequestState((prev) => ({
+            ...prev,
+            [key]: {
+              status: 'success',
+              txHash: data.txHash ?? data.hash ?? ''
+            }
+          }))
+        } catch (error) {
+          setNetworkRequestState((prev) => ({
+            ...prev,
+            [key]: {
+              status: 'error',
+              error: error instanceof Error ? error.message : 'Request failed'
+            }
+          }))
+        }
+      })
+    )
+
+    setIsSubmitting(false)
+    setToastMessage('Airdrop requests completed. Check your transaction links.')
   }
 
   useEffect(() => {
@@ -211,9 +318,181 @@ export const FaucetSection: React.FC = () => {
                 <button
                   type="button"
                   disabled={selectedNetworks.length === 0}
+                  onClick={handleOpenModal}
                   className="inline-flex items-center justify-center rounded-2xl bg-blue-600 px-6 py-3 text-white font-semibold shadow-lg transition-colors duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-400">
                   Continue
                 </button>
+              </div>
+            </div>
+          )}
+
+          {isModalOpen && (
+            <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 px-4 py-6 sm:px-6">
+              <div className="w-full max-w-3xl overflow-hidden rounded-[32px] bg-white text-gray-900 shadow-2xl dark:bg-gray-950 dark:text-white">
+                <div className="flex items-start justify-between border-b border-gray-200 px-6 py-5 dark:border-gray-800">
+                  <div>
+                    <h2 className="text-2xl font-semibold">Get tokens</h2>
+                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                      Confirm your addresses and get the tokens.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCloseModal}
+                    className="rounded-full border border-gray-200 bg-white p-2 text-gray-500 transition hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white">
+                    ×
+                  </button>
+                </div>
+
+                <div className="divide-y divide-gray-200 max-h-[65vh] overflow-y-auto dark:divide-gray-800">
+                  {selectedNetworkItems.map((network) => {
+                    const key = getNetworkKey(network)
+                    return (
+                      <div key={key} className="px-6 py-5 last:pb-6">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-gray-100 dark:bg-gray-800">
+                              {typeof network.logo === 'function' ? (
+                                <network.logo />
+                              ) : (
+                                <img
+                                  src={network.logo as string}
+                                  alt={network.name}
+                                  className="h-8 w-8 object-contain"
+                                />
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <div className="truncate text-base font-semibold">
+                                {network.name}
+                              </div>
+                              <div className="truncate text-sm text-gray-500 dark:text-gray-400">
+                                500 NexUSD •{' '}
+                                {network.type === 'fiat'
+                                  ? 'Fiat-backed'
+                                  : 'Crypto-backed'}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end sm:flex-1">
+                            <label
+                              className="sr-only"
+                              htmlFor={`address-${key}`}>
+                              Wallet address for {network.name}
+                            </label>
+                            <input
+                              id={`address-${key}`}
+                              type="text"
+                              value={networkAddressMap[key] ?? ''}
+                              onChange={(event) =>
+                                handleAddressChange(network, event.target.value)
+                              }
+                              placeholder="Enter wallet address"
+                              disabled={
+                                Boolean(
+                                  networkRequestState[key]?.status === 'success'
+                                ) || isSubmitting
+                              }
+                              className="min-w-0 flex-1 rounded-2xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200 disabled:cursor-not-allowed disabled:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-500"
+                            />
+                            {networkRequestState[key]?.status === 'success' &&
+                            networkRequestState[key]?.txHash ? (
+                              <a
+                                href={resolveExplorerUrl(
+                                  network,
+                                  networkRequestState[key]!.txHash!
+                                )}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex flex-shrink-0 items-center justify-center rounded-2xl border border-emerald-500 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-400 dark:bg-emerald-900/60 dark:text-emerald-200 dark:hover:bg-emerald-800">
+                                View transaction
+                              </a>
+                            ) : networkRequestState[key]?.status ===
+                              'pending' ? (
+                              <div className="inline-flex flex-shrink-0 items-center justify-center rounded-2xl border border-gray-200 bg-white p-3 text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
+                                <svg
+                                  className="h-4 w-4 animate-spin"
+                                  viewBox="0 0 24 24">
+                                  <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                    fill="none"
+                                  />
+                                  <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                  />
+                                </svg>
+                              </div>
+                            ) : networkRequestState[key]?.status === 'error' ? (
+                              <div className="inline-flex flex-shrink-0 items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 dark:border-red-500/40 dark:bg-red-900/30 dark:text-red-200">
+                                Error
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedNetworks((prev) =>
+                                    prev.filter((item) => item !== key)
+                                  )
+                                  setNetworkAddressMap((prev) => {
+                                    const { [key]: _, ...remaining } = prev
+                                    return remaining
+                                  })
+                                }}
+                                className="inline-flex flex-shrink-0 items-center justify-center rounded-2xl border border-gray-200 bg-white p-3 text-gray-700 transition hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800">
+                                <span className="sr-only">Remove</span>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  className="h-4 w-4">
+                                  <line x1="18" y1="6" x2="6" y2="18" />
+                                  <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+
+                <div className="border-t border-gray-200 px-6 py-5 dark:border-gray-800">
+                  <button
+                    type="button"
+                    onClick={handleGetTokens}
+                    className="w-full rounded-2xl bg-blue-600 px-6 py-3 text-white font-semibold shadow-lg transition-colors duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-400"
+                    disabled={
+                      isSubmitting ||
+                      selectedNetworkItems.length === 0 ||
+                      selectedNetworkItems.every(
+                        (network) =>
+                          networkRequestState[getNetworkKey(network)]
+                            ?.status === 'success'
+                      )
+                    }>
+                    {isSubmitting
+                      ? 'Requesting…'
+                      : selectedNetworkItems.every(
+                            (network) =>
+                              networkRequestState[getNetworkKey(network)]
+                                ?.status === 'success'
+                          )
+                        ? 'Transactions ready'
+                        : 'Get tokens'}
+                  </button>
+                </div>
               </div>
             </div>
           )}

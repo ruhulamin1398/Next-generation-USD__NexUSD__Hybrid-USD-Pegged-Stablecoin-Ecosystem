@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useNetworkConfig } from '../hooks/useNetworkConfig'
 
 export default function HeroSection() {
@@ -151,7 +152,9 @@ export default function HeroSection() {
                   </svg>
                 </span>
               </button>
-              <button className="group bg-gray-800 border-2 border-gray-600 text-gray-300 hover:border-gray-400 hover:text-gray-100 hover:bg-gray-700 px-6 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-base sm:text-lg font-semibold transition-all duration-300 hover:shadow-xl transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900">
+              <Link
+                href="/#multichain"
+                className="group bg-gray-800 border-2 border-gray-600 text-gray-300 hover:border-gray-400 hover:text-gray-100 hover:bg-gray-700 px-6 sm:px-10 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-base sm:text-lg font-semibold transition-all duration-300 hover:shadow-xl transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900">
                 <span className="flex items-center justify-center">
                   View Networks
                   <svg
@@ -167,7 +170,7 @@ export default function HeroSection() {
                     />
                   </svg>
                 </span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>

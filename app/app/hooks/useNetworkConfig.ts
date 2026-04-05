@@ -45,16 +45,20 @@ export interface UseNetworkConfigReturn {
 
 function mapBackendConfigToNetwork(config: BackendNetworkConfig): Network {
     return {
+        id: config.network,
         name: config.title,
         logo: config.logoUrl || "",
         url: config.explorerUrl
-            ? `${config.explorerUrl}/address/${config.contractAddress}`
+            ? `${config.explorerUrl}/token/${config.contractAddress}`
             : "#",
         type: "fiat",
         status: "live",
         contractAddress: config.contractAddress,
         rpcUrl: config.rpcUrl || undefined,
         explorerUrl: config.explorerUrl || undefined,
+        totalHolders: config.totalHolders,
+        totalSupply: config.totalSupply,
+        totalTransferred: config.totalTransferred,
     };
 }
 
@@ -65,6 +69,9 @@ function mapNetworkToCryptoNetwork(network: Network): Network {
         status: "coming-soon",
         contractAddress: "",
         url: network.explorerUrl || "#",
+        totalHolders: undefined,
+        totalSupply: undefined,
+        totalTransferred: undefined,
     };
 }
 
