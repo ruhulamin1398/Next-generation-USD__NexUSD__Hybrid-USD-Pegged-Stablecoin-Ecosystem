@@ -3,8 +3,7 @@ export default function ComplianceSection() {
     <>
       <section
         id="compliance"
-        className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 backdrop-blur-sm transition-colors duration-300"
-      >
+        className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 backdrop-blur-sm transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16 md:mb-20">
             <div className="mb-4 sm:mb-6">
@@ -16,12 +15,9 @@ export default function ComplianceSection() {
               Compliance & Transparency
             </h2>
             <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed px-4">
-              Built with
-              <span className="text-white font-semibold">
-                {" "}
-                regulatory compliance{" "}
-              </span>
-              and maximum transparency at its core
+              Designed for global regulatory standards, with auditable on-chain
+              transparency and real-time reserve reporting built into every
+              layer.
             </p>
           </div>
 
@@ -48,9 +44,9 @@ export default function ComplianceSection() {
                     </h4>
                   </div>
                   <p className="text-gray-50 dark:text-gray-300 leading-relaxed text-xs sm:text-sm md:text-base">
-                    Decentralized oracles continuously verify and report
-                    collateral backing for both fiat and crypto reserves with
-                    live transparency.
+                    Decentralized oracle feeds continuously verify reserve
+                    collateral and publish tamper-resistant proof on-chain for
+                    both fiat and crypto holdings.
                   </p>
                 </div>
 
@@ -62,8 +58,9 @@ export default function ComplianceSection() {
                     </h4>
                   </div>
                   <p className="text-gray-50 dark:text-gray-300 leading-relaxed text-xs sm:text-sm md:text-base">
-                    Live monitoring of collateralization ratios, liquidity
-                    metrics, and comprehensive system health indicators.
+                    Live dashboards surface collateralization ratios, liquidity
+                    status, and systemic risk metrics for fast, data-driven
+                    decision making.
                   </p>
                 </div>
 
@@ -75,8 +72,8 @@ export default function ComplianceSection() {
                     </h4>
                   </div>
                   <p className="text-gray-50 dark:text-gray-300 leading-relaxed text-xs sm:text-sm md:text-base">
-                    All reserve data and audit results published on-chain for
-                    complete transparency and unparalleled user trust.
+                    Reserve disclosures, audit logs, and risk attestations are
+                    made publicly available for independent verification.
                   </p>
                 </div>
               </div>
@@ -104,9 +101,9 @@ export default function ComplianceSection() {
                     </h4>
                   </div>
                   <p className="text-gray-50 dark:text-gray-300 leading-relaxed text-xs sm:text-sm md:text-base">
-                    Smart contract-level identity verification and anti-money
-                    laundering compliance built into every transaction
-                    seamlessly.
+                    Policy-driven identity checks and screening logic are
+                    enforced at the smart contract level for secure, compliant
+                    transaction flows.
                   </p>
                 </div>
 
@@ -118,8 +115,9 @@ export default function ComplianceSection() {
                     </h4>
                   </div>
                   <p className="text-gray-50 dark:text-gray-300 leading-relaxed text-xs sm:text-sm md:text-base">
-                    Configurable compliance rules that intelligently adapt to
-                    different regulatory requirements across global markets.
+                    Configurable rulesets adapt in real time to changing
+                    regulatory regimes and jurisdiction-specific policy
+                    requirements.
                   </p>
                 </div>
 
@@ -131,8 +129,8 @@ export default function ComplianceSection() {
                     </h4>
                   </div>
                   <p className="text-gray-50 dark:text-gray-300 leading-relaxed text-xs sm:text-sm md:text-base">
-                    Supports both permissioned and permissionless modes
-                    depending on network requirements and user preferences.
+                    Switch between permissioned audit workflows and open-network
+                    access while preserving compliance and operational control.
                   </p>
                 </div>
               </div>
@@ -141,5 +139,5 @@ export default function ComplianceSection() {
         </div>
       </section>
     </>
-  );
+  )
 }
