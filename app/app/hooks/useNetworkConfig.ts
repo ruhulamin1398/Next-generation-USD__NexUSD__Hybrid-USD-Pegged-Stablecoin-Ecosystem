@@ -140,6 +140,7 @@ export const useNetworkConfig = (): UseNetworkConfigReturn => {
         (filter?: NetworkFilter) => {
             if (!filter) return allNetworks;
 
+
             return allNetworks.filter((n) => {
                 const matchesType = filter.type ? n.type === filter.type : true;
                 const matchesStatus = filter.status ? n.status === filter.status : true;
@@ -171,6 +172,8 @@ export const useNetworkConfig = (): UseNetworkConfigReturn => {
 
         return { totalSupply, totalHolders, totalTransferred };
     }, [fiatNetworkConfigs]);
+
+
 
     return {
         allNetworks,

@@ -104,7 +104,7 @@ export const useFaucet = (): UseFaucetReturn => {
       setResponses((prev) => ({ ...prev, [type]: undefined }));
 
       try {
-        const response = await fetch("/api/faucet", {
+        const response = await fetch("/api/airdrop", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -113,7 +113,6 @@ export const useFaucet = (): UseFaucetReturn => {
             address: form.address,
             network: form.network,
             amount: form.amount,
-            type: type,
           }),
         });
 
@@ -124,8 +123,11 @@ export const useFaucet = (): UseFaucetReturn => {
             ...prev,
             [type]: {
               success: true,
-              transactionHash: data.transactionHash,
-              network: data.network,
+              transactionHash: data.transactionHash ?? data.txHash,
+              network:
+                typeof data.network === "string"
+                  ? { name: data.network, explorerUrl: "" }
+                  : data.network,
             },
           }));
           // Reset form on success
@@ -135,7 +137,7 @@ export const useFaucet = (): UseFaucetReturn => {
             ...prev,
             [type]: {
               success: false,
-              error: data.error || "Failed to mint tokens",
+              error: data.error || data.message || "Failed to execute airdrop",
             },
           }));
         }

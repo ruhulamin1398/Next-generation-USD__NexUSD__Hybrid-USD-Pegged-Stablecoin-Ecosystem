@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { useNetworkConfig } from '../hooks/useNetworkConfig'
 
 export default function HeroSection() {
@@ -10,6 +11,53 @@ export default function HeroSection() {
       notation: 'compact',
       maximumFractionDigits: 2
     }).format(n)
+
+  const [animatedCounts, setAnimatedCounts] = useState({
+    networks: 0,
+    supply: 0,
+    holders: 0
+  })
+
+  useEffect(() => {
+    if (isLoading) {
+      setAnimatedCounts({ networks: 0, supply: 0, holders: 0 })
+      return
+    }
+
+    const targetNetworks = fiatNetworks.length
+    const targetSupply = networksSummary.totalSupply
+    const targetHolders = networksSummary.totalHolders
+    const duration = 1200
+    const frameRate = 60
+    const totalFrames = Math.round((duration / 1000) * frameRate)
+
+    const networkStep = targetNetworks / totalFrames
+    const supplyStep = targetSupply / totalFrames
+    const holdersStep = targetHolders / totalFrames
+
+    let frame = 0
+    const interval = window.setInterval(() => {
+      frame += 1
+      setAnimatedCounts({
+        networks: Math.min(targetNetworks, Math.round(networkStep * frame)),
+        supply: Math.min(targetSupply, Math.round(supplyStep * frame)),
+        holders: Math.min(targetHolders, Math.round(holdersStep * frame))
+      })
+
+      if (frame >= totalFrames) {
+        window.clearInterval(interval)
+      }
+    }, duration / totalFrames)
+
+    return () => {
+      window.clearInterval(interval)
+    }
+  }, [
+    isLoading,
+    fiatNetworks.length,
+    networksSummary.totalSupply,
+    networksSummary.totalHolders
+  ])
 
   return (
     <>
@@ -50,7 +98,7 @@ export default function HeroSection() {
                     Live Networks
                   </div>
                   <div className="text-4xl font-semibold text-white">
-                    {isLoading ? '...' : fiatNetworks.length}
+                    {isLoading ? '...' : animatedCounts.networks}
                   </div>
                   <div className="mt-2 text-sm text-gray-400">
                     More comming soon.
@@ -63,7 +111,7 @@ export default function HeroSection() {
                   <div className="text-4xl font-semibold text-white">
                     {isLoading
                       ? '...'
-                      : `${compactNum(networksSummary.totalSupply)}+`}
+                      : `${compactNum(animatedCounts.supply)}+`}
                   </div>
                   <div className="mt-2 text-sm text-gray-400">
                     Combined across networks.
@@ -76,7 +124,7 @@ export default function HeroSection() {
                   <div className="text-4xl font-semibold text-white">
                     {isLoading
                       ? '...'
-                      : `${compactNum(networksSummary.totalHolders)}+`}
+                      : `${compactNum(animatedCounts.holders)}+`}
                   </div>
                   <div className="mt-2 text-sm text-gray-400">
                     Total wallets holding NexUSD today.

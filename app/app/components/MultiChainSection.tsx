@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNetworkConfig } from '../hooks/useNetworkConfig'
 import { Network } from '../interfaces/network'
 import Link from 'next/link'
@@ -11,6 +11,12 @@ export default function MultiChainSection() {
 
   const cryptoBackedNetworks = cryptoNetworks
   const fiatBackedNetworks = fiatNetworks
+
+  useEffect(() => {
+    // Reset to fiat tab if there is an error loading crypto networks
+    console.log('Crypto Networks:', cryptoBackedNetworks)
+    console.log('Fiat Networks:', fiatBackedNetworks)
+  }, [fiatBackedNetworks])
 
   const handleNetworkClick = (url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer')
