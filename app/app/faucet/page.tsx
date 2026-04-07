@@ -1,13 +1,13 @@
-"use client";
+'use client'
 
-import Breadcrumbs from "../components/Breadcrumbs";
-import { FaucetSection } from "../components/FaucetSection";
-import Link from "next/link";
+import Breadcrumbs from '../components/Breadcrumbs'
+import { FaucetSection } from '../components/FaucetSection'
+import Link from 'next/link'
 
 const breadcrumbItems = [
-  { label: "Home", href: "/" },
-  { label: "Faucet", href: "/faucet" },
-];
+  { label: 'Home', href: '/' },
+  { label: 'Faucet', href: '/faucet' }
+]
 
 export default function FaucetPage() {
   return (
@@ -16,7 +16,7 @@ export default function FaucetPage() {
       <Breadcrumbs items={breadcrumbItems} />
 
       {/* Page Header */}
-      <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 sm:py-16 relative z-50">
+      <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-12 sm:py-16 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-50">
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
@@ -24,10 +24,10 @@ export default function FaucetPage() {
             </h1>
             <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
               Get testnet NexUSD tokens for development and testing. Request up
-              to{" "}
+              to{' '}
               <span className="text-gray-900 dark:text-white font-semibold">
                 500 tokens
-              </span>{" "}
+              </span>{' '}
               per request for both fiat-backed and crypto-backed
               implementations.
             </p>
@@ -36,14 +36,12 @@ export default function FaucetPage() {
             <div className="flex flex-wrap justify-center gap-4 mt-8 relative z-50">
               <a
                 href="#faucet"
-                className="inline-flex items-center px-6 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 font-medium shadow-sm cursor-pointer relative z-50"
-              >
+                className="inline-flex items-center px-6 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 font-medium shadow-sm cursor-pointer relative z-50">
                 <svg
                   className="w-5 h-5 mr-2"
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                  viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -55,14 +53,12 @@ export default function FaucetPage() {
               </a>
               <Link
                 href="/#multichain"
-                className="inline-flex items-center px-6 py-3 bg-gray-900 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors duration-200 font-medium shadow-sm cursor-pointer relative z-50"
-              >
+                className="inline-flex items-center px-6 py-3 bg-gray-900 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-800 dark:hover:bg-gray-600 transition-colors duration-200 font-medium shadow-sm cursor-pointer relative z-50">
                 <svg
                   className="w-5 h-5 mr-2"
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                  viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -74,14 +70,12 @@ export default function FaucetPage() {
               </Link>
               <Link
                 href="/docs"
-                className="inline-flex items-center px-6 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 font-medium shadow-sm cursor-pointer relative z-50"
-              >
+                className="inline-flex items-center px-6 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 font-medium shadow-sm cursor-pointer relative z-50">
                 <svg
                   className="w-5 h-5 mr-2"
                   fill="none"
                   stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                  viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -101,5 +95,5 @@ export default function FaucetPage() {
         <FaucetSection />
       </div>
     </div>
-  );
+  )
 }

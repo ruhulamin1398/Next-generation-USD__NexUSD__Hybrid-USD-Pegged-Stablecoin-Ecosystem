@@ -186,7 +186,6 @@ We welcome contributions from developers, blockchain enthusiasts, financial expe
    ```
 
 2. **Make Your Changes**
-
    - Follow the existing code style and conventions
    - Write clear, descriptive commit messages
    - Test your changes thoroughly
