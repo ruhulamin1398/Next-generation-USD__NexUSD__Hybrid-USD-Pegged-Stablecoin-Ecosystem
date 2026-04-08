@@ -26,9 +26,10 @@ function safeDecimal(value: string) {
 
 interface BalanceSidebarProps {
   balances: BalanceSidebarItem[]
+  onTransfer?: (item: BalanceSidebarItem) => void
 }
 
-export function BalanceSidebar({ balances }: BalanceSidebarProps) {
+export function BalanceSidebar({ balances, onTransfer }: BalanceSidebarProps) {
   return (
     <div className="rounded-[2rem] border border-emerald-200 bg-emerald-50/80 p-6 shadow-xl shadow-emerald-200/30 dark:border-emerald-700 dark:bg-slate-950/80 dark:shadow-emerald-900/25">
       <div className="flex flex-wrap items-center gap-3">
@@ -55,10 +56,17 @@ export function BalanceSidebar({ balances }: BalanceSidebarProps) {
                 </p>
               </div>
               <div className="flex gap-2">
-                <button className="rounded-3xl bg-emerald-100 px-4 py-2 text-xs font-semibold text-emerald-900 transition hover:bg-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-200 dark:hover:bg-emerald-900/40">
+                <button
+                  type="button"
+                  onClick={() => onTransfer?.(balance)}
+                  className="rounded-3xl bg-emerald-100 px-4 py-2 text-xs font-semibold text-emerald-900 transition hover:bg-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-200 dark:hover:bg-emerald-900/40">
                   Transfer
                 </button>
-                <button className="rounded-3xl bg-emerald-100 px-4 py-2 text-xs font-semibold text-emerald-900 transition hover:bg-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-200 dark:hover:bg-emerald-900/40">
+                <button
+                  type="button"
+                  disabled
+                  title="Coming soon"
+                  className="rounded-3xl bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-400 cursor-not-allowed dark:bg-slate-900/40 dark:text-slate-600">
                   Bridge
                 </button>
               </div>
