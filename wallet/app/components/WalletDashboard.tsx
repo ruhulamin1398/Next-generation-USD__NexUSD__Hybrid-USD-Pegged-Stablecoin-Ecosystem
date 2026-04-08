@@ -1,9 +1,10 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useDisconnect } from 'wagmi'
 import { useWalletSession } from '@/app/hooks/useWalletSession'
+import { useToast } from '@/app/hooks/useToast'
 import { BalanceSidebar, BalanceSidebarItem } from './BalanceSidebar'
 import { TransferModal } from './TransferModal'
 import { TransactionHistory } from './TransactionHistory'
@@ -60,11 +61,19 @@ export function WalletDashboard() {
     }
   }
 
+  const { addToast } = useToast()
+
   const balancesQuery = useQuery({
     queryKey: ['balances', session.address],
     queryFn: () => fetchBalances(session.address ?? ''),
     enabled: !!session.address
   })
+
+  useEffect(() => {
+    if (balancesQuery.isError) {
+      addToast('Could not load balances.', 'error')
+    }
+  }, [balancesQuery.isError, addToast])
 
   const totalBalance = useMemo(
     () =>
@@ -96,6 +105,9 @@ export function WalletDashboard() {
           <aside className="space-y-6">
             <BalanceSidebar
               balances={sidebarBalances}
+              isLoading={balancesQuery.isLoading}
+              isError={balancesQuery.isError}
+              onRetry={() => balancesQuery.refetch()}
               onTransfer={setTransferTarget}
             />
           </aside>

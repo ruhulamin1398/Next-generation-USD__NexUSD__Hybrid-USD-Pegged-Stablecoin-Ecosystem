@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
         const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") ?? "20")));
         const tokenType = searchParams.get("tokenType") || undefined;
         const type = searchParams.get("type") || undefined;
+        const network = searchParams.get("network") || undefined;
 
         if (!address) {
             return NextResponse.json({ error: "address is required" }, { status: 400 });
@@ -21,6 +22,7 @@ export async function GET(req: NextRequest) {
         const filter: Record<string, any> = { address: normalizedAddress };
         if (tokenType) filter.tokenType = tokenType;
         if (type) filter.type = type;
+        if (network) filter.chain = network;
 
         const startDate = searchParams.get('startDate')
         const endDate = searchParams.get('endDate')

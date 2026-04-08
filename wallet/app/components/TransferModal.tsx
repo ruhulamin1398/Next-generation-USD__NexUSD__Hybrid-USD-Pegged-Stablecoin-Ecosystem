@@ -10,6 +10,7 @@ import {
 } from 'viem'
 import { estimateContractGas } from 'viem/actions'
 import { useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
+import { useToast } from '@/app/hooks/useToast'
 import { useWalletSession } from '@/app/hooks/useWalletSession'
 import { NETWORK_CHAIN_IDS } from '@/lib/networks'
 import type { BalanceSidebarItem } from './BalanceSidebar'
@@ -43,6 +44,7 @@ export function TransferModal({
   onSuccess
 }: TransferModalProps) {
   const session = useWalletSession()
+  const { addToast } = useToast()
   const [recipient, setRecipient] = useState('')
   const [amount, setAmount] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -138,11 +140,15 @@ export function TransferModal({
   const sendResult = useSendTransaction({
     mutation: {
       onError(err) {
-        setError((err as Error)?.message ?? 'Transaction submission failed')
+        const message =
+          (err as Error)?.message ?? 'Transaction submission failed'
+        setError(message)
+        addToast(`Transfer failed: ${message}`, 'error')
       },
       onSuccess(data) {
         setTxHash(data as string)
         setStatusMessage('Transaction submitted. Waiting for confirmation...')
+        addToast('Transfer submitted. Waiting for confirmation...', 'info')
       }
     }
   })
@@ -160,9 +166,17 @@ export function TransferModal({
     if (!isConfirmed && receiptResult.isSuccess) {
       setIsConfirmed(true)
       setStatusMessage('Transfer confirmed successfully.')
+      addToast('Transfer confirmed successfully.', 'success')
       onSuccess()
     }
-  }, [receiptResult.isSuccess, isConfirmed, onSuccess])
+  }, [receiptResult.isSuccess, isConfirmed, onSuccess, addToast])
+
+  useEffect(() => {
+    if (receiptResult.isError) {
+      addToast('Transaction failed to confirm.', 'error')
+      setError('Transaction failed to confirm.')
+    }
+  }, [receiptResult.isError, addToast])
 
   useEffect(() => {
     if (!isOpen) {
@@ -207,8 +221,11 @@ export function TransferModal({
       setTxHash(data.txHash)
       setStatusMessage('Transfer submitted. Waiting for confirmation...')
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Dummy transfer failed')
+      const message =
+        err instanceof Error ? err.message : 'Dummy transfer failed'
+      setError(message)
       setStatusMessage(null)
+      addToast(`Dummy transfer failed: ${message}`, 'error')
     }
   }
 
@@ -277,7 +294,7 @@ export function TransferModal({
         })
       })
     } catch {
-      // ignore save failure; refresh will still work
+      addToast('Transfer sent but history save failed.', 'info')
     }
   }
 
@@ -327,7 +344,7 @@ export function TransferModal({
               value={recipient}
               onChange={(event) => setRecipient(event.target.value)}
               placeholder="0x..."
-              className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-slate-600 dark:focus:ring-slate-800"
+              className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-base text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-slate-600 dark:focus:ring-slate-800"
             />
           </div>
 
@@ -347,7 +364,7 @@ export function TransferModal({
               value={amount}
               onChange={(event) => setAmount(event.target.value)}
               placeholder="0.00"
-              className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-slate-600 dark:focus:ring-slate-800"
+              className="mt-2 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-base text-slate-900 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-slate-600 dark:focus:ring-slate-800"
             />
           </div>
 
