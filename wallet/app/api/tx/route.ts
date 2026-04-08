@@ -22,6 +22,23 @@ export async function GET(req: NextRequest) {
         if (tokenType) filter.tokenType = tokenType;
         if (type) filter.type = type;
 
+        const startDate = searchParams.get('startDate')
+        const endDate = searchParams.get('endDate')
+        if (startDate) {
+            const timestamp = Date.parse(startDate)
+            if (!Number.isNaN(timestamp)) {
+                filter.timestamp = filter.timestamp ?? {}
+                filter.timestamp.$gte = timestamp
+            }
+        }
+        if (endDate) {
+            const timestamp = Date.parse(endDate)
+            if (!Number.isNaN(timestamp)) {
+                filter.timestamp = filter.timestamp ?? {}
+                filter.timestamp.$lte = timestamp + 86_399_999
+            }
+        }
+
         const total = await txs.countDocuments(filter);
         const rows = await txs
             .find(filter)
