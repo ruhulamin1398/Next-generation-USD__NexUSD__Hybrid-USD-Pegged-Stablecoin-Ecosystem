@@ -39,19 +39,33 @@ export function useWalletSession(): WalletSession {
       return;
     }
 
-    try {
-      const raw = sessionStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        return;
-      }
+    const syncDummyAddress = () => {
+      try {
+        const raw = sessionStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          setDummyAddress(null);
+          return;
+        }
 
-      const parsed = JSON.parse(raw) as StoredWalletSession;
-      if (parsed?.type === "dummy" && typeof parsed.address === "string") {
-        setDummyAddress(parsed.address);
+        const parsed = JSON.parse(raw) as StoredWalletSession;
+        if (parsed?.type === "dummy" && typeof parsed.address === "string") {
+          setDummyAddress(parsed.address);
+          return;
+        }
+
+        setDummyAddress(null);
+      } catch {
+        sessionStorage.removeItem(STORAGE_KEY);
+        setDummyAddress(null);
       }
-    } catch {
-      sessionStorage.removeItem(STORAGE_KEY);
-    }
+    };
+
+    syncDummyAddress();
+    window.addEventListener("wallet-session-updated", syncDummyAddress);
+
+    return () => {
+      window.removeEventListener("wallet-session-updated", syncDummyAddress);
+    };
   }, []);
 
   useEffect(() => {
@@ -89,6 +103,7 @@ export function useWalletSession(): WalletSession {
         STORAGE_KEY,
         JSON.stringify({ type: "dummy", address: data.address }),
       );
+      window.dispatchEvent(new Event("wallet-session-updated"));
     } catch (error: unknown) {
       setDummyError(error instanceof Error ? error.message : "Unknown error");
     } finally {
@@ -101,6 +116,7 @@ export function useWalletSession(): WalletSession {
     setDummyError(null);
     if (typeof window !== "undefined") {
       sessionStorage.removeItem(STORAGE_KEY);
+      window.dispatchEvent(new Event("wallet-session-updated"));
     }
   };
 
