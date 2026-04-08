@@ -6,7 +6,13 @@ import {
   baseSepolia,
   arbitrumSepolia,
   optimismSepolia,
+  polygonAmoy,
+  bscTestnet,
+  avalancheFuji,
+  mantleSepoliaTestnet,
+  hoodi,
 } from 'viem/chains'
+import { NETWORK_CHAIN_IDS } from '@/lib/networks'
 
 const TRANSFER_ABI = [
   {
@@ -26,6 +32,35 @@ const CHAIN_BY_NETWORK: Record<string, any> = {
   'base-sepolia': baseSepolia,
   'arbitrum-sepolia': arbitrumSepolia,
   'optimism-sepolia': optimismSepolia,
+  'polygon-amoy': polygonAmoy,
+  'bsc-testnet': bscTestnet,
+  'avalanche-fuji': avalancheFuji,
+  'mantle-sepolia': mantleSepoliaTestnet,
+  'hoodi-sepolia': hoodi,
+}
+
+function getChainForNetwork(network: string, networkInfo: any) {
+  const chain = CHAIN_BY_NETWORK[network]
+  if (chain) return chain
+
+  const chainId = NETWORK_CHAIN_IDS[network]
+  if (!chainId || !networkInfo?.rpcUrl) return undefined
+
+  return {
+    id: chainId,
+    name: networkInfo.title ?? network,
+    network,
+    nativeCurrency: {
+      name: 'Ether',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    rpcUrls: {
+      default: {
+        http: [networkInfo.rpcUrl],
+      },
+    },
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -45,11 +80,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid recipient address' }, { status: 400 })
     }
 
-    const chain = CHAIN_BY_NETWORK[network]
-    if (!chain) {
-      return NextResponse.json({ error: `Unsupported network: ${network}` }, { status: 400 })
-    }
-
     const origin = req.nextUrl.origin
     const networksResponse = await fetch(`${origin}/api/networks`)
     if (!networksResponse.ok) {
@@ -60,6 +90,11 @@ export async function POST(req: NextRequest) {
     const networkInfo = networks.find((item: any) => item.network === network)
     if (!networkInfo?.rpcUrl) {
       return NextResponse.json({ error: 'RPC URL not available for network' }, { status: 400 })
+    }
+
+    const chain = getChainForNetwork(network, networkInfo)
+    if (!chain) {
+      return NextResponse.json({ error: `Unsupported network: ${network}` }, { status: 400 })
     }
 
     const privateKey = process.env.DUMMY_WALLET_PRIVATE_KEY
@@ -101,7 +136,10 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ txHash })
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Internal server error'
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error('Tx execute failed:', error)
+    return NextResponse.json(
+      { error: 'Transaction failed. Please try again.' },
+      { status: 500 }
+    )
   }
 }

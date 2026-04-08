@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
         if (!res.ok) {
             return NextResponse.json(
-                { error: data?.error ?? "Faucet request failed" },
+                { error: "Faucet request failed. Try again later." },
                 { status: res.status },
             );
         }

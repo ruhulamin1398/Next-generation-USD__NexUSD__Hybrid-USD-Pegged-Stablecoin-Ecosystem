@@ -30,18 +30,6 @@ export function WalletHeader({
           </span>
         </Link>
 
-        <div className="hidden items-center gap-6 md:flex">
-          <button className="rounded-full bg-slate-900 px-3 py-2 text-sm font-semibold text-white shadow-sm shadow-slate-900/10 transition hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200">
-            Transactions
-          </button>
-          <Link
-            href="https://nex-usd.vercel.app/faucet#faucet"
-            target="_blank"
-            className="rounded-full px-3 py-2 text-sm font-bold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white">
-            Faucet
-          </Link>
-        </div>
-
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -51,30 +39,29 @@ export function WalletHeader({
           </button>
 
           <div className="hidden items-center gap-2 md:flex">
+            <div className="rounded-full bg-amber-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+              {address
+                ? `${address.slice(0, 6)}...${address.slice(-4)}`
+                : 'Not connected'}
+            </div>
+            {address ? (
+              <button
+                type="button"
+                onClick={onDisconnect}
+                className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800">
+                Disconnect
+              </button>
+            ) : null}
+
             {onSettingsClick ? (
               <button
                 type="button"
                 onClick={onSettingsClick}
+                aria-label="Settings"
                 className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800">
-                Settings
+                ⚙️
               </button>
             ) : null}
-            {isDummy ? (
-              <span className="rounded-full bg-amber-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
-                Demo Wallet
-              </span>
-            ) : null}
-            <div className="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 shadow-sm shadow-slate-200/40 dark:bg-slate-900 dark:text-slate-100 dark:shadow-black/10">
-              {address
-                ? `${address.slice(0, 6)}...${address.slice(-4)}`
-                : 'Connected'}
-            </div>
-            <button
-              type="button"
-              onClick={onDisconnect}
-              className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800">
-              Disconnect
-            </button>
           </div>
         </div>
       </div>
@@ -91,8 +78,9 @@ export function WalletHeader({
             <button
               type="button"
               onClick={onSettingsClick}
+              aria-label="Settings"
               className="rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800">
-              Settings
+              ⚙️
             </button>
             <button
               type="button"

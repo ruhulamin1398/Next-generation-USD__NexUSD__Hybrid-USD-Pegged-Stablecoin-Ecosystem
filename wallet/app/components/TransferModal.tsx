@@ -28,6 +28,79 @@ const TRANSFER_ABI = [
   }
 ] as const
 
+function getFriendlyErrorMessage(error: unknown) {
+  const extractMessage = (value: unknown): string => {
+    if (typeof value === 'string') return value
+    if (value instanceof Error) return value.message
+    if (typeof value === 'object' && value !== null) {
+      const obj = value as Record<string, unknown>
+      const nestedKeys = [
+        'message',
+        'error',
+        'reason',
+        'shortMessage',
+        'data',
+        'body',
+        'details',
+        'cause'
+      ] as const
+      for (const key of nestedKeys) {
+        const nested = obj[key]
+        if (typeof nested === 'string' && nested.trim()) return nested
+        if (nested && typeof nested === 'object') {
+          const nestedMessage = extractMessage(nested)
+          if (nestedMessage) return nestedMessage
+        }
+      }
+      if (Array.isArray(obj.errors)) {
+        const combined = obj.errors
+          .map(extractMessage)
+          .filter(Boolean)
+          .join('; ')
+        if (combined) return combined
+      }
+    }
+    return String(value)
+  }
+
+  const rawMessage = extractMessage(error)
+  const message = rawMessage.replace(/^Error:\s*/i, '').trim()
+  const errorPayload =
+    typeof error === 'object' && error !== null
+      ? JSON.stringify(error, Object.getOwnPropertyNames(error))
+      : ''
+  const customErrorDetected =
+    /custom error/i.test(message) ||
+    /unknown custom error/i.test(message) ||
+    /custom error/i.test(errorPayload)
+
+  if (customErrorDetected) {
+    return 'Transaction failed due to a contract error. Please verify the transfer details and try again.'
+  }
+
+  if (/execution reverted/i.test(message)) {
+    return 'Transaction failed on-chain. Please verify the recipient, amount, and token approval.'
+  }
+
+  if (/insufficient funds/i.test(message)) {
+    return 'Insufficient balance to cover the transfer and fees.'
+  }
+
+  if (/replacement fee too low|transaction underpriced/i.test(message)) {
+    return 'Gas settings were too low. Please try again with a higher fee.'
+  }
+
+  if (/call exception|call_exception|CALL_EXCEPTION/i.test(message)) {
+    return 'The transaction reverted during execution. Check the contract call and try again.'
+  }
+
+  if (/action="estimateGas"|estimateGas/i.test(message)) {
+    return 'Gas estimation failed. The contract call may be invalid or the recipient may be incorrect.'
+  }
+
+  return 'Transaction failed. Please try again.'
+}
+
 interface TransferModalProps {
   isOpen: boolean
   onClose: () => void
@@ -140,8 +213,7 @@ export function TransferModal({
   const sendResult = useSendTransaction({
     mutation: {
       onError(err) {
-        const message =
-          (err as Error)?.message ?? 'Transaction submission failed'
+        const message = getFriendlyErrorMessage(err)
         setError(message)
         addToast(`Transfer failed: ${message}`, 'error')
       },
@@ -221,8 +293,7 @@ export function TransferModal({
       setTxHash(data.txHash)
       setStatusMessage('Transfer submitted. Waiting for confirmation...')
     } catch (err: unknown) {
-      const message =
-        err instanceof Error ? err.message : 'Dummy transfer failed'
+      const message = getFriendlyErrorMessage(err)
       setError(message)
       setStatusMessage(null)
       addToast(`Dummy transfer failed: ${message}`, 'error')
@@ -264,7 +335,7 @@ export function TransferModal({
         data: request.data
       })
     } catch (err: unknown) {
-      setError((err as Error)?.message ?? 'Transaction request failed')
+      setError(getFriendlyErrorMessage(err))
     }
   }
 
