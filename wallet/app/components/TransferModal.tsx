@@ -12,6 +12,7 @@ import { estimateContractGas } from 'viem/actions'
 import {
   useChainId,
   useSendTransaction,
+  useSwitchChain,
   useWaitForTransactionReceipt
 } from 'wagmi'
 import { useToast } from '@/app/hooks/useToast'
@@ -121,8 +122,11 @@ export function TransferModal({
   onSuccess
 }: TransferModalProps) {
   const session = useWalletSession()
-  const walletChainId = useChainId()
   const { addToast } = useToast()
+  const currentChainId = useChainId()
+  const { switchChainAsync } = useSwitchChain()
+
+  const targetChainId = balance ? NETWORK_CHAIN_IDS[balance.network] : undefined
   const [recipient, setRecipient] = useState('')
   const [amount, setAmount] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -269,8 +273,7 @@ export function TransferModal({
   const sendError = sendResult.error
   const sendTransactionAsync = sendResult.mutateAsync
 
-  const receiptChainId =
-    walletChainId ?? (balance ? NETWORK_CHAIN_IDS[balance.network] : undefined)
+  const receiptChainId = targetChainId
 
   const receiptResult = useWaitForTransactionReceipt({
     hash: txHash ? (txHash as `0x${string}`) : undefined,
@@ -385,8 +388,29 @@ export function TransferModal({
       return
     }
 
-    setStatusMessage('Sending transaction...')
+    // Explicitly switch chain if the wallet is on the wrong network.
+    // This is required for external wallets (e.g. Brave) that may not
+    // have the target network pre-configured; wagmi will trigger
+    // wallet_switchEthereumChain → wallet_addEthereumChain if needed.
+    if (targetChainId && currentChainId !== targetChainId) {
+      setStatusMessage(`Switching to ${balance.title} network in your wallet…`)
+      try {
+        await switchChainAsync({ chainId: targetChainId })
+      } catch (switchErr: unknown) {
+        const msg = getFriendlyErrorMessage(switchErr)
+        setError(
+          `Network switch failed: ${msg}. Please switch to the ${balance.title} network manually in your wallet and try again.`
+        )
+        setStatusMessage(null)
+        return
+      }
+    }
+
+    setStatusMessage('Sending transaction…')
     try {
+      // chainId is omitted here — the wallet is already on the correct
+      // chain after the explicit switch above, so wagmi won't attempt
+      // another silent switch that could silently fail on Brave.
       await sendTransactionAsync({
         to: request.to,
         data: request.data
