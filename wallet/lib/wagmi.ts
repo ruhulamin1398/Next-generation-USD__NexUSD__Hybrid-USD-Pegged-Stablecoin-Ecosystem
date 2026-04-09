@@ -6,6 +6,11 @@ import {
     baseSepolia,
     arbitrumSepolia,
     optimismSepolia,
+    polygonAmoy,
+    avalancheFuji,
+    hoodi,
+    gnosisChiado,
+    mantleSepoliaTestnet,
 } from "wagmi/chains";
 
 const chains = [
@@ -13,7 +18,12 @@ const chains = [
     baseSepolia,
     arbitrumSepolia,
     optimismSepolia,
+    polygonAmoy,
     mainnet,
+    avalancheFuji,
+    hoodi,
+    gnosisChiado,
+    mantleSepoliaTestnet,
 ] as const;
 
 export const wagmiConfig = createConfig(

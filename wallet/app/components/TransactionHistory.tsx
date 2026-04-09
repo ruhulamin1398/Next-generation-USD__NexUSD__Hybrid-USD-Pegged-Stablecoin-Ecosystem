@@ -26,6 +26,7 @@ interface TransactionItem {
   timestamp: number
   networkTitle?: string
   explorerUrl?: string
+  direction?: 'sent' | 'received'
 }
 
 interface TransactionApiResponse {
@@ -274,18 +275,18 @@ export function TransactionHistory() {
                     <td>
                       <span className="px-4 py-4 text-slate-900 dark:text-white">
                         <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-sm font-bold text-slate-900 dark:bg-slate-900 dark:text-slate-100">
-                          {tx.type === 'receive'
-                            ? '↓'
-                            : tx.type === 'bridge'
-                              ? '⇄'
+                          {tx.type === 'bridge'
+                            ? '⇄'
+                            : tx.direction === 'received'
+                              ? '↓'
                               : '↑'}
                         </span>
                         <span>
-                          {tx.type === 'receive'
-                            ? 'Receive'
-                            : tx.type === 'bridge'
-                              ? 'Bridge'
-                              : 'Transfer'}
+                          {tx.type === 'bridge'
+                            ? 'Bridge'
+                            : tx.direction === 'received'
+                              ? 'Receive'
+                              : 'Send'}
                         </span>
                       </span>
                     </td>

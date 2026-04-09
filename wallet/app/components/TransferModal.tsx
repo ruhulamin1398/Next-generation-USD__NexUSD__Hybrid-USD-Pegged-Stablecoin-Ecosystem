@@ -9,7 +9,11 @@ import {
   parseUnits
 } from 'viem'
 import { estimateContractGas } from 'viem/actions'
-import { useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
+import {
+  useChainId,
+  useSendTransaction,
+  useWaitForTransactionReceipt
+} from 'wagmi'
 import { useToast } from '@/app/hooks/useToast'
 import { useWalletSession } from '@/app/hooks/useWalletSession'
 import { NETWORK_CHAIN_IDS } from '@/lib/networks'
@@ -117,6 +121,7 @@ export function TransferModal({
   onSuccess
 }: TransferModalProps) {
   const session = useWalletSession()
+  const walletChainId = useChainId()
   const { addToast } = useToast()
   const [recipient, setRecipient] = useState('')
   const [amount, setAmount] = useState('')
@@ -218,7 +223,42 @@ export function TransferModal({
         addToast(`Transfer failed: ${message}`, 'error')
       },
       onSuccess(data) {
-        setTxHash(data as string)
+        const txHash =
+          typeof data === 'string'
+            ? data
+            : data && typeof data === 'object'
+              ? ((
+                  data as {
+                    hash?: string
+                    transactionHash?: string
+                    txHash?: string
+                  }
+                ).hash ??
+                (
+                  data as {
+                    hash?: string
+                    transactionHash?: string
+                    txHash?: string
+                  }
+                ).transactionHash ??
+                (
+                  data as {
+                    hash?: string
+                    transactionHash?: string
+                    txHash?: string
+                  }
+                ).txHash)
+              : undefined
+
+        if (!txHash || typeof txHash !== 'string') {
+          const message =
+            'Unable to read transaction hash from wallet response.'
+          setError(message)
+          addToast(message, 'error')
+          return
+        }
+
+        setTxHash(txHash)
         setStatusMessage('Transaction submitted. Waiting for confirmation...')
         addToast('Transfer submitted. Waiting for confirmation...', 'info')
       }
@@ -229,10 +269,27 @@ export function TransferModal({
   const sendError = sendResult.error
   const sendTransactionAsync = sendResult.mutateAsync
 
+  const receiptChainId =
+    walletChainId ?? (balance ? NETWORK_CHAIN_IDS[balance.network] : undefined)
+
   const receiptResult = useWaitForTransactionReceipt({
     hash: txHash ? (txHash as `0x${string}`) : undefined,
-    chainId: balance ? NETWORK_CHAIN_IDS[balance.network] : undefined
+    chainId: receiptChainId,
+    query: {
+      enabled: Boolean(txHash && receiptChainId),
+      retry: 3,
+      retryDelay: 1000,
+      refetchInterval: 5000
+    }
   })
+
+  useEffect(() => {
+    if (txHash && !receiptChainId) {
+      const message = 'Unable to confirm transaction: unsupported network.'
+      setError(message)
+      addToast(message, 'error')
+    }
+  }, [txHash, receiptChainId, addToast])
 
   useEffect(() => {
     if (!isConfirmed && receiptResult.isSuccess) {

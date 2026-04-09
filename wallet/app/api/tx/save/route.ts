@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { getDb } from "@/lib/db";
+import { TransactionType } from "@/lib/transactions";
 
 interface SaveTxBody {
     address: string;
     chain: string;
     txHash: string;
-    type: "transfer" | "receive" | "bridge";
+    type: TransactionType;
     amount: string;
     token: string;
     tokenType: "fiat" | "crypto";

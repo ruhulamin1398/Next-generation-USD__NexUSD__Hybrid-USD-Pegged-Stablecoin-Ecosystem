@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
+import {
+    buildTransactionQueryFilter,
+    deriveTransactionDirection,
+    TransactionRecord,
+} from "@/lib/transactions";
 
 export async function GET(req: NextRequest) {
     try {
@@ -19,9 +24,9 @@ export async function GET(req: NextRequest) {
         const txs = db.collection("transactions");
         const normalizedAddress = address.toLowerCase();
 
-        const filter: Record<string, any> = { address: normalizedAddress };
+        const filter: Record<string, any> = buildTransactionQueryFilter(normalizedAddress, type);
+
         if (tokenType) filter.tokenType = tokenType;
-        if (type) filter.type = type;
         if (network) filter.chain = network;
 
         const startDate = searchParams.get('startDate')
@@ -63,9 +68,14 @@ export async function GET(req: NextRequest) {
                 networkTitle: 1,
                 explorerUrl: 1,
             })
-            .toArray();
+            .toArray() as TransactionRecord[];
 
-        return NextResponse.json({ address, page, limit, total, transactions: rows });
+        const transactions = rows.map((tx) => ({
+            ...tx,
+            direction: deriveTransactionDirection(tx, normalizedAddress),
+        }));
+
+        return NextResponse.json({ address, page, limit, total, transactions });
     } catch (error) {
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
