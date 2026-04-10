@@ -77,7 +77,7 @@ contract NexUSDV2 is Initializable, UUPSUpgradeable, NexUSDControllerV2 {
      * @param operator The address to be granted the OPERATOR_ROLE (mint, blocklist, destroy).
      */
     function initialize(address ownerAddress, address operator) public initializer {
-        __NexUSDController_init("NexUSD", "NexUSD", ownerAddress, operator);
+        __NexUSDController_init("Next Generation USD", "NexUSD", ownerAddress, operator);
         __UUPSUpgradeable_init();
     }
 
@@ -156,6 +156,22 @@ contract NexUSDV2 is Initializable, UUPSUpgradeable, NexUSDControllerV2 {
     // =========================
     //   ✅ View & Pure Functions
     // =========================
+
+    /**
+     * @notice Returns current token metrics for NexUSD.
+     * @return currentSupply Total token supply.
+     * @return holderCount Total number of holders.
+     * @return transferCount Total number of transfers recorded.
+     */
+    function getTokenMetrics()
+        external
+        view
+        returns (uint256 currentSupply, uint256 holderCount, uint256 transferCount)
+    {
+        currentSupply = totalSupply();
+        holderCount = totalHolders;
+        transferCount = totalNumberOfTransfers;
+    }
 
     /**
      * @notice Returns the number of decimals used for NexUSD (fixed at 6).

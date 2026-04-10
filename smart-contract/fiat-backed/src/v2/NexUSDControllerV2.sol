@@ -26,11 +26,13 @@
 pragma solidity 0.8.30;
 
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {ERC20PausableUpgradeable} from
-    "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
+import {
+    ERC20PausableUpgradeable
+} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
 import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
-import {ERC20PermitUpgradeable} from
-    "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
+import {
+    ERC20PermitUpgradeable
+} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
 
 import {BaseStorageV2} from "./BaseStorageV2.sol";
 
@@ -70,9 +72,8 @@ abstract contract NexUSDControllerV2 is
     event UserUnBlocked(address indexed account);
 
     /// @notice Emitted when the contract owner changes.
-    /// @param oldOwner The old owner address.
     /// @param newOwner The new owner address.
-    event OwnerChanged(address indexed oldOwner, address indexed newOwner);
+    event OwnerChanged(address indexed newOwner);
 
     // =========================
     //      ✅ Modifiers
@@ -133,14 +134,7 @@ abstract contract NexUSDControllerV2 is
         }
         _revokeRole(DEFAULT_ADMIN_ROLE, oldOwner);
         _grantRole(DEFAULT_ADMIN_ROLE, newOwner);
-        emit OwnerChanged(oldOwner, newOwner);
-    }
-
-    /// @notice Sets the minimum amount for cross-chain transfers.
-    /// @dev Only callable by DEFAULT_ADMIN_ROLE (owner).
-    /// @param amount The minimum amount to set for cross-chain transfers.
-    function setMinimumCrossChainTransferAmount(uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        minimumCrossChainTransferAmount = amount;
+        emit OwnerChanged(newOwner);
     }
 
     /// @notice Adds an account to the blocklist.
@@ -157,6 +151,20 @@ abstract contract NexUSDControllerV2 is
     function removeFromBlocklist(address account) external onlyRole(OPERATOR_ROLE) {
         blockedAccounts[account] = false;
         emit UserUnBlocked(account);
+    }
+
+    /// @notice Sets the total number of token holders.
+    /// @dev Only callable by DEFAULT_ADMIN_ROLE. This is a manual update function for tracking total holders.
+    /// @param _totalHolders The total number of token holders to set.
+    function setTotalHolders(uint256 _totalHolders) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        totalHolders = _totalHolders;
+    }
+
+    /// @notice Sets the total number of token transfers.
+    /// @dev Only callable by DEFAULT_ADMIN_ROLE. This is a manual update function for tracking total transfers.
+    /// @param _totalNumberOfTransfers The total number of token transfers to set.
+    function setTotalNumberOfTransfers(uint256 _totalNumberOfTransfers) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        totalNumberOfTransfers = _totalNumberOfTransfers;
     }
 
     // =========================
@@ -190,12 +198,23 @@ abstract contract NexUSDControllerV2 is
         notBlocklistedSender(from)
         notBlocklistedRecipient(to)
     {
+        bool isNewHolder = to != address(0) && balanceOf(to) == 0;
+        bool isEmptyingSender = from != address(0) && balanceOf(from) == value;
+
+        if (isNewHolder) {
+            totalHolders += 1;
+        }
+        if (isEmptyingSender) {
+            totalHolders -= 1;
+        }
+
+        totalNumberOfTransfers += 1;
         super._update(from, to, value);
     }
 
-    // =========================
+    // ===========================
     //   ✅ View & Pure Functions
-    // =========================
+    // ===========================
 
     /// @notice Checks if an account is currently blocklisted.
     /// @param account The address to check.
