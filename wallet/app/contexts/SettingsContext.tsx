@@ -28,7 +28,7 @@ const STORAGE_KEY = 'nexusd_settings'
 
 const initialSettings: AppSettings = {
   defaultNetwork: '',
-  showUsd: true,
+  showUsd: false,
   theme: 'system'
 }
 

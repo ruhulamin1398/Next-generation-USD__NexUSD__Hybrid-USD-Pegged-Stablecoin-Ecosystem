@@ -1,11 +1,11 @@
-"use client";
-import { useState } from "react";
-import Link from "next/link";
-import { useTheme } from "./ThemeProvider";
+'use client'
+import { useState } from 'react'
+import Link from 'next/link'
+import { useTheme } from './ThemeProvider'
 
 export default function Navigation() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <nav className="bg-gray-900  backdrop-blur-sm  shadow-sm border-b border-gray-200/50 dark:border-gray-700/50 sticky top-0 z-50 transition-all duration-300">
@@ -28,39 +28,33 @@ export default function Navigation() {
             <div className="ml-10 flex items-baseline space-x-8">
               <Link
                 href="/"
-                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
-              >
+                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium">
                 Home
               </Link>
               <Link
                 href="/#how-it-works"
-                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
-              >
+                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium">
                 How It Works
               </Link>
               <Link
                 href="/#multichain"
                 className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
-                title="NexUSD Goes Multi-Chain - Access NexUSD across multiple blockchain testnet networks with both crypto-backed and fiat-backed implementations"
-              >
+                title="NexUSD Goes Multi-Chain - Access NexUSD across multiple blockchain testnet networks with both crypto-backed and fiat-backed implementations">
                 Multi-Chain
               </Link>
               <Link
                 href="/docs"
-                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
-              >
+                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium">
                 Documentation
               </Link>
               <Link
                 href="/faq"
-                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
-              >
+                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium">
                 FAQs
               </Link>
               <Link
                 href="/faucet"
-                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium"
-              >
+                className="text-gray-300 dark:text-gray-300 hover:text-white dark:hover:text-white transition-colors duration-200 font-medium">
                 Faucet
               </Link>
             </div>
@@ -104,9 +98,13 @@ export default function Navigation() {
               )}
             </button> */}
 
-            <button className="bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white px-6 py-2.5 rounded-xl hover:shadow-xl font-semibold text-sm transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 border border-gray-600">
+            <a
+              href="https://wallet-nex-usdt.vercel.app/"
+              target="_blank"
+              rel="noreferrer"
+              className="bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white px-6 py-2.5 rounded-xl hover:shadow-xl font-semibold text-sm transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 border border-gray-600">
               Launch App
-            </button>
+            </a>
           </div>
 
           {/* Mobile menu button */}
@@ -114,15 +112,13 @@ export default function Navigation() {
             <button
               onClick={toggleTheme}
               className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
-              aria-label="Toggle theme"
-            >
-              {theme === "light" ? (
+              aria-label="Toggle theme">
+              {theme === 'light' ? (
                 <svg
                   className="w-5 h-5 text-gray-600 dark:text-gray-400"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
+                  stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -135,8 +131,7 @@ export default function Navigation() {
                   className="w-5 h-5 text-gray-600 dark:text-gray-400"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
+                  stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -149,14 +144,12 @@ export default function Navigation() {
 
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white focus:outline-none p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
-            >
+              className="text-gray-300 dark:text-gray-300 hover:text-bold dark:hover:text-white focus:outline-none p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
               <svg
                 className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+                stroke="currentColor">
                 {isMenuOpen ? (
                   <path
                     strokeLinecap="round"
@@ -184,66 +177,62 @@ export default function Navigation() {
               <a
                 href="#features"
                 className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
+                onClick={() => setIsMenuOpen(false)}>
                 Features
               </a>
               <a
                 href="#how-it-works"
                 className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
+                onClick={() => setIsMenuOpen(false)}>
                 How It Works
               </a>
               <a
                 href="#multichain"
                 className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
+                onClick={() => setIsMenuOpen(false)}>
                 Multi-Chain
               </a>
               <Link
                 href="/docs"
                 className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
+                onClick={() => setIsMenuOpen(false)}>
                 Documentation
               </Link>
               <Link
                 href="/faq"
                 className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
+                onClick={() => setIsMenuOpen(false)}>
                 FAQs
               </Link>
               <Link
                 href="/faucet"
                 className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
+                onClick={() => setIsMenuOpen(false)}>
                 Faucet
               </Link>
               <a
                 href="#vision"
                 className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
+                onClick={() => setIsMenuOpen(false)}>
                 Vision
               </a>
               <a
                 href="#about"
                 className="block text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700/50 transition-colors duration-200 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
+                onClick={() => setIsMenuOpen(false)}>
                 About
               </a>
-              <button className="w-full mt-4 bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white px-6 py-3 rounded-xl hover:shadow-xl font-semibold text-sm transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
+              <a
+                href="https://wallet-nex-usdt.vercel.app/"
+                target="_blank"
+                rel="noreferrer"
+                className="w-full mt-4 bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white px-6 py-3 rounded-xl hover:shadow-xl font-semibold text-sm transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
                 Launch App
-              </button>
+              </a>
             </div>
           </div>
         )}
       </div>
     </nav>
-  );
+  )
 }

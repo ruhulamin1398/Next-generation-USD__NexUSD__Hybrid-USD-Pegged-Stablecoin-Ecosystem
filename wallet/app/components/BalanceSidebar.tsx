@@ -400,7 +400,7 @@ export function BalanceSidebar({
 
       <div className="flex flex-wrap items-center gap-3">
         <button className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-emerald-500/30">
-          Tether <span className="text-xs">(USDT)</span>
+          NexUSD <span className="text-xs">(Fiat)</span>
         </button>
         <button className="rounded-full border border-emerald-200 bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-200 dark:border-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-200 dark:hover:bg-emerald-900/40">
           NexUSD <span className="text-xs">(Crypto)</span>
