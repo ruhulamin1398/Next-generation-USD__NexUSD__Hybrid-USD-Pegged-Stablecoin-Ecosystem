@@ -19,17 +19,31 @@ abstract contract CodeConstants is Script {
     NexUSDV2 NexUSDv2;
     address proxy;
 
-    mapping(uint64 => address) public CCIPchains; // all chains for ccip
+    mapping(uint256 => address) public deploymentProxies;
 
-    uint64 amoy = 8002;
-    uint64 bnb = 11;
-    uint64 mainnet = 1;
+    uint256 sepolia = 11155111;
+    uint256 amoy = 80002;
+    uint256 bscTestnet = 97;
+    uint256 fuji = 43113;
+    uint256 arbitrumSepoliaTestnet = 421614;
+    uint256 optimismSepoliaTestnet = 11155420;
+    uint256 baseSepoliaTestnet = 84532;
+    uint256 ethereumHoodi = 560048;
+    uint256 genosisChaido = 10200;
+    uint256 mantleTestnet = 5003;
 
     constructor() {
         ADMIN = msg.sender;
-        CCIPchains[amoy] = 0x360ad4f9a9A8EFe9A8DCB5f461c4Cc1047E1Dcf9;
-        CCIPchains[bnb] = 0x360ad4f9a9A8EFe9A8DCB5f461c4Cc1047E1Dcf9; // BNB Testnet
-        CCIPchains[mainnet] = 0x360ad4f9a9A8EFe9A8DCB5f461c4Cc1047E1Dcf9; // Mainnet
+        deploymentProxies[sepolia] = 0x9768F4a36a9748D0a03A4Cefe70087758295747f;
+        deploymentProxies[amoy] = 0x6Db9d8fea1B96FE25B2382a6b26656D9Eb260502;
+        deploymentProxies[bscTestnet] = 0x71E53ea9f5a19A0aFB72d4fFCEBB5c0Da9c57152; // BSC Testnet
+        deploymentProxies[fuji] = 0x8ff02cFB12F00C023E24743744E59e8e79D22d76; // Avalanche Fuji Testnet
+        deploymentProxies[arbitrumSepoliaTestnet] = 0x58F427707474346B30163EE69c24681c18Cf87DA; // Arbitrum sepolia Testnet
+        deploymentProxies[optimismSepoliaTestnet] = 0x58F427707474346B30163EE69c24681c18Cf87DA; // Optimism sepolia Testnet
+        deploymentProxies[baseSepoliaTestnet] = 0x58F427707474346B30163EE69c24681c18Cf87DA; // Base sepolia Testnet
+        deploymentProxies[ethereumHoodi] = 0x58F427707474346B30163EE69c24681c18Cf87DA; // Ethereum Hoodi
+        deploymentProxies[genosisChaido] = 0x58F427707474346B30163EE69c24681c18Cf87DA; // Gnosis Chaido
+        deploymentProxies[mantleTestnet] = 0xaB0B261DF6d672069288D8C8Dfdd01c1626e2d07; // Mantle Testnet
     }
 }
 

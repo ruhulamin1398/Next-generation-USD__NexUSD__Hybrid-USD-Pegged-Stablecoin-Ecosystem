@@ -23,7 +23,7 @@ contract HelperTest is Test, HelperConfig {
 
     function upgradeToV2() public {
         UpgradeNexUSD upgrader = new UpgradeNexUSD();
-        upgrader.run(proxy);
+        upgrader.upgradeToV2(proxy);
         NexUSDv2 = NexUSDV2(proxy);
     }
 }
