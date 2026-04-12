@@ -466,7 +466,7 @@ export function TransferModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 px-4 py-10">
-      <div className="w-full max-w-2xl rounded-[2rem] bg-white p-6 shadow-2xl shadow-slate-950/20 dark:bg-slate-950 dark:text-slate-100">
+      <div className="w-full max-w-2xl max-h-[calc(100vh-4rem)] overflow-y-auto rounded-[2rem] bg-white p-6 shadow-2xl shadow-slate-950/20 dark:bg-slate-950 dark:text-slate-100">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">

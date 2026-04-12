@@ -20,7 +20,7 @@ export function WalletHeader({
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-4 py-4 shadow-sm shadow-slate-200/40 dark:border-slate-800 dark:bg-slate-950/95 dark:shadow-black/10 sm:px-6 lg:px-8">
-      <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4">
+      <div className="mx-auto flex flex-wrap max-w-[1600px] items-center justify-between gap-4">
         <Link
           href="https://nex-usd.vercel.app"
           target="_blank"

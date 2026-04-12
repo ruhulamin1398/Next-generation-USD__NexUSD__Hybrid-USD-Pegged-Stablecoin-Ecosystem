@@ -258,80 +258,129 @@ export function TransactionHistory() {
             ))}
           </div>
         ) : transactions.length ? (
-          <div className="overflow-hidden rounded-[1.5rem] border border-slate-200 dark:border-slate-800">
-            <table className="min-w-full divide-y divide-slate-200 text-left text-sm dark:divide-slate-800">
-              <thead className="bg-white text-slate-600 dark:bg-slate-950 dark:text-slate-300">
-                <tr>
-                  <th className="px-4 py-3">Type</th>
-                  <th className="hidden sm:table-cell px-4 py-3">Network</th>
-                  <th className="px-4 py-3">Amount</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Date</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200 bg-white text-slate-700 dark:divide-slate-800 dark:bg-slate-950 dark:text-slate-200">
-                {transactions.map((tx) => (
-                  <tr key={tx.id}>
-                    <td>
-                      <span className="px-4 py-4 text-slate-900 dark:text-white">
-                        <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-sm font-bold text-slate-900 dark:bg-slate-900 dark:text-slate-100">
-                          {tx.type === 'bridge'
-                            ? '⇄'
-                            : tx.direction === 'received'
-                              ? '↓'
-                              : '↑'}
-                        </span>
-                        <span>
-                          {tx.type === 'bridge'
-                            ? 'Bridge'
-                            : tx.direction === 'received'
-                              ? 'Receive'
-                              : 'Send'}
-                        </span>
+          <>
+            <div className="space-y-4 sm:hidden">
+              {transactions.map((tx) => (
+                <div
+                  key={tx.id}
+                  className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                        {tx.type === 'bridge'
+                          ? 'Bridge'
+                          : tx.direction === 'received'
+                            ? 'Receive'
+                            : 'Send'}
+                      </p>
+                      <p className="mt-1 text-xs uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">
+                        {tx.networkTitle ?? tx.chain}
+                      </p>
+                    </div>
+                    <TxStatusBadge status={tx.status} />
+                  </div>
+                  <div className="mt-4 grid gap-3 text-sm text-slate-700 dark:text-slate-200">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-medium">Amount</span>
+                      <span>
+                        {Number(tx.amount).toLocaleString(undefined, {
+                          maximumFractionDigits: 4,
+                          minimumFractionDigits: 0
+                        })}{' '}
+                        {tx.token}
                       </span>
-                    </td>
-                    <td className="hidden sm:table-cell px-4 py-4">
-                      {tx.networkTitle ?? tx.chain}
-                    </td>
-                    <td className="px-4 py-4">
-                      {Number(tx.amount).toLocaleString(undefined, {
-                        maximumFractionDigits: 4,
-                        minimumFractionDigits: 0
-                      })}{' '}
-                      {tx.token}
-                    </td>
-                    <td className="px-4 py-4">
-                      <TxStatusBadge status={tx.status} />
-                    </td>
-                    <td className="px-4 py-4 text-slate-900 dark:text-slate-100">
-                      <div className="flex items-center gap-3">
-                        <span>{formatRelativeTime(tx.timestamp)}</span>
-                        <a
-                          href={`${tx.explorerUrl ?? '#'}${tx.explorerUrl?.endsWith('/') ? '' : '/'}tx/${tx.txHash}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          title="View transaction on explorer"
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-slate-900 shadow-sm transition hover:bg-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800">
-                          <svg
-                            viewBox="0 0 24 24"
-                            className="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round">
-                            <path d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                            <polyline points="15 3 21 3 21 9" />
-                            <line x1="10" y1="14" x2="21" y2="3" />
-                          </svg>
-                        </a>
-                      </div>
-                    </td>
+                    </div>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-medium">Date</span>
+                      <span>{formatRelativeTime(tx.timestamp)}</span>
+                    </div>
+                    <a
+                      href={`${tx.explorerUrl ?? '#'}${tx.explorerUrl?.endsWith('/') ? '' : '/'}tx/${tx.txHash}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800">
+                      View on explorer
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="hidden sm:block overflow-x-auto rounded-[1.5rem] border border-slate-200 dark:border-slate-800">
+              <table className="min-w-full divide-y divide-slate-200 text-left text-sm dark:divide-slate-800">
+                <thead className="bg-white text-slate-600 dark:bg-slate-950 dark:text-slate-300">
+                  <tr>
+                    <th className="px-4 py-3">Type</th>
+                    <th className="hidden sm:table-cell px-4 py-3">Network</th>
+                    <th className="px-4 py-3">Amount</th>
+                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3">Date</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-200 bg-white text-slate-700 dark:divide-slate-800 dark:bg-slate-950 dark:text-slate-200">
+                  {transactions.map((tx) => (
+                    <tr key={tx.id}>
+                      <td>
+                        <span className="px-4 py-4 text-slate-900 dark:text-white">
+                          <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-sm font-bold text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+                            {tx.type === 'bridge'
+                              ? '⇄'
+                              : tx.direction === 'received'
+                                ? '↓'
+                                : '↑'}
+                          </span>
+                          <span>
+                            {tx.type === 'bridge'
+                              ? 'Bridge'
+                              : tx.direction === 'received'
+                                ? 'Receive'
+                                : 'Send'}
+                          </span>
+                        </span>
+                      </td>
+                      <td className="hidden sm:table-cell px-4 py-4">
+                        {tx.networkTitle ?? tx.chain}
+                      </td>
+                      <td className="px-4 py-4">
+                        {Number(tx.amount).toLocaleString(undefined, {
+                          maximumFractionDigits: 4,
+                          minimumFractionDigits: 0
+                        })}{' '}
+                        {tx.token}
+                      </td>
+                      <td className="px-4 py-4">
+                        <TxStatusBadge status={tx.status} />
+                      </td>
+                      <td className="px-4 py-4 text-slate-900 dark:text-slate-100">
+                        <div className="flex items-center gap-3">
+                          <span>{formatRelativeTime(tx.timestamp)}</span>
+                          <a
+                            href={`${tx.explorerUrl ?? '#'}${tx.explorerUrl?.endsWith('/') ? '' : '/'}tx/${tx.txHash}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            title="View transaction on explorer"
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-100 text-slate-900 shadow-sm transition hover:bg-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800">
+                            <svg
+                              viewBox="0 0 24 24"
+                              className="h-4 w-4"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round">
+                              <path d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                              <polyline points="15 3 21 3 21 9" />
+                              <line x1="10" y1="14" x2="21" y2="3" />
+                            </svg>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         ) : (
           <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-slate-50 p-14 text-center text-slate-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
             <p className="text-lg font-semibold text-slate-900 dark:text-white">
