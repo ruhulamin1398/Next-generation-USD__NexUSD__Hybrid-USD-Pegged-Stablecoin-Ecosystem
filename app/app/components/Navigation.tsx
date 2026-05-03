@@ -99,7 +99,7 @@ export default function Navigation() {
             </button> */}
 
             <a
-              href="https://wallet-nex-usdt.vercel.app/"
+              href="https://wallet-nex-usd.vercel.app/"
               target="_blank"
               rel="noreferrer"
               className="bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white px-6 py-2.5 rounded-xl hover:shadow-xl font-semibold text-sm transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 border border-gray-600">
@@ -223,7 +223,7 @@ export default function Navigation() {
                 About
               </a>
               <a
-                href="https://wallet-nex-usdt.vercel.app/"
+                href="https://wallet-nex-usd.vercel.app/"
                 target="_blank"
                 rel="noreferrer"
                 className="w-full mt-4 bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white px-6 py-3 rounded-xl hover:shadow-xl font-semibold text-sm transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2">
