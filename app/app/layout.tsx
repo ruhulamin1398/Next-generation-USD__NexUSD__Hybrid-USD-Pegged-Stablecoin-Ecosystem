@@ -6,6 +6,8 @@ import { ThemeProvider } from './components/ThemeProvider'
 import Footer from './components/Footer'
 import Navigation from './components/Navigation'
 import CTAsection from './components/CTA'
+import GoogleAnalytics from './components/GoogleAnalytics'
+import { GA_ID } from './lib/ga'
 import { ToastContainer, toast } from 'react-toastify'
 
 const inter = Inter({
@@ -89,14 +91,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-2GZT71H3QX"
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
           {`window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-2GZT71H3QX', {
+            gtag('config', '${GA_ID}', {
               page_path: window.location.pathname,
             });`}
         </Script>
@@ -105,6 +107,7 @@ export default function RootLayout({
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300`}>
         <ThemeProvider>
           <Navigation />
+          <GoogleAnalytics />
           {children}
 
           <CTAsection />
